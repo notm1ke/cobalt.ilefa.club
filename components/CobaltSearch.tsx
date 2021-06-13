@@ -5,16 +5,17 @@ import styling from './styling/search.module.css';
 import IsolatedScroll from 'react-isolated-scroll';
 
 import { useState } from 'react';
-import { mdiMagnify } from '@mdi/js';
 import { useRouter } from 'next/router';
 import { useCourseList } from '../hooks';
+import { getIconForCourse } from '../util';
+import { mdiLoading, mdiMagnify } from '@mdi/js';
 import { FormGroup, InputGroupAddon, InputGroupText } from 'reactstrap'
 import { ChangeEvent, SuggestionSelectedEventData } from 'react-autosuggest';
-import { getIconForCourse } from '../util';
 
 export const CobaltSearch = () => {
     const router = useRouter();
     const [query, setQuery] = useState('');
+    const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestions] = useState([] as string[]);
     
     const { data, isLoading, isError } = useCourseList();
@@ -22,7 +23,10 @@ export const CobaltSearch = () => {
     const onClear = () => setSuggestions([]);
     const onChange = (_: any, { newValue }: ChangeEvent) => setQuery(newValue);
     const onRequest = ({ value }: { value: string }) => setSuggestions(suggestFor(value));
-    const onSelect = (_: any, { suggestionValue }: SuggestionSelectedEventData<string>) => router.push(`/c/${suggestionValue}`);
+    const onSelect = (_: any, { suggestionValue }: SuggestionSelectedEventData<string>) => {
+        setLoading(true);
+        router.push(`/course/${suggestionValue}`);
+    }
 
     const suggestFor = (input: string) => {
         if (!data) return [];
@@ -47,7 +51,7 @@ export const CobaltSearch = () => {
                     <>
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>
-                                <MdiIcon path={mdiMagnify} size="20px" />
+                                <MdiIcon path={loading ? mdiLoading : mdiMagnify} spin={loading} size="20px" />
                             </InputGroupText>
                         </InputGroupAddon>
                         <input {...inputProps} />

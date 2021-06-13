@@ -10,5 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res
         .status(200)
-        .json({ courses: CourseMappings.map(ent => ent.name) });
+        .json({
+            courses: CourseMappings.map(ent => ent.name)
+        });
 }

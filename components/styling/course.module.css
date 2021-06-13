@@ -1,0 +1,207 @@
+.courseIcon {
+    vertical-align: sub;
+    margin-right: 12px;
+    margin-bottom: 3px;
+}
+
+.sectionSeperator {
+    margin-top: -9rem !important;
+}
+
+.sectionTitle {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.98rem !important;
+    font-weight: 600;
+}
+
+.description {
+    padding-bottom: 30px;
+    font-weight: 300;
+}
+
+.courseCardSectionTitle {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.05rem;
+}
+
+.courseCardSectionBody {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: initial;
+}
+
+.statisticSection {
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: 600 !important;
+}
+
+.statisticField {
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.statisticFieldSm {
+    font-size: 11px;
+    font-weight: 300;
+}
+
+.profile-page .tX {
+    width: 32px;
+    height: 32px;
+}
+
+.socialBump {
+    padding-right: 5px;
+    font-size: 15px;
+}
+
+.sectionProfileCover {
+    height: 450px !important;
+}
+
+.statistic {
+    width: 100%;
+    margin-bottom: 0;
+    display: flex;
+    min-height: 15px;
+}
+
+.statistic .head {
+    white-space: nowrap;
+}
+
+.statistic .divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    border-bottom: 1px dotted #ccc;
+    margin-left: 5px;
+    margin-right: 5px;
+    position: relative;
+    top: -14px;
+}
+
+.statistic .value {
+    font-size: 18px;
+    margin-top: 0px;
+    text-align: right;
+    -webkit-font-feature-settings: "tnum" 1;
+    font-feature-settings: "tnum" 1;
+}
+
+.nav-pills .nav-link:hover .pills-cobalt[aria-selected="false"] {
+    color: #66A7C5 !important;
+}
+
+.profile-page .pills-cobalt[aria-selected="false"] {
+    background-color: #fff !important;
+    color: #66A7C5 !important;
+}
+
+.profile-page .pills-cobalt[aria-selected="true"] {
+    color: #fff !important;
+    background-color: #66A7C5 !important;
+}
+
+.sections-paginator-spacing {
+    padding-top: 15px;
+}
+
+.cursorHelp {
+    cursor: help !important;
+  }
+  
+.horizontalDivider {
+    margin-top: 1.25rem;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    margin-right: 20px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.notiTitle {
+    font-size: .765rem;
+    text-transform: none;
+}
+
+.statisticSectionIconPosition {
+    padding-bottom: 2px;
+    margin-top: 0.35rem;
+    margin-left: -40px;
+}
+
+.statisticSectionHeader {
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.045em;
+    margin-top: -3px;
+}
+
+.statisticList {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.statisticList .statisticItem {
+    padding: 20px;
+    background: white;
+    display: flex;
+    margin-bottom:10px;
+    border-radius: 10px;
+}
+
+.statisticList .statisticItem:hover {
+    cursor: pointer;
+    background-color: #f2f2f2;
+}
+
+.statisticList .statisticImage i {
+    font-size: 35px;
+    width: 60px;
+    height: 60px;
+    margin-right: 20px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+    padding-top: 11px;
+}
+
+.statisticList .details {
+    padding-left: 20px;
+    border-left: 1px solid #eee;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.statisticList .details p {
+    margin: 0;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.statisticList .details p small {
+    line-height: 0.7;
+}
+
+.statisticCollapse {
+    margin-top: 15px;
+}

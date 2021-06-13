@@ -2,11 +2,7 @@ import React from 'react';
 import styles from '../components/styling/home.module.css';
 
 import { CobaltSearch } from '../components/CobaltSearch';
-import {
-    Footer,
-    IconCardGlyph,
-    Nav
-} from '../components';
+import { Footer, IconCardGlyph, Nav } from '../components';
 
 const HomePage = () => {
     return (

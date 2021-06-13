@@ -36,7 +36,7 @@ export const IconCardGlyph = (props: IconCardGlyphProps) => {
     return (
         <div className={`card shadow border-0${className ? ' ' + className : ''}`}>
             <div className="card-body py-5">
-            <div className={`row row-grid align-items-center ${styles.rgCard}`}>
+                <div className={`row row-grid align-items-center ${styles.rgCard}`}>
                     <div className="col-md-4 order-md-2">
                         <Image
                             src={glyphSrc}
@@ -48,19 +48,19 @@ export const IconCardGlyph = (props: IconCardGlyphProps) => {
                     <div className="col-md-8 order-md-1">
                         <div className="pr-md-5">
                             <div className="row">
-                                    <div className={`col-md-2 ${styles.iconDpositionSpecialized}`}>
-                                        <div className={`icon icon-shape ${iconColor} rounded-circle text-white mb-4`}>
-                                        <i className={icon}></i>
-                                        </div>
+                                <div className={`col-md-2 ${styles.iconDpositionSpecialized}`}>
+                                    <div className={`icon icon-shape ${iconColor} rounded-circle text-white mb-4`}>
+                                    <i className={icon}></i>
                                     </div>
-                                    <div className={`col-md-10 ${styles.sectionIconPosition}`}>
-                                        <h4 className={`${styles.cardSectionTitle} ${titleColor}`}>{title}</h4>
-                                    </div>
+                                </div>
+                                <div className={`col-md-10 ${styles.sectionIconPosition}`}>
+                                    <h4 className={`${styles.cardSectionTitle} ${titleColor}`}>{title}</h4>
+                                </div>
                             </div>
                             { content }
                         </div>
                     </div>
-            </div>
+                </div>
             </div>
         </div>
     )

@@ -2,7 +2,6 @@ import Link from 'next/link';
 import styles from './styling/footer.module.css';
 
 import {
-    Col,
     Container,
     Nav,
     NavItem,
@@ -20,7 +19,7 @@ export const Footer = ({ white, noBackground } : FooterProps) => {
         <footer className={`footer${white ? noBackground ? '' : ' ' : ''}`}>
             <Container className="container-lg">
                 <Row className="align-items-center justify-content-md-between">
-                    <Col md="6" sm="6">
+                    <div className="col-6">
                         <div className={`copyright ${styles.footerBrand} ${white ? " text-white" : ""}`}>  
                             <Link href="/">
                                 <a className={`${white ? "text-white" : ""} shine`}>
@@ -28,8 +27,8 @@ export const Footer = ({ white, noBackground } : FooterProps) => {
                                 </a>
                             </Link> © 2020-{new Date().getFullYear()}{" "}
                         </div>
-                    </Col>
-                    <Col md="6" sm="6">
+                    </div>
+                    <div className="col-6">
                         <Nav className="nav-footer justify-content-end">
                             <NavItem>
                                 <NavLink
@@ -42,7 +41,7 @@ export const Footer = ({ white, noBackground } : FooterProps) => {
                                 </NavLink>
                             </NavItem>
                         </Nav>
-                    </Col>
+                    </div>
                 </Row>
             </Container>
         </footer>

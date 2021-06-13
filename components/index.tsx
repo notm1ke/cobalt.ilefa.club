@@ -1,3 +1,5 @@
+export * from './CobaltSearch';
+export * from './DataView';
 export * from './Footer';
 export * from './IconCard';
 export * from './IconCardContainer';

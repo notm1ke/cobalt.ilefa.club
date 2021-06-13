@@ -6,14 +6,24 @@
 }
 
 .navBrandImg {
-    width: 50px !important;
+    width: 400px !important;
     height: 50px !important;
     min-width: unset !important;
-    max-width: unset !important;
+    max-width: 100% !important;
     min-height: unset !important;
     max-height: unset !important;
 }
 
+.navBrandMobileText {
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: 600 !important;
+}
+
+.navBrandMobileCloser {
+    vertical-align: top !important;
+}
+
 .navLink i {
     font-size: 1rem;
+    margin-right: 5px;
 }
