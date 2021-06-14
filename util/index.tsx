@@ -112,6 +112,14 @@ export enum ContentArea {
     CA4INT = 'CA4INT'
 }
 
+export enum ContentAreaNames {
+    CA1 = 'Arts and Humanities',
+    CA2 = 'Social Sciences',
+    CA3 = 'Science and Technology',
+    CA4 = 'Diversity and Multiculturalism',
+    CA4INT = 'Diversity and Multiculturalism (International)'
+}
+
 export const getIconForCourse = (course: string, classes = '', size = 16) => {
     let type = course.split(/\d/)[0].toUpperCase();
     switch (type) {

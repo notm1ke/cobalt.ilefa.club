@@ -15,8 +15,28 @@
 }
 
 .description {
-    padding-bottom: 30px;
+    margin-top: -10px;
+    padding-bottom: 20px;
     font-weight: 300;
+}
+
+.descriptionLast {
+    margin-top: -10px;
+    font-weight: 300;
+}
+
+.caList {
+    list-style-type: none;
+}
+
+.tabBody {
+    padding: 5px;
+}
+
+.sectionDataExpanded {
+    padding: 16px;
+    display: block;
+    width: 100%;
 }
 
 .courseCardSectionTitle {
@@ -165,7 +185,7 @@
 
 .statisticList .statisticItem:hover {
     cursor: pointer;
-    background-color: #f2f2f2;
+    background-color: #f7f7f7;
 }
 
 .statisticList .statisticImage i {

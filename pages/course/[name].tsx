@@ -6,7 +6,7 @@ import globalStyles from '../../components/styling/home.module.css';
 
 import { useState } from 'react';
 import { searchCourse } from '@ilefa/husky';
-import { DataView, Footer, Nav } from '../../components';
+import { DataView, Footer, Nav, OverviewTab, SectionsTab } from '../../components';
 import { CompleteCoursePayload, CourseAttributes, getIconForCourse } from '../../util';
 
 import {
@@ -179,24 +179,20 @@ const CourseInspection = (props) => {
                                                         }
                                                     </Navbar>
                                                 </div>
-                                                <Card className="shadow">
-                                                    <CardBody className="card-body pb-0">
-                                                        <TabContent activeTab={activeTab} id="tab">
-                                                            <TabPane tabId="overview">
-                                                                <pre className={`${styles.sectionTitle} pb-1`}><i className="fa fa-file-alt fa-fw"></i> Course Description</pre>
-                                                                <p className={styles.description}>{data.description}</p>
-                                                                <pre className={`${styles.sectionTitle} pb-1`}><i className="fa fa-tasks fa-fw"></i> Prerequisites</pre>
-                                                                <p className={styles.description}>{data.prerequisites}</p>
-                                                            </TabPane>
-                                                            <TabPane tabId="sections">
-                                                                
-                                                            </TabPane>
-                                                            <TabPane tabId="professors">
-                                                                
-                                                            </TabPane>
-                                                        </TabContent>
-                                                    </CardBody>
-                                                </Card>
+                                                {/* add `shadow` class to give back shadow to the below node */}
+                                                <div className={styles.tabBody}>
+                                                    <TabContent activeTab={activeTab} id="tab">
+                                                        <TabPane tabId="overview">
+                                                            <OverviewTab data={data} />
+                                                        </TabPane>
+                                                        <TabPane tabId="sections">
+                                                            <SectionsTab data={data} />
+                                                        </TabPane>
+                                                        <TabPane tabId="professors">
+                                                            
+                                                        </TabPane>
+                                                    </TabContent>
+                                                </div>
                                             </CardBody>
                                         </Card>
                                     </div>
@@ -216,7 +212,13 @@ export async function getStaticPaths() {
         .map(ent => ent.name)
         .map(ent => ({
             params: { name: ent }
-        }));
+        }))
+        .concat(
+            CourseMappings
+                .map(ent => ent.name.toLowerCase())
+                .map(ent => ({
+                    params: { name: ent }
+                })));
 
     return { paths, fallback: false };
 }
@@ -224,14 +226,14 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     const { name } = context.params;
 
-    let course = await searchCourse(name);
-    let mappings = CourseMappings.filter(mapping => mapping.name === name)[0];
+    let course = await searchCourse(name.toUpperCase());
+    let mappings = CourseMappings.filter(mapping => mapping.name.toUpperCase() === name.toUpperCase())[0];
 
     if (!course || !course.name || !mappings)
         return { notFound: true }
 
     let payload: CompleteCoursePayload = {
-        name: course.name,
+        name: mappings.name,
         catalogName: mappings.catalogName,
         catalogNumber: mappings.catalogNumber,
         attributes: mappings.attributes as CourseAttributes,
@@ -245,7 +247,7 @@ export async function getStaticProps(context) {
 
     return {
         props: {
-            name,
+            name: name.toUpperCase(),
             data: payload
         }
     }

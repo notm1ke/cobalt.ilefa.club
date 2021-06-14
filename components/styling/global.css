@@ -27,6 +27,14 @@
     vertical-align: middle !important;
 }
 
+.noBorder {
+    border: none !important;
+}
+
+.rdt_TableHeader {
+    display: none !important;
+}
+
 .bg-ilefa-dark {
     background: #2C2C2C !important;
 }
