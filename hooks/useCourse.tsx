@@ -18,6 +18,12 @@ export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
     const fetcher = (url: string) => fetch(url).then(r => r.json());
     const { data, error } = useSWR(`/api/course/${props.name + (props.campus ? `?campus=${props.campus}` : '')}`, fetcher);
 
+    if (data && data.message) return {
+        data: null,
+        isLoading: false,
+        isError: true
+    }
+
     if (data) return {
         data,
         isLoading: false,

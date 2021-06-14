@@ -35,6 +35,10 @@
     display: none !important;
 }
 
+.loader-bg, body {
+    background: #2C2C2C !important;
+}
+
 .bg-ilefa-dark {
     background: #2C2C2C !important;
 }

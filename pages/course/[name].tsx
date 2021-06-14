@@ -1,13 +1,22 @@
 import React from 'react';
 import classnames from 'classnames';
-import CourseMappings from '@ilefa/husky/courses.json';
 import styles from '../../components/styling/course.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 
 import { useState } from 'react';
-import { searchCourse } from '@ilefa/husky';
-import { DataView, Footer, Nav, OverviewTab, SectionsTab } from '../../components';
-import { CompleteCoursePayload, CourseAttributes, getIconForCourse } from '../../util';
+import { useRouter } from 'next/router';
+import { useCourse } from '../../hooks/useCourse';
+import { CompleteCoursePayload, getIconForCourse } from '../../util';
+
+import {
+    DataView,
+    ErrorView,
+    Footer,
+    Loader,
+    Nav,
+    OverviewTab,
+    SectionsTab
+} from '../../components';
 
 import {
     Card,
@@ -70,9 +79,17 @@ const getSidebarInfo = (data: CompleteCoursePayload) => [
             }
         ]
     }
-];
+]
 
-const generateCompBadge = (bool: boolean) => <Badge color={bool ? 'success' : 'danger'} pill>{bool ? <i className="fa fa-check fa-fw"></i> : <i className="fa fa-times fa-fw"></i>}</Badge>
+const generateCompBadge = (bool: boolean) => (
+    <Badge color={bool ? 'success' : 'danger'} pill>
+        {
+            bool
+                ? <i className="fa fa-check fa-fw"></i>
+                : <i className="fa fa-times fa-fw"></i>
+        }
+    </Badge>
+);
 
 const TABS = [
     {
@@ -95,9 +112,19 @@ const TABS = [
     }
 ];
 
-const CourseInspection = (props) => {
-    const { data, name } = props;
-    const [activeTab, setActiveTab] = useState(TABS[0].id);
+const CourseInspection = () => {
+    const router = useRouter();
+    const { name } = router.query;
+    if (name instanceof Array)
+        return <>this shouldn't ever happen ok</>;
+
+    const { data, isLoading, isError } = useCourse({ name });
+    const [activeTab, setActiveTab] = useState('overview');
+
+    if (isLoading) return <Loader />;
+    if (isError) return <ErrorView title="Error" message="Something went wrong while retrieving data." />;
+    if (!data) return <Loader />;
+
     const changeTab = (e, state) => {
         e.preventDefault();
         setActiveTab(state);
@@ -138,11 +165,13 @@ const CourseInspection = (props) => {
                                                 {
                                                     info.map(entry => 
                                                         <>
-                                                            <pre className={`font-weight-500 mt-${entry.marginTop ? entry.marginTop : 3} mb-2 ${styles.statisticSection} text-primary`}><i className={entry.icon + " fa-fw text-primary"}></i> {entry.name}</pre>
-                                                            {
-                                                                entry.contents.map(keys => <DataView key={keys.name.toLowerCase()} name={keys.name} value={keys.value} />)
-                                                            }
-                                                            <div className={styles.horizontalDivider}></div>
+                                                            <div key={entry.name}>
+                                                                <pre className={`font-weight-500 mt-${entry.marginTop ? entry.marginTop : 3} mb-2 ${styles.statisticSection} text-primary`}><i className={entry.icon + " fa-fw text-primary"}></i> {entry.name}</pre>
+                                                                {
+                                                                    entry.contents.map(keys => <DataView key={keys.name.toLowerCase()} name={keys.name} value={keys.value} />)
+                                                                }
+                                                                <div className={styles.horizontalDivider}></div>
+                                                            </div>
                                                         </>
                                                     )
                                                 }
@@ -160,21 +189,19 @@ const CourseInspection = (props) => {
                                                     >
                                                         {
                                                             TABS.map(entry => 
-                                                                <>
-                                                                    <NavItem>
-                                                                        <NavLink
-                                                                            aria-selected={activeTab === entry.id}
-                                                                            className={classnames(`mb-sm-3 mb-md-0 pills-primary cursor-pointer`, {
-                                                                                active: activeTab === entry.id,
-                                                                                show: activeTab === entry.id,
-                                                                            })}
-                                                                            onClick={e => changeTab(e, entry.id)}
-                                                                            role="tab"
-                                                                        >
-                                                                            <i className={entry.icon + " fa-fw mr-1"}></i> {entry.name}
-                                                                        </NavLink>
-                                                                    </NavItem>
-                                                                </>
+                                                                <NavItem key={entry.id}>
+                                                                    <NavLink
+                                                                        aria-selected={activeTab === entry.id}
+                                                                        className={classnames(`mb-sm-3 mb-md-0 pills-primary cursor-pointer`, {
+                                                                            active: activeTab === entry.id,
+                                                                            show: activeTab === entry.id,
+                                                                        })}
+                                                                        onClick={e => changeTab(e, entry.id)}
+                                                                        role="tab"
+                                                                    >
+                                                                        <i className={entry.icon + " fa-fw mr-1"}></i> {entry.name}
+                                                                    </NavLink>
+                                                                </NavItem>
                                                             )
                                                         }
                                                     </Navbar>
@@ -206,51 +233,5 @@ const CourseInspection = (props) => {
         </main>
     );
 }
-
-export async function getStaticPaths() {
-    const paths = CourseMappings
-        .map(ent => ent.name)
-        .map(ent => ({
-            params: { name: ent }
-        }))
-        .concat(
-            CourseMappings
-                .map(ent => ent.name.toLowerCase())
-                .map(ent => ({
-                    params: { name: ent }
-                })));
-
-    return { paths, fallback: false };
-}
-
-export async function getStaticProps(context) {
-    const { name } = context.params;
-
-    let course = await searchCourse(name.toUpperCase());
-    let mappings = CourseMappings.filter(mapping => mapping.name.toUpperCase() === name.toUpperCase())[0];
-
-    if (!course || !course.name || !mappings)
-        return { notFound: true }
-
-    let payload: CompleteCoursePayload = {
-        name: mappings.name,
-        catalogName: mappings.catalogName,
-        catalogNumber: mappings.catalogNumber,
-        attributes: mappings.attributes as CourseAttributes,
-        grading: course.grading,
-        credits: parseInt(course.credits),
-        prerequisites: course.prereqs,
-        description: course.description,
-        sections: course.sections,
-        professors: course.professors
-    }
-
-    return {
-        props: {
-            name: name.toUpperCase(),
-            data: payload
-        }
-    }
-}
-
+    
 export default CourseInspection;

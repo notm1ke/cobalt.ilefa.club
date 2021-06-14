@@ -17,5 +17,6 @@ export const DataView = ({ name, value }: DataViewProps) => (
                 <h6 className={`text-dark ${styles.statisticField}`}>{value}</h6>
             </div>
         </div>
+        
     </div>
 )

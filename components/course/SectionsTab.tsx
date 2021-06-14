@@ -35,7 +35,7 @@ export const ExpandedSectionData = ({ data, course }: SectionDataProps) => {
     return (
         <div className={styles.sectionDataExpanded}>
             <div className={styles.statisticList}>
-                <li className={styles.statisticItem}>
+                <li className={styles.statisticItem} key={data.section}>
                     <div className={styles.statisticImage} onClick={collapseInfo}>
                         <i className="fa fa-atlas fa-fw text-primary"></i>
                     </div>
@@ -77,7 +77,7 @@ export const ExpandedSectionData = ({ data, course }: SectionDataProps) => {
                         </span>
                     </div>
                 </li>
-                <li className={styles.statisticItem} onClick={collapseRaw}>
+                <li className={styles.statisticItem} onClick={collapseRaw} key={data.section}>
                     <div className={styles.statisticImage}>
                         <i className="fa fa-file-code fa-fw text-primary"></i>
                     </div>

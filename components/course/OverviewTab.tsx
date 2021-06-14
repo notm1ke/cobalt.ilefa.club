@@ -9,7 +9,7 @@ export interface OverviewTabProps {
 
 export const OverviewTab = ({ data }: OverviewTabProps) => (
     <div className={styles.tabBody}>
-        <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-file-alt fa-fw"></i> Course Description</pre>
+        <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-alt fa-fw"></i> Course Description</pre>
         <p className={styles.description}>{data.description}</p>
         <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-file-alt fa-fw"></i> Content Areas</pre>
         {

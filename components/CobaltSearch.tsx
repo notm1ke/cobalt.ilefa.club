@@ -14,6 +14,7 @@ import { ChangeEvent, SuggestionSelectedEventData } from 'react-autosuggest';
 
 export const CobaltSearch = () => {
     const router = useRouter();
+    
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestions] = useState([] as string[]);

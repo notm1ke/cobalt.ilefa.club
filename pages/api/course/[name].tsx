@@ -35,7 +35,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({ message: 'Course not found' });
 
     let payload: CompleteCoursePayload = {
-        name: course.name,
+        name: mappings.name,
         catalogName: mappings.catalogName,
         catalogNumber: mappings.catalogNumber,
         attributes: mappings.attributes as CourseAttributes,

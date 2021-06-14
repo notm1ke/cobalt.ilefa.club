@@ -16,7 +16,7 @@ const ELEMENTS = [
         name: 'information',
         icon: 'fa fa-info-circle',
         href: '/info',
-        key: 'home',
+        key: 'information',
     },
 ];
 
