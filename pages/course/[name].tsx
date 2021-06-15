@@ -28,6 +28,7 @@ import {
     NavLink,
     Badge
 } from 'reactstrap';
+import { ProfessorsTab } from '../../components/course/ProfessorsTab';
 
 const getSidebarInfo = (data: CompleteCoursePayload) => [
     {
@@ -53,7 +54,7 @@ const getSidebarInfo = (data: CompleteCoursePayload) => [
             },
             {
                 name: 'Professors',
-                value: data.professors.length
+                value: [...new Set(data.sections.map(section => section.instructor))].length
             }
         ]
     },
@@ -116,9 +117,9 @@ const CourseInspection = () => {
     const router = useRouter();
     const { name } = router.query;
     if (name instanceof Array)
-        return <>this shouldn't ever happen ok</>;
+        return <ErrorView title="Error" message="Something went wrong while processing your request." />;
 
-    const { data, isLoading, isError } = useCourse({ name });
+    const { data, isLoading, isError } = useCourse({ name, initial: true });
     const [activeTab, setActiveTab] = useState('overview');
 
     if (isLoading) return <Loader />;
@@ -216,7 +217,21 @@ const CourseInspection = () => {
                                                             <SectionsTab data={data} />
                                                         </TabPane>
                                                         <TabPane tabId="professors">
-                                                            
+                                                            {
+                                                                data && !isLoading && !isError && (
+                                                                    <ProfessorsTab course={data} />
+                                                                )
+                                                            }
+                                                            {
+                                                                isLoading && (
+                                                                    <>still loading..</>
+                                                                )
+                                                            }
+                                                            {
+                                                                isError && (
+                                                                    <>something went wrong</>
+                                                                )
+                                                            }
                                                         </TabPane>
                                                     </TabContent>
                                                 </div>

@@ -20,5 +20,5 @@
         "noImplicitAny": false
     },
     "exclude": ["node_modules"],
-    "include": ["**/*.ts", "**/*.tsx"]
+    "include": ["**/*.ts", "**/*.tsx", "pages/api/professors"]
 }

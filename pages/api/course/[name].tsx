@@ -1,7 +1,7 @@
 import CourseMappings from '@ilefa/husky/courses.json';
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CampusType, COURSE_IDENTIFIER, searchCourse } from '@ilefa/husky';
+import { CampusType, COURSE_IDENTIFIER, searchCourse, SearchParts } from '@ilefa/husky';
 import { CompleteCoursePayload, CourseAttributes, isValidCampus } from '../../../util';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -10,8 +10,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(405)
             .json({ message: 'Method not allowed' });
 
-    let { name, campus } = req.query;
-    if (name instanceof Array || campus instanceof Array)
+    let { name, campus, bare, initial } = req.query;
+    if (name instanceof Array || campus instanceof Array || bare instanceof Array || initial instanceof Array)
         return res
             .status(400)
             .json({ message: 'Invalid course payload' });
@@ -26,7 +26,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: 'Invalid campus type' });
 
-    let course = await searchCourse(name, campus ? campus as CampusType : 'any');
+    let useBare = false;
+    if (bare && bare.toLowerCase() === 'true')
+        useBare = true;
+
+    let useInitial = false;
+    if (initial && initial.toLowerCase() === 'true') {
+        useInitial = true;
+        useBare = false;
+    }
+
+    // don't query professors so we save time on initial load
+    let course = await searchCourse(name, campus ? campus as CampusType : 'any', useBare, useInitial ? [SearchParts.SECTIONS] : [SearchParts.SECTIONS, SearchParts.PROFESSORS]);
     let mappings = CourseMappings.filter(mapping => mapping.name === name)[0];
 
     if (!course || !mappings)

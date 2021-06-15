@@ -1,10 +1,13 @@
 import useSWR from 'swr';
 
+import { CampusType } from '@ilefa/husky';
 import { CompleteCoursePayload } from '../util';
 
 export interface CourseLookupProps {
     name: string;
-    campus?: string;
+    campus?: CampusType;
+    bare?: boolean;
+    initial?: boolean;
 }
 
 export type CourseInspectionResult = {
@@ -16,7 +19,21 @@ export type CourseInspectionResult = {
 export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
 
     const fetcher = (url: string) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR(`/api/course/${props.name + (props.campus ? `?campus=${props.campus}` : '')}`, fetcher);
+
+    let queryString = `${props.campus
+        ? `?campus=${props.campus}`
+        : '' + (props.bare
+            ? (props.campus
+                ? '&'
+                : '?')
+            + `bare=${props.bare}` : '')
+            + (props.initial
+                ? (props.campus || props.bare
+                    ? '&'
+                    : '?') 
+                    + `initial=${props.initial}` : '')}`
+
+    const { data, error } = useSWR(`/api/course/${props.name + queryString}`, fetcher);
 
     if (data && data.message) return {
         data: null,
