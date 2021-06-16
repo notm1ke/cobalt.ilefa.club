@@ -15,7 +15,8 @@ import {
     Loader,
     Nav,
     OverviewTab,
-    SectionsTab
+    ProfessorsTab,
+    SectionsTab,
 } from '../../components';
 
 import {
@@ -28,7 +29,6 @@ import {
     NavLink,
     Badge
 } from 'reactstrap';
-import { ProfessorsTab } from '../../components/course/ProfessorsTab';
 
 const getSidebarInfo = (data: CompleteCoursePayload) => [
     {
@@ -54,7 +54,11 @@ const getSidebarInfo = (data: CompleteCoursePayload) => [
             },
             {
                 name: 'Professors',
-                value: [...new Set(data.sections.map(section => section.instructor))].length
+                value: [...new Set(data
+                    .sections
+                    .map(section => section.instructor.trim())
+                    .filter(prof => !prof.includes(','))
+                    .filter(prof => !!prof))].length
             }
         ]
     },

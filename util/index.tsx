@@ -2,6 +2,7 @@ import MdiIcon from '@mdi/react';
 
 import {
     CampusType,
+    getRmpReport,
     ProfessorData,
     SectionData
 } from '@ilefa/husky';
@@ -119,6 +120,33 @@ export enum ContentAreaNames {
     CA4 = 'Diversity and Multiculturalism',
     CA4INT = 'Diversity and Multiculturalism (International)'
 }
+
+export const RMP_TAG_PROS = [
+    'gives good feedback',
+    'respected',
+    'accessible outside class',
+    'inspirational',
+    'clear grading criteria',
+    'hilarious',
+    'amazing lectures',
+    'caring',
+    'extra credit',
+    'would take again',
+    'tests? not many'
+]
+
+export const RMP_TAG_CONS = [
+    'lots of homework',
+    'get ready to read',
+    'participation matters',
+    'skip class? you won\'t pass.',
+    'graded by few things',
+    'test heavy',
+    'beware of pop quizzes',
+    'lecture heavy',
+    'so many papers',
+    'tough grader'
+]
 
 export const getIconForCourse = (course: string, classes = '', size = 16) => {
     let type = course.split(/\d/)[0].toUpperCase();
@@ -254,4 +282,24 @@ export const isValidCampus = (input: string): input is CampusType => {
         || lower === 'stamford'
         || lower === 'waterbury'
         || lower === 'avery_point'
+}
+
+export const getCampusIndicator = (campus: string) => {
+    campus = campus.toLowerCase();
+    if (campus === 'storrs') return 'S';
+    if (campus === 'hartford') return 'H';
+    if (campus === 'stamford') return 'Z';
+    if (campus === 'waterbury') return 'W';
+    if (campus === 'avery_point'
+        || campus === 'avery point') return 'A';
+    if (campus === 'off-campus') return 'O';
+
+    return '?';
+}
+
+export const addTrailingDecimal = (int: number) => {
+    if (!int.toString().includes('.'))
+        return int.toString() + '.0';
+
+    return int.toString();
 }

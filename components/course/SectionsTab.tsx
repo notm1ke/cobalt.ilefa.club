@@ -9,6 +9,7 @@ import { mdiChevronDown } from '@mdi/js';
 import { SectionData } from '@ilefa/husky';
 import { CompleteCoursePayload } from '../../util';
 import { IDataTableColumn } from 'react-data-table-component';
+import { ErrorTab } from '.';
 
 export interface SectionsTabProps {
     data: CompleteCoursePayload;
@@ -46,8 +47,9 @@ export const ExpandedSectionData = ({ data, course }: SectionDataProps) => {
                                 <span onClick={collapseInfo}>Click to {info ? 'hide' : 'reveal'} section information.</span>
                                 <Collapse isOpen={info} className={styles.statisticCollapse}>
                                     <p><b>Term:</b> {data.term}</p>
+                                    <p><b>Campus:</b> {data.campus}</p>
                                     <p><b>Modality:</b> {data.mode}</p>
-                                    <p><b>Schedule:</b> {data.schedule}</p>
+                                    <p><b>Schedule:</b> {data.schedule.trim().length ? data.schedule.trim() : 'Unknown'}</p>
                                     <p><b>Location:</b> {data.location.name === 'No Room Required - Online' ? 'Virtual' : <a href={data.location.url ?? '#'} className="text-primary shine" target="_blank" rel="noopener noreferrer">{data.location.name}</a>}</p>
                                     <br/>
                                     
@@ -100,6 +102,11 @@ export const ExpandedSectionData = ({ data, course }: SectionDataProps) => {
 
 export const SectionsTab = ({ data }: SectionsTabProps) => {
     const { sections } = data;
+
+    if (!sections.length) return (
+        <ErrorTab message="There aren't any sections been taught at the moment." color="text-gray" />
+    )
+
     const columns: IDataTableColumn[] = [
         {
             name: 'Section',
@@ -113,12 +120,6 @@ export const SectionsTab = ({ data }: SectionsTabProps) => {
             sortable: true,
             grow: 0,
         },
-        // {
-        //     name: 'Modality',
-        //     selector: 'mode',
-        //     sortable: true,
-        //     grow: 1,
-        // },
         {
             name: 'Professor',
             selector: 'instructor',
@@ -128,15 +129,9 @@ export const SectionsTab = ({ data }: SectionsTabProps) => {
         {
             name: 'Schedule',
             selector: 'schedule',
+            format: (row, _i) => row.schedule.trim().length ? row.schedule.trim() : 'Unknown',
             sortable: true
-        },
-        // {
-        //     name: <MdiIcon path={mdiAccountMultiple} size="20px" />,
-        //     selector: 'enrollment.current',
-        //     sortable: true,
-        //     format: (row, _i) => row.enrollment.current + '/' + row.enrollment.max,
-        //     grow: 0,
-        // }
+        }
     ];
 
     return (

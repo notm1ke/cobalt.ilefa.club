@@ -2,14 +2,16 @@ import useSWR from 'swr';
 
 import { RateMyProfessorReport } from '@ilefa/husky';
 
+export type RmpResponse = RateMyProfessorReport & {
+    mostRelevent: string;
+}
+
 export interface ProfessorLookupProps {
     rmpIds: string[];
 }
 
 export type ProfessorResponse = {
-    data: {
-        courses: RateMyProfessorReport[];
-    } | null;
+    data: RmpResponse | null;
     isLoading: boolean;
     isError: boolean;
 }

@@ -7,6 +7,10 @@
     margin-top: 20px;
 }
 
+.headerHeight {
+    margin-top: 9.2rem !important;
+}
+
 .sectionSeperator {
     padding-top: 3.5rem;
 }

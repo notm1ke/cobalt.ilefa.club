@@ -14,6 +14,64 @@
     font-weight: 600;
 }
 
+.loader {
+    text-align: center !important;
+}
+
+.rating {
+    vertical-align: text-bottom !important;
+}
+
+.ratingGreen {
+    background-color: #49d64e;
+}
+
+.ratingLime {
+    background-color: #6bdd6e;
+}
+
+.ratingYellow {
+    background-color: #ffd600;
+}
+
+.ratingOrange {
+    background-color: #e2a011;
+}
+
+.ratingRed {
+    background-color: #ff2626;
+    color: #fff;
+}
+
+.ratingGray {
+    background-color: #525252;   
+    color: #fff;
+}
+
+.ratingGreenText {
+    color: #49d64e;
+}
+
+.ratingLimeText {
+    color: #6bdd6e;
+}
+
+.ratingYellowText {
+    color: #e2bf11;
+}
+
+.ratingOrangeText {
+    color: #e2a011;
+}
+
+.ratingRedText {
+    color: #ff2626;
+}
+
+.ratingGrayText {
+    color: #525252;   
+}
+
 .description {
     margin-top: -10px;
     padding-bottom: 20px;
@@ -189,6 +247,18 @@
 }
 
 .statisticList .statisticImage i {
+    font-size: 35px;
+    width: 60px;
+    height: 60px;
+    margin-right: 20px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+    padding-top: 11px;
+}
+
+.statisticList .statisticImage svg {
     font-size: 35px;
     width: 60px;
     height: 60px;
