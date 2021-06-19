@@ -32,7 +32,19 @@ import {
     Badge
 } from 'reactstrap';
 
-const getSidebarInfo = (data: CompleteCoursePayload) => [
+type SidebarEntry = {
+    icon: string;
+    name: string;
+    marginTop?: string;
+    contents: SidebarEntryContents[];
+}
+
+type SidebarEntryContents = {
+    name: string;
+    value: string | number | JSX.Element;
+}
+
+const getSidebarInfo = (data: CompleteCoursePayload): SidebarEntry[] => [
     {
         icon: 'fa fa-chalkboard',
         name: 'Overview',

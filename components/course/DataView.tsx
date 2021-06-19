@@ -3,7 +3,7 @@ import styles from '../styling/course.module.css';
 
 export interface DataViewProps {
     name: string;
-    value: string;
+    value: string | number | JSX.Element;
 }
 
 export const DataView: React.FC<DataViewProps> = ({ name, value }) => (
