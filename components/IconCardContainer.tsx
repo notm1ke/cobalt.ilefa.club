@@ -5,7 +5,7 @@ export interface IconCardContainerProps {
     children: ReactChild | ReactChild[];
 }
 
-export const IconCardContainer = (props: IconCardContainerProps) => {
+export const IconCardContainer: React.FC<IconCardContainerProps> = props => {
     let modifiers = props.modifiers || "";
     let children = props.children || undefined;
 

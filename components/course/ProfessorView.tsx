@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useProfessor } from '../../hooks';
 import { ProfessorData } from '@ilefa/husky';
 import { Badge, Collapse } from 'reactstrap';
-import { addTrailingDecimal, getCampusIndicator, RMP_TAG_CONS, RMP_TAG_PROS } from '../../util';
+import { addTrailingDecimal, RMP_TAG_CONS, RMP_TAG_PROS } from '../../util';
 export interface ProfessorViewProps {
     professor: ProfessorData;
     rmp: boolean;
@@ -84,11 +84,9 @@ const proOrConSorting = (tag: string) => {
     return RmpTagOrdinal.UNKNOWN;
 }
 
-export const ProfessorView = ({ professor, show }: ProfessorViewProps) => {
+export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show }) => {
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
-
-    console.log(professor);
 
     if (!professor.rmpIds.length) return (
         <div className={styles.statisticList}>
@@ -107,7 +105,7 @@ export const ProfessorView = ({ professor, show }: ProfessorViewProps) => {
                                     {
                                         professor.sections.map(ent => (
                                             <li key={ent.section}>
-                                                <b>[{getCampusIndicator(ent.campus)}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
                                             </li>
                                         ))
                                     }
@@ -167,11 +165,14 @@ export const ProfessorView = ({ professor, show }: ProfessorViewProps) => {
                                 <p><b>Sections Taught:</b></p>
                                 <ul>
                                     {
-                                        professor.sections.map(ent => (
-                                            <li key={ent.section}>
-                                                <b>[{getCampusIndicator(ent.campus)}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
-                                            </li>
-                                        ))
+                                        professor
+                                            .sections
+                                            .sort((a, b) => a.campus.localeCompare(b.campus))
+                                            .map(ent => (
+                                                <li key={ent.section}>
+                                                    <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                </li>
+                                            ))
                                     }
                                 </ul>
                             </Collapse>

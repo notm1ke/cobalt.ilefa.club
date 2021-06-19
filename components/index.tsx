@@ -8,4 +8,3 @@ export * from './IconCardGlyph';
 export * from './IconCardXl';
 export * from './Loader';
 export * from './Nav';
-export * from './WorkCard';

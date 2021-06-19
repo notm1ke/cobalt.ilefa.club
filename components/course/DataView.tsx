@@ -6,7 +6,7 @@ export interface DataViewProps {
     value: string;
 }
 
-export const DataView = ({ name, value }: DataViewProps) => (
+export const DataView: React.FC<DataViewProps> = ({ name, value }) => (
     <div>
         <div className={styles.statistic}>
             <div className={styles.head}>

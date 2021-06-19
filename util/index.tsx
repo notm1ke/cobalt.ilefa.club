@@ -2,7 +2,6 @@ import MdiIcon from '@mdi/react';
 
 import {
     CampusType,
-    getRmpReport,
     ProfessorData,
     SectionData
 } from '@ilefa/husky';
@@ -290,9 +289,9 @@ export const getCampusIndicator = (campus: string) => {
     if (campus === 'hartford') return 'H';
     if (campus === 'stamford') return 'Z';
     if (campus === 'waterbury') return 'W';
-    if (campus === 'avery_point'
-        || campus === 'avery point') return 'A';
     if (campus === 'off-campus') return 'O';
+    if (campus.replace(' ', '_') === 'avery_point')
+        return 'A';
 
     return '?';
 }

@@ -10,9 +10,11 @@ import { CompleteCoursePayload, getIconForCourse } from '../../util';
 
 import {
     DataView,
+    ErrorTab,
     ErrorView,
     Footer,
     Loader,
+    LoaderTab,
     Nav,
     OverviewTab,
     ProfessorsTab,
@@ -227,14 +229,10 @@ const CourseInspection = () => {
                                                                 )
                                                             }
                                                             {
-                                                                isLoading && (
-                                                                    <>still loading..</>
-                                                                )
+                                                                isLoading && <LoaderTab />
                                                             }
                                                             {
-                                                                isError && (
-                                                                    <>something went wrong</>
-                                                                )
+                                                                isError && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" />
                                                             }
                                                         </TabPane>
                                                     </TabContent>

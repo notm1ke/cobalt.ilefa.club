@@ -12,7 +12,7 @@ export interface IconCardXlProps {
     content: ReactElement | string;
 }
 
-export const IconCardXl = (props: IconCardXlProps) => {
+export const IconCardXl: React.FC<IconCardXlProps> = props => {
     let icon = props.icon || 'fa fa-exclamation-triangle';
     let iconColor = props.iconColor || 'bg-primary';
     let headerText = props.headerText || 'Icon Card';

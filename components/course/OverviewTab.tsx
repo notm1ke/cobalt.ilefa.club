@@ -7,7 +7,7 @@ export interface OverviewTabProps {
     data: CompleteCoursePayload;
 }
 
-export const OverviewTab = ({ data }: OverviewTabProps) => (
+export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => (
     <div className={styles.tabBody}>
         <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-alt fa-fw"></i> Course Description</pre>
         <p className={styles.description}>{data.description}</p>

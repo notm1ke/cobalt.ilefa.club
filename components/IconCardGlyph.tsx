@@ -14,7 +14,7 @@ export interface IconCardGlyphProps {
     className?: string;
 }
 
-export const IconCardGlyph = (props: IconCardGlyphProps) => {
+export const IconCardGlyph: React.FC<IconCardGlyphProps> = props => {
     let title = props.title || 'Default Title';
     let titleColor = props.titleColor || 'text-primary';
     let icon = props.icon || 'fa fa-exclamation-triangle';

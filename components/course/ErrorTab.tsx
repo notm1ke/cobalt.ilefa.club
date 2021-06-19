@@ -7,7 +7,7 @@ export interface ErrorTabProps {
     icon?: string;
 }
 
-export const ErrorTab = ({ message, color, icon }: ErrorTabProps) => (
+export const ErrorTab: React.FC<ErrorTabProps> = ({ message, color, icon }) => (
     <div className={`${styles.sectionDataExpanded} ${styles.loader} ${color || 'text-danger'}`}>
         <i className={`${icon || 'fa fa-times-circle'} fa-fw mr-2`}></i>{message || 'Something went wrong while processing your request.'}
     </div>

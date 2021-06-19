@@ -14,7 +14,7 @@ export interface FooterProps {
     noBackground?: boolean;
 }
 
-export const Footer = ({ white, noBackground } : FooterProps) => {
+export const Footer: React.FC<FooterProps> = ({ white, noBackground }) => {
     return (
         <footer className={`footer${white ? noBackground ? '' : ' ' : ''}`}>
             <Container className="container-lg">

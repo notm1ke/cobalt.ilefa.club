@@ -3,7 +3,12 @@ import globalStyles from './styling/home.module.css';
 
 import { Footer, Nav } from '.';
 
-export const ErrorView = ({ title, message }) => {
+export interface ErrorViewProps {
+    title: string;
+    message: string;
+}
+
+export const ErrorView: React.FC<ErrorViewProps> = ({ title, message }) => {
     return (
         <main>
             <Nav/>
@@ -17,7 +22,7 @@ export const ErrorView = ({ title, message }) => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}><i className="fa fa-times-circle fa-fw mr-2"></i>{title}</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            { message }
+                                            {message}
                                         </h2>
                                     </div>
                                 </div>

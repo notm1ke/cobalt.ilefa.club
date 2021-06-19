@@ -9,7 +9,7 @@ import '../assets/scss/argon-design-system-react.scss';
 
 import '@mdi/font/css/materialdesignicons.min.css';
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     return (
         <>
             <Head>
@@ -17,7 +17,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="author" content="ILEFA Labs" />
                 <meta name="theme-color" content="#353b48" />
-                <meta name="description" content="something something goes here" />
+                <meta name="description" content="A suite of better course tools built by UConn students, for UConn students." />
                 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
                 <link rel="manifest" href="/manifest.json"/>
                 <link rel="apple-touch-icon" href="/icons/logo192.png" />

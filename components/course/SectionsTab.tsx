@@ -3,13 +3,14 @@ import MdiIcon from '@mdi/react';
 import styles from '../styling/course.module.css';
 import DataTable from 'react-data-table-component';
 
+import { ErrorTab } from '.';
 import { useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { Collapse } from 'reactstrap';
 import { mdiChevronDown } from '@mdi/js';
 import { SectionData } from '@ilefa/husky';
 import { CompleteCoursePayload } from '../../util';
 import { IDataTableColumn } from 'react-data-table-component';
-import { ErrorTab } from '.';
 
 export interface SectionsTabProps {
     data: CompleteCoursePayload;
@@ -20,7 +21,7 @@ interface SectionDataProps {
     course: CompleteCoursePayload;
 }
 
-export const ExpandedSectionData = ({ data, course }: SectionDataProps) => {
+export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
     if (!data) return (
         <div className={styles.sectionDataExpanded}>
             <pre className={`${styles.sectionTitle} text-danger`}><i className="fa fa-times-circle fa-fw"></i> Whoops</pre>
@@ -36,7 +37,7 @@ export const ExpandedSectionData = ({ data, course }: SectionDataProps) => {
     return (
         <div className={styles.sectionDataExpanded}>
             <div className={styles.statisticList}>
-                <li className={styles.statisticItem} key={data.section}>
+                <li className={styles.statisticItem} key={uuid()}>
                     <div className={styles.statisticImage} onClick={collapseInfo}>
                         <i className="fa fa-atlas fa-fw text-primary"></i>
                     </div>
@@ -100,7 +101,7 @@ export const ExpandedSectionData = ({ data, course }: SectionDataProps) => {
     )
 }
 
-export const SectionsTab = ({ data }: SectionsTabProps) => {
+export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
     const { sections } = data;
 
     if (!sections.length) return (
