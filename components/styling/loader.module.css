@@ -1,0 +1,7 @@
+.loader {
+    display: flex;
+    top: 45%;
+    left: 49%;
+    position: fixed;
+    background-color: #2C2C2C;
+}
