@@ -1,6 +1,11 @@
 {
   "name": "cobalt.ilefa.club",
   "version": "1.0.0",
+  "description": "A suite of better course tools built by UConn students, for UConn students.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:notm1ke/cobalt.ilefa.club"
+  },
   "scripts": {
     "dev": "next",
     "build": "next build",
