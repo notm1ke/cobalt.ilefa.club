@@ -1,6 +1,11 @@
 {
   "name": "cobalt.ilefa.club",
   "version": "1.0.0",
+  "description": "A suite of better course tools built by UConn students, for UConn students.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:notm1ke/cobalt.ilefa.club"
+  },
   "scripts": {
     "dev": "next",
     "build": "next build",
@@ -8,7 +13,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "@ilefa/husky": "^1.0.5",
+    "@ilefa/husky": "^1.0.6",
     "@mdi/font": "^5.9.55",
     "@mdi/js": "^5.9.55",
     "@mdi/react": "^1.5.0",
