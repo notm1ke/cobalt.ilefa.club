@@ -44,7 +44,7 @@ type SidebarEntryContents = {
     value: string | number | JSX.Element;
 }
 
-const getSidebarInfo = (data: CompleteCoursePayload): SidebarEntry[] => [
+const getSidebarInfo = (data: CompleteCoursePayload, setActiveTab: React.Dispatch<React.SetStateAction<string>>): SidebarEntry[] => [
     {
         icon: 'fa fa-chalkboard',
         name: 'Overview',
@@ -59,20 +59,24 @@ const getSidebarInfo = (data: CompleteCoursePayload): SidebarEntry[] => [
                 value: data.grading 
             },
             {
-                name: 'Sections',
-                value: data.sections.length
-            },
-            {
                 name: 'Campuses',
                 value: [...new Set(data.sections.map(section => section.campus))].length
             },
             {
+                name: 'Sections',
+                value: <span className="text-primary shine pointer" onClick={() => setActiveTab('sections')}>{data.sections.length}</span>
+            },
+            {
                 name: 'Professors',
-                value: [...new Set(data
-                    .sections
-                    .map(section => section.instructor.trim())
-                    .filter(prof => !prof.includes(','))
-                    .filter(prof => !!prof))].length
+                value: <span className="text-primary shine pointer" onClick={() => setActiveTab('professors')}>
+                    {
+                        [...new Set(data
+                            .sections
+                            .map(section => section.instructor.trim())
+                            .filter(prof => !prof.includes(','))
+                            .filter(prof => !!prof))].length
+                    }
+                </span>
             }
         ]
     },
@@ -81,7 +85,7 @@ const getSidebarInfo = (data: CompleteCoursePayload): SidebarEntry[] => [
         name: 'Competencies',
         contents: [
             {
-                name: 'Labratory (L)',
+                name: 'Laboratory (L)',
                 value: generateCompBadge(data.attributes.lab)
             },
             {
@@ -151,7 +155,7 @@ const CourseInspection = () => {
         setActiveTab(state);
     }
 
-    const info = getSidebarInfo(data);
+    const info = getSidebarInfo(data, setActiveTab);
     const icon = getIconForCourse(name, styles.courseIcon, 40);
 
     return (

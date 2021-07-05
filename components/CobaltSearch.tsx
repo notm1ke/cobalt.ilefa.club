@@ -29,14 +29,16 @@ export const CobaltSearch = () => {
         router.push(`/course/${suggestionValue}`);
     }
 
-    const suggestFor = (input: string) => {
-        if (!data) return [];
-        return data
+    const predicates: ((input: string, course: string) => boolean)[] = [
+        (input, course) => course.toLowerCase().slice(0, input.length) === input.toLowerCase(),
+        (input, course) => course.toLowerCase().includes(input)
+    ];
+
+    const suggestFor = (input: string) => !data
+        ? []
+        : data
             .courses
-            .filter(course => course
-                .toLowerCase()
-                .slice(0, input.length) === input.toLowerCase())
-    }
+            .filter(course => predicates.some(predicate => predicate(input, course)));
 
     const enabled = !isLoading && !isError;
 
@@ -55,7 +57,9 @@ export const CobaltSearch = () => {
                                 <MdiIcon path={loading ? mdiLoading : mdiMagnify} spin={loading} size="20px" />
                             </InputGroupText>
                         </InputGroupAddon>
-                        <input {...inputProps} />
+                        <div className={styling.inputBoxRadius}>
+                            <input {...inputProps} />
+                        </div>
                     </>
                 )}
                 renderSuggestion={suggestion => <>{getIconForCourse(suggestion)} {suggestion}</>}

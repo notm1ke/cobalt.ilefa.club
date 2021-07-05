@@ -303,8 +303,15 @@ export const addTrailingDecimal = (int: number) => {
     return int.toString();
 }
 
-export const invalidVirtualTime = (schedule: string) => {
-    return schedule.trim() === '12:00am-12:00am'
-        ? 'Does not meet'
-        : schedule;
+export const getMeetingTime = (schedule: string, location: { name: string }) => {
+    if (schedule.trim() === '12:00am-12:00am')
+        return 'Does not meet'
+
+    if (schedule.trim().length)
+        return schedule.trim();
+
+    if (location.name === 'No Room Required - Online')
+        return 'Does not meet';
+
+    return 'Unknown';
 }

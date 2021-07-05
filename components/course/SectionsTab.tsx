@@ -10,7 +10,7 @@ import { Collapse } from 'reactstrap';
 import { mdiChevronDown } from '@mdi/js';
 import { SectionData } from '@ilefa/husky';
 import { IDataTableColumn } from 'react-data-table-component';
-import { CompleteCoursePayload, invalidVirtualTime } from '../../util';
+import { CompleteCoursePayload, getMeetingTime } from '../../util';
 
 export interface SectionsTabProps {
     data: CompleteCoursePayload;
@@ -50,7 +50,13 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                     <p><b>Term:</b> {data.term}</p>
                                     <p><b>Campus:</b> {data.campus}</p>
                                     <p><b>Modality:</b> {data.mode}</p>
-                                    <p><b>Schedule:</b> {data.schedule.trim().length ? data.schedule.trim() : 'Unknown'}</p>
+                                    <p><b>Schedule:</b> {
+                                        data.schedule.trim().length
+                                            ? data.schedule.trim()
+                                            : data.location.name === 'No Room Required - Online'
+                                                ? 'Does not meet'
+                                                : 'Unknown'
+                                    }</p>
                                     <p><b>Location:</b> {data.location.name === 'No Room Required - Online' ? 'Virtual' : <a href={data.location.url ?? '#'} className="text-primary shine" target="_blank" rel="noopener noreferrer">{data.location.name}</a>}</p>
                                     <br/>
                                     
@@ -80,15 +86,15 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                         </span>
                     </div>
                 </li>
-                <li className={styles.statisticItem} onClick={collapseRaw} key={data.section}>
-                    <div className={styles.statisticImage}>
+                <li className={styles.statisticItem} key={data.section}>
+                    <div className={styles.statisticImage} onClick={collapseRaw}>
                         <i className="fa fa-file-code fa-fw text-primary"></i>
                     </div>
                     <div className={styles.details}>
                         <span className="text-dark">
-                            <p><b>Raw Data</b></p>
+                            <p onClick={collapseRaw}><b>Raw Data</b></p>
                             <p>
-                                Click to {raw ? 'hide' : 'reveal'} raw data.
+                                <span onClick={collapseRaw}>Click to {raw ? 'hide' : 'reveal'} raw data.</span>
                                 <Collapse isOpen={raw} className={styles.statisticCollapse}>
                                     <pre className="text-primary">{JSON.stringify(data, null, 3)}</pre>
                                 </Collapse>
@@ -130,7 +136,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
         {
             name: 'Schedule',
             selector: 'schedule',
-            format: (row, _i) => row.schedule.trim().length ? invalidVirtualTime(row.schedule.trim()) : 'Unknown',
+            format: (row, i) => getMeetingTime(row.schedule.trim(), sections[i].location),
             sortable: true
         }
     ];
