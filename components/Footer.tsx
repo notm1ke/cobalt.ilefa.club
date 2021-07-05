@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import styles from './styling/footer.module.css';
 
 import {
@@ -21,11 +20,10 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground }) => {
                 <Row className="align-items-center justify-content-md-between">
                     <div className="col-6">
                         <div className={`copyright ${styles.footerBrand} ${white ? " text-white" : ""}`}>  
-                            <Link href="/">
-                                <a className={`${white ? "text-white" : ""} shine`}>
-                                    <b>ILEFA Labs</b>
-                                </a>
-                            </Link> © 2020-{new Date().getFullYear()}{" "}
+                            <a href="https://www.ilefa.club" className={`${white ? "text-white" : ""} shine`}>
+                                <b>ILEFA Labs</b>
+                            </a>
+                            {" "} © 2020-{new Date().getFullYear()}{" "}
                         </div>
                     </div>
                     <div className="col-6">

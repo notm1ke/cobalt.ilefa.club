@@ -8,6 +8,7 @@ import { useProfessor } from '../../hooks';
 import { ProfessorData } from '@ilefa/husky';
 import { Badge, Collapse } from 'reactstrap';
 import { addTrailingDecimal, RMP_TAG_CONS, RMP_TAG_PROS } from '../../util';
+
 export interface ProfessorViewProps {
     professor: ProfessorData;
     rmp: boolean;

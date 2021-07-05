@@ -133,9 +133,11 @@ const TABS = [
 
 const CourseInspection = () => {
     const router = useRouter();
-    const { name } = router.query;
+    let { name } = router.query;
     if (name instanceof Array)
         return <ErrorView title="Error" message="Something went wrong while processing your request." />;
+
+    if (name) name = name.toUpperCase();
 
     const { data, isLoading, isError } = useCourse({ name, initial: true });
     const [activeTab, setActiveTab] = useState('overview');

@@ -1,17 +1,16 @@
 import React from 'react';
 
-import { CompleteCoursePayload } from '../../util';
-import { ProfessorView } from './ProfessorView';
-import { useProfessors } from '../../hooks';
 import { ErrorTab, LoaderTab } from '.';
+import { useProfessors } from '../../hooks';
+import { ProfessorView } from './ProfessorView';
+import { CompleteCoursePayload } from '../../util';
+
 export interface ProfessorsTabProps {
     course: CompleteCoursePayload;
 }
 
 export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course }) => {
-
     let { data, isLoading, isError } = useProfessors({ course: course.name });
-
     if (isLoading) return <LoaderTab />;
     if (isError || !data?.professors) return <ErrorTab />;
     

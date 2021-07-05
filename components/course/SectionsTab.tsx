@@ -9,8 +9,8 @@ import { v4 as uuid } from 'uuid';
 import { Collapse } from 'reactstrap';
 import { mdiChevronDown } from '@mdi/js';
 import { SectionData } from '@ilefa/husky';
-import { CompleteCoursePayload } from '../../util';
 import { IDataTableColumn } from 'react-data-table-component';
+import { CompleteCoursePayload, invalidVirtualTime } from '../../util';
 
 export interface SectionsTabProps {
     data: CompleteCoursePayload;
@@ -130,7 +130,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
         {
             name: 'Schedule',
             selector: 'schedule',
-            format: (row, _i) => row.schedule.trim().length ? row.schedule.trim() : 'Unknown',
+            format: (row, _i) => row.schedule.trim().length ? invalidVirtualTime(row.schedule.trim()) : 'Unknown',
             sortable: true
         }
     ];

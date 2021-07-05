@@ -302,3 +302,9 @@ export const addTrailingDecimal = (int: number) => {
 
     return int.toString();
 }
+
+export const invalidVirtualTime = (schedule: string) => {
+    return schedule.trim() === '12:00am-12:00am'
+        ? 'Does not meet'
+        : schedule;
+}
