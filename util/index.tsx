@@ -2,6 +2,7 @@ import MdiIcon from '@mdi/react';
 
 import {
     CampusType,
+    COURSE_IDENTIFIER,
     ProfessorData,
     SectionData
 } from '@ilefa/husky';
@@ -314,4 +315,8 @@ export const getMeetingTime = (schedule: string, location: { name: string }) => 
         return 'Does not meet';
 
     return 'Unknown';
+}
+
+export const isValidCourseName = (name: string) => {
+    return name && COURSE_IDENTIFIER.test(name);   
 }

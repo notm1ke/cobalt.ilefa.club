@@ -6,41 +6,128 @@ import IsolatedScroll from 'react-isolated-scroll';
 
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useCourseList } from '../hooks';
-import { getIconForCourse } from '../util';
-import { mdiLoading, mdiMagnify } from '@mdi/js';
+import { CoursePayload, useCourseList } from '../hooks';
 import { FormGroup, InputGroupAddon, InputGroupText } from 'reactstrap'
+import { ContentArea, getIconForCourse, isValidCourseName } from '../util';
 import { ChangeEvent, SuggestionSelectedEventData } from 'react-autosuggest';
+
+import {
+    mdiAlert,
+    mdiBeakerOutline,
+    mdiFileDocumentEditOutline,
+    mdiLoading,
+    mdiMagnify,
+    mdiNumeric1Box,
+    mdiNumeric2Box,
+    mdiNumeric3Box,
+    mdiNumeric4Box,
+    mdiNumeric4BoxMultiple
+} from '@mdi/js';
+
+type AttributeSymbol = {
+    icon: string;
+    color?: string;
+    size?: string;
+}
 
 export const CobaltSearch = () => {
     const router = useRouter();
     
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
-    const [suggestions, setSuggestions] = useState([] as string[]);
+    const [errored, setErrored] = useState(false);
+    const [suggestions, setSuggestions] = useState([] as CoursePayload[]);
     
     const { data, isLoading, isError } = useCourseList();
     
     const onClear = () => setSuggestions([]);
     const onChange = (_: any, { newValue }: ChangeEvent) => setQuery(newValue);
     const onRequest = ({ value }: { value: string }) => setSuggestions(suggestFor(value));
-    const onSelect = (_: any, { suggestionValue }: SuggestionSelectedEventData<string>) => {
+    const onSelect = (_: any, { suggestionValue }: SuggestionSelectedEventData<CoursePayload>) => {
         setLoading(true);
         router.push(`/course/${suggestionValue}`);
     }
 
-    const predicates: ((input: string, course: string) => boolean)[] = [
-        (input, course) => course.toLowerCase().slice(0, input.length) === input.toLowerCase(),
-        (input, course) => course.toLowerCase().includes(input)
+    const enabled = !isLoading && !isError;
+    const predicates: ((input: string, course: CoursePayload) => boolean)[] = [
+        (input, { name, catalogName }) => name.toLowerCase().slice(0, input.length) === input.toLowerCase()
+                                       || catalogName.toLowerCase().slice(0, input.length) === input.toLowerCase(),
+        (input, { name, catalogName }) => name.toLowerCase().includes(input)
+                                       || catalogName.toLowerCase().includes(input),
     ];
 
     const suggestFor = (input: string) => !data
         ? []
         : data
             .courses
-            .filter(course => predicates.some(predicate => predicate(input, course)));
+            .filter(course => predicates.some(predicate => predicate(input, course)))
+            .sort((a, b) => {
+                let aStart = a.name.toLowerCase().slice(0, input.length) === input.toLowerCase();
+                let bStart = b.name.toLowerCase().slice(0, input.length) === input.toLowerCase();
+                if (aStart && bStart)
+                    return a.name.localeCompare(b.name);
 
-    const enabled = !isLoading && !isError;
+                if (aStart && !bStart)
+                    return -1;
+
+                if (bStart && !aStart)
+                    return 1;
+
+                return a.name.localeCompare(b.name);
+            });
+
+    const renderSymbols = (course: CoursePayload, element = true) => {
+        let symbols: AttributeSymbol[] = [];
+        if (course.attributes.lab)
+            symbols.push({ icon: mdiBeakerOutline });
+
+        if (course.attributes.writing)
+            symbols.push({ icon: mdiFileDocumentEditOutline });
+
+        if (hasContentArea(course, ContentArea.CA1))
+            symbols.push({ icon: mdiNumeric1Box });
+
+        if (hasContentArea(course, ContentArea.CA2))
+            symbols.push({ icon: mdiNumeric2Box });
+
+        if (hasContentArea(course, ContentArea.CA3))
+            symbols.push({ icon: mdiNumeric3Box });
+
+        if (hasContentArea(course, ContentArea.CA4))
+            symbols.push({ icon: mdiNumeric4Box });
+
+        if (hasContentArea(course, ContentArea.CA4INT))
+            symbols.push({ icon: mdiNumeric4BoxMultiple });
+
+        if (!element)
+            return symbols;
+
+        return <>{ symbols.map(symbol => <MdiIcon path={symbol.icon} className={`fa-fw ${symbol.color || 'text-primary'}`} size={symbol.size || '20px'} />) }</>
+    }
+
+    const hasContentArea = (course: CoursePayload, area: ContentArea) => 
+        course
+            .attributes
+            .contentAreas
+            .some(ca => ca === area);
+
+    const onKeyUp = (e: any, suggestions: CoursePayload[]) => {
+        if (e.keyCode !== 13 && !errored)
+            return;
+
+        if (e.keyCode !== 13 && errored)
+            return setErrored(false);
+
+        let current: string = e.target.value;
+        if (!isValidCourseName(current))
+            return setErrored(true);
+
+        if (!suggestions.some(ent => ent.name.toLowerCase() === current.toLowerCase()))
+            return setErrored(true);
+
+        setLoading(true);
+        router.push(`/course/${current.toUpperCase()}`);
+    }
 
     return (
         <FormGroup>
@@ -49,12 +136,18 @@ export const CobaltSearch = () => {
                 onSuggestionsFetchRequested={onRequest}
                 onSuggestionsClearRequested={onClear}
                 onSuggestionSelected={onSelect}
-                getSuggestionValue={_ => _}
+                getSuggestionValue={selection => selection.name}
                 renderInputComponent={inputProps => (
                     <>
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>
-                                <MdiIcon path={loading ? mdiLoading : mdiMagnify} spin={loading} size="20px" />
+                                <MdiIcon className={errored ? 'text-danger' : ''} path={
+                                    loading
+                                        ? mdiLoading
+                                        : errored
+                                            ? mdiAlert
+                                            : mdiMagnify
+                                } spin={loading} size="20px" />
                             </InputGroupText>
                         </InputGroupAddon>
                         <div className={styling.inputBoxRadius}>
@@ -62,7 +155,16 @@ export const CobaltSearch = () => {
                         </div>
                     </>
                 )}
-                renderSuggestion={suggestion => <>{getIconForCourse(suggestion)} {suggestion}</>}
+                renderSuggestion={suggestion => (
+                    <div className="row">
+                        <div className="col-9">
+                            {getIconForCourse(suggestion.name)} {suggestion.name}
+                        </div>
+                        <div className={`col-3 ${styling.symbolOffset}`}>
+                            {renderSymbols(suggestion)}
+                        </div>
+                    </div>
+                )}
                 renderSuggestionsContainer={({ containerProps, children }) => {
                     const { ref, ...restContainerProps } = containerProps;
                     const callRef = (isolatedScroll: any) => {
@@ -83,9 +185,10 @@ export const CobaltSearch = () => {
                     value: query,
                     disabled: !enabled,
                     type: "text",
-                    placeholder: "Begin typing..",
-                    className: "form-control-alternative form-control",
+                    placeholder: 'Begin typing..',
+                    className: `form-control-alternative form-control`,
                     onChange,
+                    onKeyUp: e => onKeyUp(e, suggestions),
                 }}
                 theme={styling}
                 id={'cobalt-search'}
