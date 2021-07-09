@@ -18,3 +18,5 @@ export const log = (level: LogLevel, module: string, text: string, ...opts: stri
 }
 
 export const raw = (message: string, ...opts: string[]) => console.log(message, opts);
+
+export const clear = () => console.clear();
