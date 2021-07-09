@@ -77,7 +77,6 @@ import {
     mdiLibrary,
     mdiMathIntegral,
     mdiMonitor,
-    mdiMusicClefTreble,
     mdiMusicNote,
     mdiNewspaper,
     mdiPig,

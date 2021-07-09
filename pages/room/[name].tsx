@@ -7,10 +7,17 @@ import globalStyles from '../../components/styling/home.module.css';
 
 import { useRoom } from '../../hooks';
 import { useRouter } from 'next/router';
-import { BoardType, BuildingCode, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
 import { useEffect, useState } from 'react';
-import { Card, CardBody, Badge, Collapse } from 'reactstrap';
+import { Card, CardBody, Badge } from 'reactstrap';
 import { CompleteRoomPayload, getIconForRoom } from '../../util';
+
+import {
+    BoardType,
+    BuildingCode,
+    LectureCaptureType,
+    SeatingType,
+    TechType
+} from '@ilefa/husky';
 
 import {
     DataView,
@@ -124,8 +131,6 @@ const ClassroomInspection = () => {
 
     const { data, isLoading, isError } = useRoom({ name });
     const [rendered, setRendered] = useState(false);
-    const [raw, setRaw] = useState(false);
-    const collapseRaw = () => setRaw(!raw);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
