@@ -1,7 +1,7 @@
 import React from 'react';
 import MdiIcon from '@mdi/react';
 import * as Icons from '@mdi/js';
-import styles from '../styling/course.module.css';
+import styles from '../styling/inspection.module.css';
 
 import { useState } from 'react';
 import { useProfessor } from '../../hooks';

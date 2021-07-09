@@ -1,12 +1,24 @@
 import React from 'react';
+import Head from 'next/head';
 import classnames from 'classnames';
-import styles from '../../components/styling/course.module.css';
+import styles from '../../components/styling/inspection.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useCourse } from '../../hooks/useCourse';
+import { useCourse } from '../../hooks';
 import { CompleteCoursePayload, getIconForCourse } from '../../util';
+
+import {
+    Card,
+    CardBody,
+    TabContent,
+    TabPane,
+    Nav as Navbar,
+    NavItem,
+    NavLink,
+    Badge
+} from 'reactstrap';
 
 import {
     DataView,
@@ -20,17 +32,6 @@ import {
     ProfessorsTab,
     SectionsTab,
 } from '../../components';
-
-import {
-    Card,
-    CardBody,
-    TabContent,
-    TabPane,
-    Nav as Navbar,
-    NavItem,
-    NavLink,
-    Badge
-} from 'reactstrap';
 
 type SidebarEntry = {
     icon: string;
@@ -52,7 +53,7 @@ const getSidebarInfo = (data: CompleteCoursePayload, setActiveTab: React.Dispatc
         contents: [
             {
                 name: 'Credits',
-                value: data.credits + '.0'
+                value: data.credits ? data.credits + '.0' : 'Unknown'
             },
             {
                 name: 'Grading Type',
@@ -160,6 +161,10 @@ const CourseInspection = () => {
 
     return (
         <main>
+            <Head>
+                <title>Cobalt » {data.name}</title>
+                <meta name="description" content={`View more information about ${data.name} on Cobalt.`} />
+            </Head>
             <Nav/>
             <div className="position-relative background-gradient">
                 <div className="section section-hero section-shaped background-circuits">

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styling/course.module.css';
+import styles from '../styling/inspection.module.css';
 
 export interface ErrorTabProps {
     message?: string;

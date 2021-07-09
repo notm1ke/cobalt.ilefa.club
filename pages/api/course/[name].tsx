@@ -1,8 +1,8 @@
 import CourseMappings from '@ilefa/husky/courses.json';
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CampusType, COURSE_IDENTIFIER, searchCourse, SearchParts } from '@ilefa/husky';
 import { CompleteCoursePayload, CourseAttributes, isValidCampus } from '../../../util';
+import { CampusType, COURSE_IDENTIFIER, searchCourse, SearchParts } from '@ilefa/husky';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method && req.method !== 'GET')

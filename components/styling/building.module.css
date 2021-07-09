@@ -1,0 +1,58 @@
+.buildingIcon {
+    vertical-align: baseline;
+    margin-bottom: -3px;
+}
+
+.buildingSection {
+    margin-top: -10rem !important;
+}
+
+.buildingSectionTitle {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+}
+
+.buildingSectionBody {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.25rem !important;
+    font-weight: 300 !important;
+    letter-spacing: -0.01rem;
+}
+
+.buildingLink {
+    border-bottom: 1px #fff outset;
+}
+
+.roomCardIcon {
+    font-size: 120%;
+}
+
+.roomCardLink {
+    margin-top: 15px;
+}
+
+.roomCardLink > a {
+    font-family: 'Roboto Mono', monospace !important;
+    letter-spacing: -0.025px !important;
+}
+
+.cardDeckFlex > div {
+    flex: 1 1 300px !important;
+}
+
+.cardDeckTop { 
+    margin-top: -10px !important;
+}
+
+.liveStreamButton {
+    font-size: 0.85rem !important;
+    vertical-align: middle !important;
+    margin-top: -3px;
+    margin-right: -2px;
+}
+
+.hideNoRoomsButton {
+    margin-top: -7px !important;
+    margin-bottoM: 50px !important;
+}

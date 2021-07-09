@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 
 import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
@@ -8,6 +9,9 @@ import { Footer, Nav } from '../components';
 const InfoPage = () => {
     return (
         <main>
+            <Head>
+                <title>Cobalt » Information</title>
+            </Head>
             <Nav/>
             <div className="position-relative background-gradient">
                 <div className="section section-hero section-shaped background-circuits">

@@ -69,6 +69,12 @@
     }
 }
 
+@media screen and (min-width: 350px) {
+    .inputBoxRadius {
+        width: 87% !important;
+    }
+}
+
 .inputBoxRadius input {
     border-radius: 0.25rem !important;
     border-top-left-radius: unset !important;

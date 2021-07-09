@@ -30,6 +30,16 @@ type AttributeSymbol = {
     size?: string;
 }
 
+type Modifiers = 'ca1'
+               | 'ca2'
+               | 'ca3'
+               | 'ca4'
+               | 'ca4int'
+               | 'lab'
+               | 'w'
+               | 'q'
+               | 'e';
+
 export const CobaltSearch = () => {
     const router = useRouter();
     
@@ -53,14 +63,22 @@ export const CobaltSearch = () => {
         (input, { name, catalogName }) => name.toLowerCase().slice(0, input.length) === input.toLowerCase()
                                        || catalogName.toLowerCase().slice(0, input.length) === input.toLowerCase(),
         (input, { name, catalogName }) => name.toLowerCase().includes(input)
-                                       || catalogName.toLowerCase().includes(input),
+                                       || catalogName.toLowerCase().includes(input)
     ];
 
-    const suggestFor = (input: string) => !data
-        ? []
-        : data
+    const suggestFor = (input: string) => {
+        let modifiers = input
+            .split(' ')
+            .filter(input => input.startsWith('+'))
+            .map(token => token.substring(1))
+            .filter(isValidModifier);
+
+        if (!data)
+            return [];
+            
+        let res = data
             .courses
-            .filter(course => predicates.some(predicate => predicate(input, course)))
+            .filter(course => predicates.some(predicate => predicate(input.split(' ').filter(token => !token.startsWith('+')).join(' '), course)))
             .sort((a, b) => {
                 let aStart = a.name.toLowerCase().slice(0, input.length) === input.toLowerCase();
                 let bStart = b.name.toLowerCase().slice(0, input.length) === input.toLowerCase();
@@ -75,6 +93,9 @@ export const CobaltSearch = () => {
 
                 return a.name.localeCompare(b.name);
             });
+
+        return processModifiers(modifiers, res);
+    }
 
     const renderSymbols = (course: CoursePayload, element = true) => {
         let symbols: AttributeSymbol[] = [];
@@ -110,6 +131,56 @@ export const CobaltSearch = () => {
             .attributes
             .contentAreas
             .some(ca => ca === area);
+            
+    const isValidModifier = (input: string): input is Modifiers => {
+        let lower = input.toLowerCase();
+        return lower === 'ca1'
+            || lower === 'ca2'
+            || lower === 'ca3'
+            || lower === 'ca4'
+            || lower === 'ca4int'
+            || lower === 'lab'
+            || lower === 'w'
+            || lower === 'q'
+            || lower === 'e' 
+    }
+
+    const processModifiers = (modifiers: Modifiers[], data: CoursePayload[]) => {
+        let copy = [...data];
+
+        if (hasModifier(modifiers, 'ca1'))
+            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA1))
+            
+        if (hasModifier(modifiers, 'ca2'))
+            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA2))
+            
+        if (hasModifier(modifiers, 'ca3'))
+            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA3))
+            
+        if (hasModifier(modifiers, 'ca4'))
+            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA4))
+            
+        if (hasModifier(modifiers, 'ca4int'))
+            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA4INT))
+            
+        if (hasModifier(modifiers, 'lab'))
+            copy = copy.filter(ent => ent.attributes.lab)
+            
+        if (hasModifier(modifiers, 'w'))
+            copy = copy.filter(ent => ent.attributes.writing)
+            
+        if (hasModifier(modifiers, 'q'))
+            copy = copy.filter(ent => ent.attributes.quantitative)
+            
+        if (hasModifier(modifiers, 'e'))
+            copy = copy.filter(ent => ent.attributes.environmental);
+
+        return copy;
+    }
+
+    const hasModifier = (modifiers: Modifiers[], target: Modifiers) => {
+        return modifiers.some(modifier => modifier === target);
+    }
 
     const onKeyUp = (e: any, suggestions: CoursePayload[]) => {
         if (e.keyCode !== 13 && !errored)

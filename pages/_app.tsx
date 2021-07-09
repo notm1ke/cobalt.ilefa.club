@@ -1,6 +1,8 @@
 import Head from 'next/head';
+import * as Logger from '../util/logger';
 
 import type { AppProps } from 'next/app';
+import { LogLevel } from '../util/logger';
 
 import '../components/styling/global.css';
 import '../assets/vendor/nucleo/css/nucleo.css';
@@ -9,7 +11,20 @@ import '../assets/scss/argon-design-system-react.scss';
 
 import '@mdi/font/css/materialdesignicons.min.css';
 
+const WATERMARK = `%c
+    ___                      
+ __/_  \`.  .-"""-.        ___     _          _ _   
+ \\_,\` | \\-'  /   )\`-')   / __|___| |__  __ _| | |_ 
+  "") \`"\`    \  ((\`"\`    | (__/ _ \\ '_ \\\/ _\` | |  _|
+ ___Y  ,    .'7 /|       \\___\\___/_.__/\\__,_|_|\\__|
+(_,___/...-\` (_/_/    
+
+`
+
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
+    Logger.raw(WATERMARK, 'color: #487eb0;');
+    Logger.log(LogLevel.INFO, 'Info', `This instance of Cobalt is running version %c${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0,7) || 'no_git_id'} (${process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})%c`, 'color: #888;', 'color: inherit;');
+
     return (
         <>
             <Head>

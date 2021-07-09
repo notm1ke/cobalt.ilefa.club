@@ -1,3 +1,4 @@
+export * from './BuildingRoomCard';
 export * from './CobaltSearch';
 export * from './course';
 export * from './ErrorView';

@@ -55,6 +55,19 @@
     cursor: pointer !important;
 }
 
+.psv-button-svg {
+    vertical-align: super !important;
+}
+
+.psv-loader {
+    display: none !important;
+}
+
+.view-container {
+    border: rgb(117, 117, 117) 3px solid;
+    border-radius: 1%;
+}
+
 .shine:hover {
     text-decoration: none;
     color: white;

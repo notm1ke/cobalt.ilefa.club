@@ -13,6 +13,12 @@ const ELEMENTS = [
         key: 'home',
     },
     {
+        name: 'buildings',
+        icon: 'fa fa-city',
+        href: '/buildings',
+        key: 'buildings',
+    },
+    {
         name: 'information',
         icon: 'fa fa-info-circle',
         href: '/info',

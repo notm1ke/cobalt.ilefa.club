@@ -1,7 +1,9 @@
 import React from 'react';
+import Link from 'next/link';
 import MdiIcon from '@mdi/react';
-import styles from '../styling/course.module.css';
 import DataTable from 'react-data-table-component';
+import styles from '../styling/inspection.module.css';
+import Classrooms from '@ilefa/husky/classrooms.json';
 
 import { ErrorTab } from '.';
 import { useState } from 'react';
@@ -33,6 +35,8 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
     const [raw, setRaw] = useState(false);
     const collapseInfo = () => setInfo(!info);
     const collapseRaw = () => setRaw(!raw);
+    
+    let managedRoom = Classrooms.find(room => room.name === data.location.name.replace(' ', ''));
 
     return (
         <div className={styles.sectionDataExpanded}>
@@ -57,7 +61,15 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                                 ? 'Does not meet'
                                                 : 'Unknown'
                                     }</p>
-                                    <p><b>Location:</b> {data.location.name === 'No Room Required - Online' ? 'Virtual' : <a href={data.location.url ?? '#'} className="text-primary shine" target="_blank" rel="noopener noreferrer">{data.location.name}</a>}</p>
+                                    <p><b>Location:</b> {
+                                        data.location.name === 'No Room Required - Online'
+                                            ? 'Virtual'
+                                            : !!managedRoom
+                                                ? <Link href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
+                                                        <a className="text-primary shine">{data.location.name}</a>
+                                                  </Link>
+                                                : data.location.name
+                                    }</p>
                                     <br/>
                                     
                                     {

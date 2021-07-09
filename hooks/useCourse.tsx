@@ -18,8 +18,6 @@ export type CourseInspectionResult = {
 
 export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
 
-    const fetcher = (url: string) => fetch(url).then(r => r.json());
-
     let queryString = `${props.campus
         ? `?campus=${props.campus}`
         : '' + (props.bare
@@ -33,6 +31,7 @@ export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
                     : '?') 
                     + `initial=${props.initial}` : '')}`
 
+    const fetcher = (url: string) => fetch(url).then(r => r.json());
     const { data, error } = useSWR(`/api/course/${props.name + queryString}`, fetcher);
 
     if (data && data.message) return {
