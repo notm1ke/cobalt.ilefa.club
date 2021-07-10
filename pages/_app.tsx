@@ -23,8 +23,8 @@ const WATERMARK = `%c
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     Logger.clear();
-    Logger.raw(WATERMARK, 'color: #487eb0;');
-    Logger.log(LogLevel.INFO, 'Info', `This instance of Cobalt is running version %c${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0,7) || 'no_git_id'} (${process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})%c`, 'color: #888;', 'color: inherit;');
+    Logger.raw(WATERMARK, 'color: #487eb0; font-weight: 600;');
+    Logger.log(LogLevel.INFO, null, `This instance of Cobalt is running version %c${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0,7) || 'no_git_id'} (${process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})%c`, 'color: #888;', 'color: inherit;');
 
     return (
         <>

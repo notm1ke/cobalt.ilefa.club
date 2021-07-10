@@ -753,3 +753,9 @@ export const capitalizeFirst = (input: string) => input
     .split(' ')
     .map(str => str.charAt(0).toUpperCase() + str.slice(1))
     .join('');
+
+const isEnv = (target: 'development' | 'preview' | 'production') => (process.env.NEXT_PUBLIC_VERCEL_ENV || 'development') === target;
+
+export const isDevelopment = () => isEnv('development');
+export const isPreview = () => isEnv('preview');
+export const isProd = () => isEnv('production');

@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import * as Logger from '../util/logger';
 
 import { CampusType } from '@ilefa/husky';
 import { CompleteCoursePayload } from '../util';
@@ -17,7 +18,6 @@ export type CourseInspectionResult = {
 }
 
 export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
-
     let queryString = `${props.campus
         ? `?campus=${props.campus}`
         : '' + (props.bare
@@ -31,25 +31,55 @@ export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
                     : '?') 
                     + `initial=${props.initial}` : '')}`
 
-    const fetcher = (url: string) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR(`/api/course/${props.name + queryString}`, fetcher);
-
-    if (data && data.message) return {
-        data: null,
-        isLoading: false,
-        isError: true
+    let noop = false;
+    let req = `/api/course/${props.name + queryString}`;
+    if (!props.name) {
+        noop = true;
+        req = '/api/noop';
     }
 
-    if (data) return {
+    Logger.debug('useCourse', 'Initiating request for ' + props.name + '..', undefined, !noop);
+    Logger.debug('useCourse', 'Query string:', undefined, !noop, req);
+
+    const start = Date.now();
+    const fetcher = (url: string) => fetch(url).then(r => r.json());
+    const { data, error } = useSWR(req, fetcher);
+
+    if (!data && !error) {
+        return {
+            data: null,
+            isLoading: true,
+            isError: false
+        }
+    }
+
+    if (error) {
+        Logger.timings('useCourse', 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
+        Logger.debug('useCourse', `The server responded with an unknown error.`, Logger.LogLevelColor.ERROR);
+        
+        return {
+            data: null,
+            isLoading: false,
+            isError: true
+        }
+    }
+
+    if (data && data.message) {
+        Logger.timings('useCourse', `Fetch ${props.name}`, start, Logger.LogLevelColor.ERROR, 'failed in', !noop);
+        Logger.debug('useCourse', `The server responded with: ${data?.message}`, Logger.LogLevelColor.ERROR, !noop);        
+        return {
+            data: null,
+            isLoading: false,
+            isError: true
+        }
+    }
+
+    Logger.timings('uesCourse', 'Fetch', start, undefined, 'took', !noop);
+    Logger.debug('useCourse', `Server response:`, undefined, !noop, data);
+    return {
         data,
         isLoading: false,
         isError: false
-    }
-
-    return {
-        data: null,
-        isLoading: !data && !error,
-        isError: error
     }
 
 }

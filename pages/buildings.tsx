@@ -18,7 +18,7 @@ import {
     getIconForBuilding
 } from '../util';
 
-const InfoPage = () => {
+const BuildingsPage = () => {
     const { data, isLoading, isError } = useBuildings();    
     const [hideNoRooms, setHideNoRooms] = useState(false);
 
@@ -86,7 +86,7 @@ const InfoPage = () => {
 
                                     let atOn = isNaN(parseFloat(addr.substring(0, 1))) ? 'on' : 'at';
                                     return (
-                                        <h4 className={`text-white ${styles.buildingSectionTitle} mb-7`} id={building.code}>
+                                        <h4 className={`text-white ${styles.buildingSectionTitle} mb-7`} id={building.code} key={building.code}>
                                             { getIconForBuilding(building.code as any, styles.buildingIcon, 24) } {building.name} ({building.code})
                                             <br/><span className={`text-white ${styles.buildingSectionBody}`}>
                                                 The <b>{building.rooms.length ? building.rooms[0].building.name : building.name}</b> Building {addr === 'NONE' ? 'does not have an address' : <>is located {atOn} <a href={BuildingMaps[building.code]} className={`text-light ${styles.buildingLink} shine`} target="_blank" rel="noopener noreferrer">{BuildingAddresses[building.code]}</a></>}.
@@ -104,7 +104,7 @@ const InfoPage = () => {
                                                 <div className="row">
                                                     {
                                                         building.rooms.map(room => (
-                                                            <div className="col-md-4">
+                                                            <div className="col-md-4" key={room.name}>
                                                                 <BuildingRoomCard room={room} key={room.name} />
                                                             </div>
                                                         ))
@@ -123,4 +123,4 @@ const InfoPage = () => {
     );
 }
 
-export default InfoPage;
+export default BuildingsPage;
