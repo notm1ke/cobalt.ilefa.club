@@ -59,7 +59,7 @@ const BuildingsPage = () => {
                         {
                             isLoading && (
                                 <h4 className={`text-white text-center display-5 mb-7`}>
-                                    <i className="fa fa-loader fa-spin fa-fw"></i> Loading..
+                                    <i className="fa fa-spinner fa-spin fa-fw"></i> Loading..
                                 </h4>
                             )
                         }
