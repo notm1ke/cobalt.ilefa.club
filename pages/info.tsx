@@ -4,7 +4,75 @@ import Head from 'next/head';
 import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
+import { ContentAreaNames } from '../util';
 import { Footer, Nav } from '../components';
+import { UncontrolledTooltip } from 'reactstrap';
+
+const modifiers = [
+    {
+        name: 'ca1',
+        tooltip: <>
+                    <b>Content Area 1</b>
+                    <br/>{ContentAreaNames.CA1}
+                </>
+    },
+    {
+        name: 'ca2',
+        tooltip: <>
+                    <b>Content Area 2</b>
+                    <br/>{ContentAreaNames.CA2}
+                </>
+    },
+    {
+        name: 'ca3',
+        tooltip: <>
+                    <b>Content Area 3</b>
+                    <br/>{ContentAreaNames.CA3}
+                </>
+    },
+    {
+        name: 'ca4',
+        tooltip: <>
+                    <b>Content Area 4</b>
+                    <br/>{ContentAreaNames.CA4}
+                </>
+    },
+    {
+        name: 'ca4int',
+        tooltip: <>
+                    <b>Content Area 4 (International)</b>
+                    <br/>{ContentAreaNames.CA4INT}
+                </>    },
+    {
+        name: 'lab',
+        tooltip: <>
+                    <b>Competency</b>
+                    <br/>Laboratory (L)
+                </>
+    },
+    {
+        name: 'w',
+        tooltip: <>
+                    <b>Competency</b>
+                    <br/>Writing (W)
+                </>
+    },
+    {
+        name: 'q',
+        tooltip: <>
+                    <b>Competency</b>
+                    <br/>Quantitative (Q)
+                </>
+    },
+    {
+        name: 'e',
+        tooltip: <>
+                    <b>Competency</b>
+                    <br/>Environmental Literacy (E)
+                </>
+    },
+    
+]
 
 const InfoPage = () => {
     return (
@@ -44,6 +112,27 @@ const InfoPage = () => {
                                     <span className="btn-inner--icon"><i className="fab fa-github"></i></span>
                                     <span className="btn-inner--text">@ilefa/husky</span>
                                 </a>
+                            </span>
+                        </h4>
+                        
+                        <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
+                            <i className="fa fa-sort-alpha-up fa-fw"></i> Search modifiers
+                            <br/><span className={`text-white ${styles.infoSectionBody}`}>
+                                A search modifier is a term that is prepended with a plus sign - they may be chained together, and may be used as an entire search query by themselves; for example, just typing in <code className={styles.inlineModifier}>+w</code> will list every course that is marked as having a writing competency.
+                                Likewise, you can chain them together, so typing in <code className={styles.inlineModifier}>+ca1 +ca4</code> will list every course that covers both Content Areas 1 and 4. Additionally, you can use a keyword and modifier together to get even more accurate results.
+                                For example, typing <code className={styles.inlineModifier}>anth +ca2 +ca4</code> will list every single course under COMM, and then filter the results out to only contain Content Area 2 and 4.
+                                <br/><br/>The following terms are valid search modifiers - hover over any of them to see what they do.
+                                <br/>
+                                {
+                                    modifiers.map(modifier => (
+                                        <span className={styles.modifier}>
+                                            <code key={modifier.name} id={`tooltip-${modifier.name}`}>{modifier.name}</code>{" "}
+                                            <UncontrolledTooltip delay={0} placement="top" target={`tooltip-${modifier.name}`}>
+                                                {modifier.tooltip}
+                                            </UncontrolledTooltip>
+                                        </span>
+                                    ))
+                                }
                             </span>
                         </h4>
                         

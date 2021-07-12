@@ -18,3 +18,12 @@
 .infoLink {
     border-bottom: 1px #fff outset;
 }
+
+.modifier {
+    margin-right: 10px;
+    letter-spacing: -0.05rem;
+}
+
+.inlineModifier {
+    margin: 3px;
+}
