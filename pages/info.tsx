@@ -120,7 +120,7 @@ const InfoPage = () => {
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 A search modifier is a term that is prepended with a plus sign - they may be chained together, and may be used as an entire search query by themselves; for example, just typing in <code className={styles.inlineModifier}>+w</code> will list every course that is marked as having a writing competency.
                                 Likewise, you can chain them together, so typing in <code className={styles.inlineModifier}>+ca1 +ca4</code> will list every course that covers both Content Areas 1 and 4. Additionally, you can use a keyword and modifier together to get even more accurate results.
-                                For example, typing <code className={styles.inlineModifier}>anth +ca2 +ca4</code> will list every single course under COMM, and then filter the results out to only contain Content Area 2 and 4.
+                                For example, typing <code className={styles.inlineModifier}>anth +ca2 +ca4</code> will list every single course under ANTH, and then filter the results out to only contain Content Area 2 and 4.
                                 <br/><br/>The following terms are valid search modifiers - hover over any of them to see what they do.
                                 <br/>
                                 {
