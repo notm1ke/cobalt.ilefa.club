@@ -7,7 +7,7 @@ import globalStyles from '../../components/styling/home.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useCourse } from '../../hooks';
-import { CompleteCoursePayload, getIconForCourse } from '../../util';
+import { CompleteCoursePayload, getIconForCourse, matchGradingType } from '../../util';
 
 import {
     Card,
@@ -57,7 +57,7 @@ const getSidebarInfo = (data: CompleteCoursePayload, setActiveTab: React.Dispatc
             },
             {
                 name: 'Grading Type',
-                value: data.grading 
+                value: matchGradingType(data.grading) || (data.grading ?? 'Unknown')
             },
             {
                 name: 'Campuses',

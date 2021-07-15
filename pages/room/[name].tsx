@@ -146,6 +146,7 @@ const ClassroomInspection = () => {
 
     const info = getSidebarInfo(data);
     const icon = getIconForRoom(data, styles.courseIcon, 40);
+    const styledName = data.building.code + ' ' + data.name.slice(data.building.code.length);
 
     return (
         <main>
@@ -162,7 +163,7 @@ const ClassroomInspection = () => {
                             <div className="col px-0">
                                 <div className="row align-items-center justify-content-center">
                                     <div className="col-lg-6 text-center">
-                                        <h1 className={`${globalStyles.nameTitle} text-white display-1`}>{icon}{data.name.trim()}</h1>
+                                        <h1 className={`${globalStyles.nameTitle} text-white display-1`}>{icon}{styledName}</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
                                             { BuildingCode[data.building.code] }
                                         </h2>
@@ -219,7 +220,8 @@ const ClassroomInspection = () => {
                                                         {/* <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-code fa-fw"></i> Raw Data</pre>
                                                         <pre className={styles.description}>{JSON.stringify(data, null, 3)}</pre><br/> */}
                                                         <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-camera-retro fa-fw"></i> 360&#176; View</pre>
-                                                        { rendered && <ThreeSixtyRenderer src={data.threeSixtyView} height={500} timeAnim={false} /> }
+                                                        { !data.threeSixtyView && <p className={`${styles.description} mb--3`}>360&#176; View is not available for <b>{styledName}</b>.</p> }
+                                                        { data.threeSixtyView && rendered && <ThreeSixtyRenderer src={data.threeSixtyView} height={500} timeAnim={false} /> }
                                                         { data.liveStreamUrl &&
                                                             (
                                                                 <>

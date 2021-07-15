@@ -12,7 +12,7 @@ import { Collapse } from 'reactstrap';
 import { mdiChevronDown } from '@mdi/js';
 import { SectionData } from '@ilefa/husky';
 import { IDataTableColumn } from 'react-data-table-component';
-import { CompleteCoursePayload, getMeetingTime } from '../../util';
+import { CompleteCoursePayload, getMeetingRoom, getMeetingTime } from '../../util';
 
 export interface SectionsTabProps {
     data: CompleteCoursePayload;
@@ -36,6 +36,9 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
     const collapseInfo = () => setInfo(!info);
     const collapseRaw = () => setRaw(!raw);
     
+    let rooms = getMeetingRoom(data.location.name).sort((a, b) => a.localeCompare(b));
+    let multipleRooms = rooms.length > 1;
+
     let managedRoom = Classrooms.find(room => room.name === data.location.name.replace(' ', ''));
 
     return (
@@ -54,21 +57,26 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                     <p><b>Term:</b> {data.term}</p>
                                     <p><b>Campus:</b> {data.campus}</p>
                                     <p><b>Modality:</b> {data.mode}</p>
-                                    <p><b>Schedule:</b> {
-                                        data.schedule.trim().length
-                                            ? data.schedule.trim()
-                                            : data.location.name === 'No Room Required - Online'
-                                                ? 'Does not meet'
-                                                : 'Unknown'
-                                    }</p>
+                                    <p><b>Instructor:</b> {data.instructor.trim().length ? data.instructor : 'Unknown'}</p>
+                                    <p><b>Schedule:</b> {getMeetingTime(data.schedule, data.location)}</p>
                                     <p><b>Location:</b> {
                                         data.location.name === 'No Room Required - Online'
                                             ? 'Virtual'
-                                            : !!managedRoom
-                                                ? <Link href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
-                                                        <a className="text-primary shine">{data.location.name}</a>
-                                                  </Link>
-                                                : data.location.name
+                                            : multipleRooms
+                                                ? rooms.map((ent, i) => {
+                                                    ent = ent.replace(' ', '');
+                                                    let room = Classrooms.find(room => room.name === ent);
+                                                    let end = i === rooms.length - 1 ? '' : ', ';
+                                                    if (!room) return <span>{ent + end}</span>
+                                                    return <Link href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
+                                                               <a className="text-primary shine">{ent}</a>{end}
+                                                           </Link>
+                                                })
+                                                : !!managedRoom
+                                                    ? <Link href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
+                                                            <a className="text-primary shine">{data.location.name}</a>
+                                                    </Link>
+                                                    : getMeetingRoom(data.location.name).join(', ')
                                     }</p>
                                     <br/>
                                     

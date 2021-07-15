@@ -1,5 +1,7 @@
 import MdiIcon from '@mdi/react';
 
+import { UncontrolledTooltip } from 'reactstrap';
+
 import {
     BuildingCode,
     CampusType,
@@ -142,6 +144,13 @@ export enum ContentAreaNames {
     CA3 = 'Science and Technology',
     CA4 = 'Diversity and Multiculturalism',
     CA4INT = 'Diversity and Multiculturalism (International)'
+}
+
+export enum GradingTypeNames {
+    GRADED = 'Graded',
+    SATISFACTORY_UNSATISFACTORY = 'S/U',
+    HONORS_CREDIT = 'Honors',
+    REGISTERED = 'Registered'
 }
 
 export const RMP_TAG_PROS = [
@@ -732,7 +741,7 @@ export const getMeetingTime = (schedule: string, location: { name: string }) => 
         return 'Does not meet'
 
     if (schedule.trim().length)
-        return schedule.trim();
+        return replaceAll(schedule.trim(), /<br\/*>/, ' & ');
 
     if (location.name === 'No Room Required - Online')
         return 'Does not meet';
@@ -740,9 +749,12 @@ export const getMeetingTime = (schedule: string, location: { name: string }) => 
     return 'Unknown';
 }
 
-export const isValidCourseName = (name: string) => {
-    return name && COURSE_IDENTIFIER.test(name);   
-}
+export const getMeetingRoom = (room: string) =>
+    room
+        .split(/([A-Z]{2,4}\s\d{1,4})/)
+        .filter(str => !!str);
+
+export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.test(name);
 
 export const getEnumKeyByEnumValue = (target: any, value: string) => {
     let keys = Object.keys(target).filter((x) => target[x] == value);
@@ -753,6 +765,74 @@ export const capitalizeFirst = (input: string) => input
     .split(' ')
     .map(str => str.charAt(0).toUpperCase() + str.slice(1))
     .join('');
+
+/**
+ * Replaces all occurances of a given
+ * search string within another string.
+ * 
+ * @param input the input string
+ * @param search the string to replace
+ * @param replace what to replace it with
+ */
+export const replaceAll = (input: string, search: string | RegExp, replace: string) => {
+    let copy = String(input);
+    if (search instanceof RegExp) {
+        if (!search.test(copy))
+            return copy;
+
+        while (search.test(copy))
+            copy = copy.replace(search, replace);
+
+        return copy;
+    }
+
+    if (!copy.includes(search))
+        return copy;
+
+    while (copy.includes(search))
+        copy = copy.replace(search, replace);
+
+    return copy;
+}
+
+
+export const matchGradingType = (gradingType: string): string | JSX.Element => {
+    let lower = gradingType.toLowerCase();
+    if (lower === 'graded')
+        return <>
+            <span className="text-primary-light cursor-pointer" id="tooltip-gradingType-graded">{GradingTypeNames.GRADED}</span>
+            <UncontrolledTooltip delay={0} placement="top" target="tooltip-gradingType-graded">
+                Graded on A-F letter scale
+                <br/>(unless otherwise noted)
+            </UncontrolledTooltip>
+        </>;
+    
+    if (lower === 'satisfactory/unsatisfactory')
+        return <>
+            <span className="text-primary-light cursor-pointer" id="tooltip-gradingType-SU">{GradingTypeNames.SATISFACTORY_UNSATISFACTORY}</span>
+            <UncontrolledTooltip delay={0} placement="top" target="tooltip-gradingType-SU">
+                Satisfactory/Unsatisfactory
+            </UncontrolledTooltip>
+        </>;
+
+    if (lower === 'honors credit')
+        return <>
+            <span className="text-primary-light cursor-pointer" id="tooltip-gradingType-SU">{GradingTypeNames.HONORS_CREDIT}</span>
+            <UncontrolledTooltip delay={0} placement="top" target="tooltip-gradingType-SU">
+                Graded based on Honors Credit
+            </UncontrolledTooltip>
+        </>;
+
+    if (lower === 'registered')
+        return <>
+            <span className="text-primary-light cursor-pointer" id="tooltip-gradingType-SU">{GradingTypeNames.REGISTERED}</span>
+            <UncontrolledTooltip delay={0} placement="top" target="tooltip-gradingType-SU">
+                Registration is sufficient to receive a grade
+            </UncontrolledTooltip>
+        </>;
+
+    return gradingType;
+}
 
 const isEnv = (target: 'development' | 'preview' | 'production') => (process.env.NEXT_PUBLIC_VERCEL_ENV || 'development') === target;
 
