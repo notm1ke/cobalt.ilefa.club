@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
 import {
@@ -36,7 +37,16 @@ const HomePage = () => {
                     title="Courses"
                     glyph="/course.svg"
                     alt="Courses Glyph"
-                    description="Easily search for your courses and find detailed information about what <b>content areas</b> and <b>competencies</b> they fulfill, which <b>sections</b> are running, and how good the <b>professors</b> are all in one place."
+                    description={
+                        <>
+                            Easily search for your courses and find detailed information about what <b>content areas</b> and <b>competencies</b> they fulfill, which <b>sections</b> are running, and how good the <b>professors</b> are all in one place.<br/><br/>
+                            <Link href="/info">
+                                <a className="btn btn-sm btn-primary-light text-lowercase font-weight-500 shine" href='/info'>
+                                    <i className="fa fa-chevron-right fa-fw"></i> Check out how to use search modifiers
+                                </a>
+                            </Link>
+                        </>
+                    }
                     className="mt-5"
                     tags={[
                         {
@@ -52,7 +62,7 @@ const HomePage = () => {
                         {
                             icon: <i className="fa fa fa-quote-right fa-fw"></i>,
                             color: 'primary',
-                            display: 'RateMyProfessor Integration'
+                            display: 'RateMyProfessors Integration'
                         }
                     ]}
                 />
@@ -72,7 +82,7 @@ const HomePage = () => {
                         {
                             icon: <i className="fa fa-map-marked-alt fa-fw"></i>,
                             color: 'primary-light',
-                            display: 'Open in Google Maps'
+                            display: 'Open with Google Maps'
                         },
                         {
                             icon: <i className="fa fa-clone fa-fw"></i>,
@@ -86,7 +96,12 @@ const HomePage = () => {
                     title="Transportation"
                     glyph="/transport.svg"
                     alt="Transportation Glyph"
-                    description="<b>Coming Soon.</b> Explore bus routes, parking lots & passes, and a lot more straight from Cobalt."
+                    description={
+                        <>
+                            <b>Coming Soon</b><br/>
+                            Explore bus routes, parking lots & passes, and a lot more straight from Cobalt.
+                        </>
+                    }
                     tags={[
                         // {
                         //     icon: <i className="fa fa-bus-alt fa-fw"></i>,

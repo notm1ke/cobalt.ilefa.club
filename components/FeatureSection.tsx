@@ -8,7 +8,7 @@ export interface FeatureSectionProps {
     glyph: any;
     alt: string;
     flip?: boolean;
-    description: string;
+    description: string | JSX.Element;
     className?: string;
     tags: FeatureSectionTags[];
 }
@@ -31,7 +31,7 @@ export const FeatureSection: React.FC<FeatureSectionProps> = props => (
                         <div className={`col-md-10 ${styles.featureIconPosition} mb-2`}>
                             <h4 className={`${styles.featureTitle} text-white`}>{props.title}</h4>
                         </div>
-                        <p className="text-white mb--3" dangerouslySetInnerHTML={{ __html: props.description }}></p>
+                        <p className="text-white mb--3">{props.description}</p>
                         <ul className="list-unstyled mt-5">
                             {
                                 props.tags.map(tag => 
