@@ -2,6 +2,7 @@ export * from './BuildingRoomCard';
 export * from './CobaltSearch';
 export * from './course';
 export * from './ErrorView';
+export * from './FeatureSection';
 export * from './Footer';
 export * from './IconCard';
 export * from './IconCardContainer';

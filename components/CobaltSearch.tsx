@@ -256,7 +256,7 @@ export const CobaltSearch = () => {
                     value: query,
                     disabled: !enabled,
                     type: "text",
-                    placeholder: 'Begin typing..',
+                    placeholder: 'Search for any course..',
                     className: `form-control-alternative form-control`,
                     onChange,
                     onKeyUp: e => onKeyUp(e, suggestions),

@@ -20,7 +20,7 @@ import {
 
 const BuildingsPage = () => {
     const { data, isLoading, isError } = useBuildings();    
-    const [hideNoRooms, setHideNoRooms] = useState(false);
+    const [hideNoRooms, setHideNoRooms] = useState(true);
 
     const toggleNoRooms = () => setHideNoRooms(!hideNoRooms);
 

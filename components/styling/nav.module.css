@@ -27,3 +27,9 @@
     font-size: 1rem;
     margin-right: 5px;
 }
+
+.dropdownPosition {
+    margin-top: 52px !important;
+    left: -8px !important;
+    width: 350px !important;
+}
