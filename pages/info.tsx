@@ -42,7 +42,8 @@ const modifiers = [
         tooltip: <>
                     <b>Content Area 4 (International)</b>
                     <br/>{ContentAreaNames.CA4INT}
-                </>    },
+                </>    
+    },
     {
         name: 'lab',
         tooltip: <>
@@ -105,7 +106,7 @@ const InfoPage = () => {
                             <i className="fa fa-file-import fa-fw"></i> Where our data comes from
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 Since UConn does not publicly expose an API of any sorts to retrieve course data, we built an npm package called Husky that allows anyone to query this information.
-                                Husky works by scraping the <a href="https://catalog.uconn.edu" className={`text-light ${styles.infoLink} shine`} target="_blank" rel="noopener noreferrer">course catalog</a> to compile the relevent information about courses.
+                                Husky works by scraping the <a href="https://catalog.uconn.edu" className={`text-light ${styles.infoLink} shine`} target="_blank" rel="noopener noreferrer">course catalog</a> to compile the relevant information about courses.
                                 For more information, see the linked GitHub repository below.
                                 <br/>
                                 <a href="https://github.com/ilefa/husky" target="_blank" rel="noopener noreferrer" className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase">

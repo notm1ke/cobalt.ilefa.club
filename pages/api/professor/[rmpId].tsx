@@ -1,8 +1,9 @@
+import { capitalizeFirst, sum } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getRmpReport, RateMyProfessorReport } from '@ilefa/husky';
 
 type RmpResponse = RateMyProfessorReport & {
-    mostRelevent: string;
+    mostRelevant: string;
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -33,13 +34,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .filter(ent => !!ent)
             .filter(ent => !isNaN(ent.ratings));
 
-        // TODO: weight the ratings/take again/difficulty based on total ratings of that entry
-        // TODO: this is because if one person rates the prof at 5/5, and another entry has
-        // TODO: 44 ratings at 1/5, it will definitely skew the results from the real value
-        // TODO: and be misinforming on the professors section of the course inspection page
-        
-        let mostRelevent = modified.sort((a, b) => b.ratings - a.ratings)[0].id;
-        let averageRating = sum(modified.map(result => result.average)) / modified.length;
+        let mostRelevant = modified.sort((a, b) => b.ratings - a.ratings)[0].id;
+        let averageRating = getWeightedAverage(modified);
         let averageTakeAgain = sum(modified.map(result => result.takeAgain)) / modified.length;
         let averageDifficulty = sum(modified.map(result => result.difficulty)) / modified.length;
         let totalRatings = sum(modified.map(result => result.ratings));
@@ -52,7 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             takeAgain: averageTakeAgain,
             difficulty: averageDifficulty,
             tags: [...new Set(tags.map(tag => capitalizeFirst(tag.toLowerCase())))],
-            mostRelevent,
+            mostRelevant: mostRelevant,
         }
 
         return res
@@ -69,7 +65,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     let complete: RmpResponse = {
         ...result,
-        mostRelevent: rmpId
+        mostRelevant: rmpId
     }
 
     return res
@@ -77,11 +73,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .json(complete);
 }
 
-const sum = (arr: number[]) => arr
-    .filter(ent => !isNaN(ent))
-    .reduce((prev, cur) => cur + prev, 0);
-
-export const capitalizeFirst = (input: string) => input
-    .split(' ')
-    .map(str => str.charAt(0).toUpperCase() + str.slice(1))
-    .join(' ');
+const getWeightedAverage = (reports: RateMyProfessorReport[]) => {
+    let mapped = reports.map(report => ({ average: report.average, ratings: report.ratings }));
+    let total = mapped.reduce((prev, cur) => prev + cur.ratings, 0);
+    let average = mapped.reduce((prev, cur) => prev + cur.average * cur.ratings, 0) / total;
+    return average;
+}

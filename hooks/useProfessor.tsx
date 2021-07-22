@@ -4,7 +4,7 @@ import * as Logger from '../util/logger';
 import { RateMyProfessorReport } from '@ilefa/husky';
 
 export type RmpResponse = RateMyProfessorReport & {
-    mostRelevent: string;
+    mostRelevant: string;
 }
 
 export interface ProfessorLookupProps {

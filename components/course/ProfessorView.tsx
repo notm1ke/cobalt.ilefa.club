@@ -139,7 +139,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show })
                                 <p>Difficulty Score: <b className={difficultyColor(data.difficulty)}>{addTrailingDecimal(data.difficulty)}/5.0</b></p>
                                 <p>Would Retake: <b className={retakeRateColor(data.takeAgain)}>{data.takeAgain}%</b></p><br/>
 
-                                <a className="text-primary shine" href={`https://www.ratemyprofessors.com/ShowRatings.jsp?tid=${data.mostRelevent}`} target="_blank" rel="noreferrer noopener">
+                                <a className="text-primary shine" href={`https://www.ratemyprofessors.com/ShowRatings.jsp?tid=${data.mostRelevant}`} target="_blank" rel="noreferrer noopener">
                                     <i className="fa fa-external-link-alt fa-fw"></i> View ratings on RateMyProfessors</a>
                                 <br/><br/>
 

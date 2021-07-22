@@ -462,6 +462,13 @@ export enum BuildingMaps {
     YNG = 'https://www.google.com/maps/place/Wilfred+B.Young+Bldg,+Storrs,+CT+06269/@41.8121557,-72.2504963,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3002f0b9c5:0x86e6604eb51a5236!8m2!3d41.8121517!4d-72.2483023'
 }
 
+/**
+ * Retrieves a specialized icon for a given building.
+ * 
+ * @param building the building to get the icon for
+ * @param classes [optional] the classes to add to the icon
+ * @param size [optional] the size of the icon
+ */
 export const getIconForBuilding = (building: keyof typeof BuildingCode, classes = '', size = 16) => {
     switch (building) {
         case "ABL": return <MdiIcon path={mdiSprout} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -469,7 +476,7 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "ADC": return <MdiIcon path={mdiFountainPenTip} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "AES": return <MdiIcon path={mdiHammerWrench} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "APS": return <MdiIcon path={mdiCameraBurst} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        // case "ARJ": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "ARJ": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "ARTB": return <MdiIcon path={mdiDraw} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "ATWR": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "AUST": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -556,6 +563,13 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
     }
 }
 
+/**
+ * Returns a specialized icon for the given course type.
+ * 
+ * @param course the course to retrieve the icon for
+ * @param classes [optional] the classes to add to the icon
+ * @param size [optional] the size of the icon
+ */
 export const getIconForCourse = (course: string, classes = '', size = 16) => {
     let type = course.split(/\d/)[0].toUpperCase();
     switch (type) {
@@ -682,6 +696,13 @@ export const getIconForCourse = (course: string, classes = '', size = 16) => {
     }
 }
 
+/**
+ * Returns the specialized icon for a given room, if it has one.
+ * 
+ * @param room the room to get the icon for
+ * @param classes [optional] the classes to add to the icon
+ * @param size    [optional] the size of the icon
+ */
 export const getIconForRoom = (room: CompleteRoomPayload | Classroom, classes = '', size = 16) => {
     switch (SeatingType[room.seatingType]) {
         case SeatingType.TABLES:
@@ -701,6 +722,10 @@ export const getIconForRoom = (room: CompleteRoomPayload | Classroom, classes = 
     }
 }
 
+/**
+ * Typeguard to verify that a string is a valid {@link CampusType}.
+ * @param input the string to verify
+ */
 export const isValidCampus = (input: string): input is CampusType => {
     let lower = input.toLowerCase();
     return lower === 'any'
@@ -711,11 +736,21 @@ export const isValidCampus = (input: string): input is CampusType => {
         || lower === 'avery_point'
 }
 
+/**
+ * Typeguard to verify that a string is a valid {@link RoomQueryMode}.
+ * @param input the string to verify
+ */
 export const isValidRoomQueryMode = (input: string): input is RoomQueryMode => {
     let lower = input.toLowerCase();
     return lower === 'full' || lower === 'name';
 }
 
+/**
+ * Returns the campus indicator for the provided
+ * campus string.
+ * 
+ * @param campus the campus string
+ */
 export const getCampusIndicator = (campus: string) => {
     campus = campus.toLowerCase();
     if (campus === 'storrs') return 'S';
@@ -729,6 +764,13 @@ export const getCampusIndicator = (campus: string) => {
     return '?';
 }
 
+/**
+ * Adds a trailing decimal to the end of a number
+ * if it does not already have one, and returns
+ * it as a string.
+ * 
+ * @param int the number to apply a trailing decimal to
+ */
 export const addTrailingDecimal = (int: number) => {
     if (!int.toString().includes('.'))
         return int.toString() + '.0';
@@ -736,6 +778,12 @@ export const addTrailingDecimal = (int: number) => {
     return int.toString();
 }
 
+/**
+ * Returns a formatted meeting time for a course.
+ * 
+ * @param schedule the schedule payload provided for the course
+ * @param location the location object for a course
+ */
 export const getMeetingTime = (schedule: string, location: { name: string }) => {
     if (schedule.trim() === '12:00am-12:00am')
         return 'Does not meet'
@@ -749,22 +797,60 @@ export const getMeetingTime = (schedule: string, location: { name: string }) => 
     return 'Unknown';
 }
 
+/**
+ * Returns the meeting room(s) for a given string.
+ * 
+ * For example, rooms are sometimes given as "GP 104GP 107"
+ * or simply as "ITE 134" depending on the course. This function
+ * returns an array of all the rooms it finds, even if there is
+ * only one room in the target string.
+ * 
+ * @param room the provided room string
+ */
 export const getMeetingRoom = (room: string) =>
     room
         .split(/([A-Z]{2,4}\s\d{1,4})/)
         .filter(str => !!str);
 
+/**
+ * Returns whether a given string is a valid course name.
+ * @param input the string to test
+ */
 export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.test(name);
 
+/**
+ * Attempts to retrieve an enum key from a valid enum value.
+ * 
+ * @param target the target enum
+ * @param value the value to search by
+ */
 export const getEnumKeyByEnumValue = (target: any, value: string) => {
     let keys = Object.keys(target).filter((x) => target[x] == value);
     return keys.length > 0 ? keys[0] : undefined;
 }
 
+/**
+ * Capitalizes the first letter of all words in a string.
+ * @param input the input string
+ */
 export const capitalizeFirst = (input: string) => input
     .split(' ')
     .map(str => str.charAt(0).toUpperCase() + str.slice(1))
-    .join('');
+    .join(' ');
+
+/**
+ * Flattens an array of any type into a single array.
+ * @param arr the array to flatten
+ */
+export const flatten = (arr: any[]) => [].concat.apply([], arr);
+
+/**
+ * Sums the elements of a number array.
+ * @param arr the array to sum
+ */
+export const sum = (arr: number[]) => arr
+    .filter(ent => !isNaN(ent))
+    .reduce((prev, cur) => cur + prev, 0);
 
 /**
  * Replaces all occurances of a given
@@ -795,9 +881,15 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
     return copy;
 }
 
-
+/**
+ * Generates either a JSX Element or a string
+ * representing the proper grading type for a course.
+ * 
+ * @param gradingType the grading type for the course
+ */
 export const matchGradingType = (gradingType: string): string | JSX.Element => {
-    let lower = gradingType.toLowerCase();
+    let lower = gradingType?.toLowerCase();
+    
     if (lower === 'graded')
         return <>
             <span className="text-primary-light cursor-pointer" id="tooltip-gradingType-graded">{GradingTypeNames.GRADED}</span>
@@ -834,8 +926,28 @@ export const matchGradingType = (gradingType: string): string | JSX.Element => {
     return gradingType;
 }
 
+/**
+ * Returns whether or not this service is running
+ * on the provided release stage.
+ * 
+ * @param target the release stage to check
+ */
 const isEnv = (target: 'development' | 'preview' | 'production') => (process.env.NEXT_PUBLIC_VERCEL_ENV || 'development') === target;
 
+/**
+ * Returns whether or not this service is running
+ * in a development environment.
+ */
 export const isDevelopment = () => isEnv('development');
+
+/**
+ * Returns whether or not this service is running
+ * in a preview (staging) environment.
+ */
 export const isPreview = () => isEnv('preview');
+
+/**
+ * Returns whether or not this service is running
+ * in production.
+ */
 export const isProd = () => isEnv('production');
