@@ -4,9 +4,10 @@ import Head from 'next/head';
 import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
+import { useStatistics } from '../hooks';
 import { ContentAreaNames } from '../util';
-import { Footer, Nav } from '../components';
 import { UncontrolledTooltip } from 'reactstrap';
+import { Footer, IconCardXl, Nav, StatisticSection } from '../components';
 
 const modifiers = [
     {
@@ -73,9 +74,66 @@ const modifiers = [
                 </>
     },
     
-]
+];
+
+const statMarkers = [
+    {
+        name: 'Courses',
+        icon: <i className="fa fa-book fa-fw"></i>,
+        iconColor: 'primary',
+        loading: true,
+        countUp: true,
+    },
+    {
+        name: 'Professors',
+        icon: <i className="fa fa-user-graduate fa-fw"></i>,
+        iconColor: 'primary',
+        loading: true,
+        countUp: true,
+    },
+    {
+        name: 'Classrooms',
+        icon: <i className="fa fa-chalkboard-teacher fa-fw"></i>,
+        iconColor: 'primary',
+        loading: true,
+        countUp: true,
+        key: 'rooms',
+    },
+    {
+        name: 'Buildings',
+        icon: <i className="fa fa-building fa-fw"></i>,
+        iconColor: 'primary',
+        loading: true,
+        countUp: true,
+    },
+    {
+        name: 'Assets',
+        icon: <i className="fa fa-file-invoice fa-fw"></i>,
+        iconColor: 'primary',
+        loading: true,
+        countUp: true,
+    },
+];
+
+interface InfoLinkProps {
+    display: string | JSX.Element;
+    href: string;
+    classes?: string;
+    newTab?: boolean;
+}
+
+const InfoLink: React.FC<InfoLinkProps> = ({ display, href, classes, newTab }) =>
+    <a
+        href={href}
+        className={`text-light ${styles.infoLink} shine ${classes}`}
+        target={newTab ? '_blank' : undefined}
+        rel={newTab ? 'noopener noreferrer' : undefined}>
+            {display}
+    </a>;
 
 const InfoPage = () => {
+    const { data, isLoading, isError } = useStatistics('full');
+
     return (
         <main>
             <Head>
@@ -106,7 +164,7 @@ const InfoPage = () => {
                             <i className="fa fa-file-import fa-fw"></i> Where our data comes from
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 Since UConn does not publicly expose an API of any sorts to retrieve course data, we built an npm package called Husky that allows anyone to query this information.
-                                Husky works by scraping the <a href="https://catalog.uconn.edu" className={`text-light ${styles.infoLink} shine`} target="_blank" rel="noopener noreferrer">course catalog</a> to compile the relevant information about courses.
+                                Husky works by scraping the <InfoLink display="course catalog" href="https://catalog.uconn.edu" newTab /> to compile the relevant information about courses.
                                 For more information, see the linked GitHub repository below.
                                 <br/>
                                 <a href="https://github.com/ilefa/husky" target="_blank" rel="noopener noreferrer" className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase">
@@ -116,8 +174,8 @@ const InfoPage = () => {
                             </span>
                         </h4>
                         
-                        <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
-                            <i className="fa fa-sort-alpha-up fa-fw"></i> Search modifiers
+                        <h4 className={`text-white ${styles.infoSectionTitle} mb-7`} id="search-modifiers">
+                            <i className="fa fa-sort-alpha-up fa-fw"></i> Search Modifiers
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 A search modifier is a term that is prepended with a plus sign - they may be chained together, and may be used as an entire search query by themselves; for example, just typing in <code className={styles.inlineModifier}>+w</code> will list every course that is marked as having a writing competency.
                                 Likewise, you can chain them together, so typing in <code className={styles.inlineModifier}>+ca1 +ca4</code> will list every course that covers both Content Areas 1 and 4. Additionally, you can use a keyword and modifier together to get even more accurate results.
@@ -136,6 +194,52 @@ const InfoPage = () => {
                                 }
                             </span>
                         </h4>
+
+                        <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
+                            <i className="fa fa-chart-bar fa-fw"></i> The Numbers
+                            <br/><span className={`text-white ${styles.infoSectionBody}`}>
+                                It's no secret that Cobalt handles a lot of data while serving requests - so we thought it would be cool to pair this data with our <InfoLink display="snapshot dataset" href="https://github.com/ilefa/snapshots" newTab /> in order to visualize this data semester-by-semester.
+                                {
+                                    isError && (
+                                        <IconCardXl headerText="Whoops" headerColor="text-danger" iconColor="bg-danger">
+                                            <span className="text-dark">
+                                                Hmm, an error occurred while retrieving statistics data from the web.
+                                                <br/>If this error continues to persist, please notify an ILEFA member.
+                                            </span>
+                                        </IconCardXl>
+                                    )
+                                }
+
+                                {
+                                    isLoading && (
+                                        <StatisticSection
+                                            className="background-circuits"
+                                            section={false}
+                                            statistics={
+                                                statMarkers.map(marker => ({ ...marker, amount: NaN }))
+                                            }
+                                        />
+                                    )
+                                }
+
+                                {
+                                    data && (
+                                        <StatisticSection
+                                            className="background-circuits"
+                                            section={false}
+                                            statistics={
+                                                statMarkers.map(marker => ({
+                                                    ...marker,
+                                                    amount: data[marker.key ?? marker.name.toLowerCase()],
+                                                    loading: false,
+                                                    change: 0
+                                                }))
+                                            }
+                                        />
+                                    )
+                                }
+                            </span>
+                        </h4>
                         
                         <h4 className={`text-white ${styles.infoSectionTitle}`}>
                             <i className="fa fa-balance-scale-left fa-fw"></i> Affiliations
@@ -146,7 +250,7 @@ const InfoPage = () => {
                         </h4>
                     </div>
                 </section>
-                <Footer white={true} />
+                <Footer className="background-circuits" white />
             </div>
         </main>
     );

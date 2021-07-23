@@ -11,11 +11,12 @@ import {
 export interface FooterProps {
     white?: boolean;
     noBackground?: boolean;
+    className?: string;
 }
 
-export const Footer: React.FC<FooterProps> = ({ white, noBackground }) => {
+export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }) => {
     return (
-        <footer className={`footer${white ? noBackground ? '' : ' ' : ''}`}>
+        <footer className={`footer ${className ?? ''} ${white ? noBackground ? '' : ' ' : ''}`}>
             <Container className="container-lg">
                 <Row className="align-items-center justify-content-md-between">
                     <div className="col-6">

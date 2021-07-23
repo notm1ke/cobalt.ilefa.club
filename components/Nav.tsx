@@ -4,6 +4,7 @@ import Image from 'next/image';
 import styles from './styling/nav.module.css';
 
 import { useState } from 'react';
+import { isDevelopment } from '../util';
 
 import {
     DropdownItem,
@@ -30,6 +31,7 @@ type NavElement = {
     icon: string;
     href: string;
     key: string;
+    devOnly?: boolean;
     dropdown?: {
         mode: DropdownMode;
         items: NavDropdown[];
@@ -49,37 +51,45 @@ const ELEMENTS: NavElement[] = [
         href: '/buildings',
         key: 'buildings',
     },
-    // {
-    //     name: 'transport',
-    //     icon: 'fa fa-bus-alt',
-    //     href: '/transport',
-    //     key: 'transport',
-    //     dropdown: {
-    //         mode: 'icons',
-    //         items: [
-    //             {
-    //                 name: 'Busses',
-    //                 href: '/busses',
-    //                 icon: <i className="fa fa-bus-alt fa-fw"></i>,
-    //                 color: 'bg-primary',
-    //                 content: 'Explore all information regarding the campus bus system.',
-    //             },
-    //             {
-    //                 name: 'Parking',
-    //                 href: '/parking',
-    //                 icon: <i className="fa fa-parking fa-fw"></i>,
-    //                 color: 'bg-primary',
-    //                 content: 'Explore all information regarding parking on campus.',
-    //             }
-    //         ]
-    //     }
-    // },
+    {
+        name: 'transport',
+        icon: 'fa fa-bus-alt',
+        href: '/transport',
+        key: 'transport',
+        devOnly: true,
+        dropdown: {
+            mode: 'icons',
+            items: [
+                {
+                    name: 'Busses',
+                    href: '/busses',
+                    icon: <i className="fa fa-bus-alt fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore all information regarding the campus bus system.',
+                },
+                {
+                    name: 'Parking',
+                    href: '/parking',
+                    icon: <i className="fa fa-parking fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore all information regarding parking on campus.',
+                }
+            ]
+        }
+    },
+    {
+        name: 'snapshots',
+        icon: 'fa fa-history',
+        href: '/snapshots',
+        key: 'snapshots',
+        devOnly: true,
+    },
     {
         name: 'information',
         icon: 'fa fa-info-circle',
         href: '/info',
         key: 'information',
-    },
+    }
 ];
 
 export const Nav = () => {
@@ -132,6 +142,9 @@ export const Nav = () => {
                         <ul className="navbar-nav align-items-lg-center ml-lg-auto">
                             {
                                 ELEMENTS.map(element => {
+                                    if (element.devOnly && !isDevelopment())
+                                        return;
+
                                     if (element.dropdown && element.dropdown.mode === 'icons') {
                                         return <UncontrolledDropdown nav>
                                             <DropdownToggle nav className={styles.navLink}>
@@ -169,7 +182,8 @@ export const Nav = () => {
                                                     element.dropdown.items.map(item =>
                                                         <DropdownItem to={item.href} tag={Link}>
                                                             {item.name}
-                                                        </DropdownItem>)
+                                                        </DropdownItem>
+                                                    )
                                                 }
                                             </DropdownMenu>
                                         </UncontrolledDropdown>

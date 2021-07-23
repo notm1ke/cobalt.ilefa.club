@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import styles from './styling/building.module.css';
-import cardStyles from './styling/card.module.css';
+import styles from '../styling/building.module.css';
+import cardStyles from '../styling/card.module.css';
 
-import { capitalizeFirst, getIconForRoom } from '../util';
+import { capitalizeFirst, getIconForRoom } from '../../util';
 import { BoardType, Classroom, SeatingType, TechType } from '@ilefa/husky';
 
 export interface BuildingRoomCardProps {
@@ -28,10 +28,10 @@ export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = props => {
                             </Link>
                         </h5>
 
-                        {/* capacity, video conference capabilities, lecture capture/livestream */}
                         <p className="text-dark">
                             <b>{prettyName}</b> can seat <b>{room.capacity.full} {room.capacity.full === 1 ? 'person' : 'people'}</b>.
                         </p>
+                        
                         <p className="text-dark mb-4">
                             <b>Technical Facts:</b>
                             <ul>

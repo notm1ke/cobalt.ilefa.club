@@ -183,6 +183,13 @@ export const RMP_TAG_CONS = [
 export const ROOM_NAME_REGEX = /^[a-zA-Z]{1,}\d{2,}[a-zA-Z]*$/;
 export const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
 
+export type StatisticsQueryMode = 'full'
+                                | 'courses'
+                                | 'professors'
+                                | 'rooms'
+                                | 'buildings'
+                                | 'assets';
+
 export type RoomQueryMode = 'full' | 'name';
 export type CompleteRoomPayload = Classroom & {
     building: {
@@ -746,6 +753,20 @@ export const isValidRoomQueryMode = (input: string): input is RoomQueryMode => {
 }
 
 /**
+ * Typeguard to verify that a string is a valid {@link StatisticsQueryMode}.
+ * @param input the string to verify
+ */
+export const isValidStatisticsQueryMode = (input: string): input is StatisticsQueryMode => {
+    let lower = input.toLowerCase();
+    return lower === 'full'
+        || lower === 'courses'
+        || lower === 'professors'
+        || lower === 'rooms'
+        || lower === 'buildings'
+        || lower === 'assets';
+}
+
+/**
  * Returns the campus indicator for the provided
  * campus string.
  * 
@@ -762,6 +783,29 @@ export const getCampusIndicator = (campus: string) => {
         return 'A';
 
     return '?';
+}
+
+/**
+ * Returns the name of the last semester
+ * depending on the current time.
+ */
+export const getLastSemester = (): string => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    if (month >= 0 && month <= 4)
+        return 'fall ' + (year - 1);
+    return 'spring ' + year;
+}
+
+/**
+ * Ensures a number exists, since simply doing ``!!int`` or ``int``
+ * will not always work (namely with ``0``, since ``!!0`` is false).
+ * 
+ * @param int the number to check
+ */
+export const numberProvided = (int: number | undefined | null) => {
+    return int !== null && int !== undefined && int !== NaN;
 }
 
 /**
@@ -827,6 +871,24 @@ export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.tes
 export const getEnumKeyByEnumValue = (target: any, value: string) => {
     let keys = Object.keys(target).filter((x) => target[x] == value);
     return keys.length > 0 ? keys[0] : undefined;
+}
+
+/**
+ * Infers the expected icon for a given string or element.
+ * 
+ * @param input the inputted icon string or element
+ * @param classes [optional] the classes to add to the icon if it is a string
+ */
+export const inferIcon = (input: string | JSX.Element, classes = 'fa-fw') => {
+    if (input instanceof String) {
+        let prefix = 'fa';
+        if (input.startsWith('mdi'))
+            prefix = 'mdi';
+
+        return <i className={`${prefix} ${input} ${classes}`}></i>
+    }
+
+    return input;
 }
 
 /**

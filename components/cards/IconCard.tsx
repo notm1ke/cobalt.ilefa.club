@@ -1,4 +1,4 @@
-import styles from './styling/card.module.css';
+import styles from '../styling/card.module.css';
 
 import { ReactElement } from 'react';
 

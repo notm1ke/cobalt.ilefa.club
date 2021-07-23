@@ -1,7 +1,7 @@
 {
   "name": "cobalt.ilefa.club",
-  "version": "1.0.0",
-  "description": "A suite of better course tools built by UConn students, for UConn students.",
+  "version": "2.0.0",
+  "description": "An intelligent suite of tools built by UConn students, for UConn students.",
   "repository": {
     "type": "git",
     "url": "git@github.com:notm1ke/cobalt.ilefa.club"
@@ -10,6 +10,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "start:prod": "NEXT_PUBLIC_VERCEL_ENV=production next",
+    "start:staging": "NEXT_PUBLIC_VERCEL_ENV=preview next",
     "type-check": "tsc"
   },
   "dependencies": {
@@ -30,6 +32,7 @@
     "react": "^17.0.1",
     "react-autocomplete": "^1.8.1",
     "react-autosuggest": "^10.1.0",
+    "react-countup": "^4.4.0",
     "react-data-table-component": "^6.11.7",
     "react-dom": "^17.0.1",
     "react-isolated-scroll": "^0.1.1",

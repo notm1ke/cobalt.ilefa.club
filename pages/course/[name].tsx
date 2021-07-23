@@ -184,12 +184,12 @@ const CourseInspection = () => {
                         </div>
                     </div>
                 </div>
-                <section className={`section ${styles.sectionSeperator} background-circuits`}>
+                <section className={`section ${styles.sectionSeparator} background-circuits`}>
                     <div className="container">
                         <div className="row justify-content-center">
                             <div className="col-lg-12">
                                 <div className="row row-grid">
-                                    <div className="col-lg-3 pr-0">
+                                    <div className={`col-lg-3 ${styles.pr0}`}>
                                         <div className="card shadow border-0">
                                             <div className="card-body py-10">
                                                 {
@@ -268,7 +268,7 @@ const CourseInspection = () => {
                         </div>
                     </div>
                 </section>
-                <Footer white={true} />
+                <Footer className="background-circuits" white />
             </div>
         </main>
     );

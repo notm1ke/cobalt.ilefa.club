@@ -1,6 +1,4 @@
-import styles from './styling/card.module.css';
-
-import { ReactElement } from 'react';
+import styles from '../styling/card.module.css';
 
 export interface IconCardXlProps {
     icon?: string;
@@ -9,7 +7,6 @@ export interface IconCardXlProps {
     headerHref?: string;
     headerShine?: boolean;
     headerColor?: string;
-    content: ReactElement | string;
 }
 
 export const IconCardXl: React.FC<IconCardXlProps> = props => {
@@ -19,7 +16,6 @@ export const IconCardXl: React.FC<IconCardXlProps> = props => {
     let headerHref = props.headerHref || undefined;
     let headerShine = props.headerShine || false;
     let headerColor = props.headerColor || 'text-primary';
-    let content = props.content || 'Icon Card Content';
 
     return (
         <div className="col-lg-12 align-items-stretch">
@@ -40,7 +36,7 @@ export const IconCardXl: React.FC<IconCardXlProps> = props => {
                                     : headerText
                                 }
                             </h5>
-                            { content }
+                            { props.children }
                         </div>
                     </div>
                 </div>

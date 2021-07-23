@@ -4,7 +4,7 @@
     margin-bottom: 3px;
 }
 
-.sectionSeperator {
+.sectionSeparator {
     margin-top: -9rem !important;
 }
 
@@ -294,4 +294,16 @@
 
 .statisticCollapse {
     margin-top: 15px;
+}
+
+@media screen and (min-width: 575px) {
+    .pr0 {
+        padding-right: 0 !important;
+    }
+}
+
+@media screen and (min-width: 574px) {
+    .pr0 {
+        padding-right: unset !important;
+    }
 }

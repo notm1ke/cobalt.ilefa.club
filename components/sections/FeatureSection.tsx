@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './styling/card.module.css';
+import styles from '../styling/section.module.css';
 
 import { Badge } from 'reactstrap';
 

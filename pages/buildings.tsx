@@ -117,7 +117,7 @@ const BuildingsPage = () => {
                         }
                     </div>
                 </section>
-                <Footer white={true} />
+                <Footer className="background-circuits" white />
             </div>
         </main>
     );

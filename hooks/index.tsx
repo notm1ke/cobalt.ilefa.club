@@ -4,3 +4,4 @@ export * from './useCourseList';
 export * from './useProfessor';
 export * from './useProfessors';
 export * from './useRoom';
+export * from './useStatistics';

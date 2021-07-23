@@ -42,7 +42,7 @@ type Modifiers = 'ca1'
 
 export const CobaltSearch = () => {
     const router = useRouter();
-    
+
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const [errored, setErrored] = useState(false);
@@ -212,13 +212,18 @@ export const CobaltSearch = () => {
                     <>
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>
-                                <MdiIcon className={errored ? 'text-danger' : ''} path={
-                                    loading
-                                        ? mdiLoading
-                                        : errored
-                                            ? mdiAlert
-                                            : mdiMagnify
-                                } spin={loading} size="20px" />
+                                <MdiIcon
+                                    spin={loading}
+                                    size="20px"
+                                    className={errored ? 'text-danger' : ''}
+                                    path={
+                                        loading
+                                            ? mdiLoading
+                                            : errored
+                                                ? mdiAlert
+                                                : mdiMagnify
+                                    }
+                                />
                             </InputGroupText>
                         </InputGroupAddon>
                         <div className={styling.inputBoxRadius}>
@@ -255,14 +260,14 @@ export const CobaltSearch = () => {
                 inputProps={{
                     value: query,
                     disabled: !enabled,
-                    type: "text",
+                    type: 'text',
                     placeholder: 'Search for any course..',
                     className: `form-control-alternative form-control`,
                     onChange,
                     onKeyUp: e => onKeyUp(e, suggestions),
                 }}
                 theme={styling}
-                id={'cobalt-search'}
+                id="cobalt-search"
             />
         </FormGroup>
     )
