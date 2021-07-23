@@ -137,3 +137,12 @@
     background-color: #fff !important;
     opacity: unset !important;
 }
+
+@media screen and (min-width: 320px) {
+    .card-deck {
+        display: flex;
+        flex-flow: row wrap;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}
