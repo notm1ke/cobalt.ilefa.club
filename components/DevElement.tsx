@@ -5,11 +5,8 @@ export interface DevElementProps {
 }
 
 export const DevElement: React.FC<DevElementProps> = ({ allowStaging, children }) => {
-    if (allowStaging && !isPreview())
-        return <></>;
+    if (isDevelopment() || allowStaging && isPreview())
+        return <>{children}</>;
 
-    if (!allowStaging && !isDevelopment())
-        return <></>;
-
-    return <>{children}</>;
+    return <></>;
 }
