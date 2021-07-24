@@ -1,7 +1,8 @@
 import React from 'react';
 import MdiIcon from '@mdi/react';
-import * as Icons from '@mdi/js';
 import styles from '../styling/inspection.module.css';
+
+import * as Icons from '@mdi/js';
 
 import { useState } from 'react';
 import { useProfessor } from '../../hooks';
@@ -55,9 +56,11 @@ const retakeRateColor = (percent: number) => {
     return styles.ratingRedText;
 }
 
+const round = (num: number) => Math.round(num * 100) / 100;
+
 const generateRatingBadge = (rating: number) => (
     <Badge className={`${ratingBadgeColor(rating)} ${styles.rating} ml-1`} pill>
-        { isNaN(rating) ? 'N/A' : addTrailingDecimal(rating) }
+        { isNaN(rating) ? 'N/A' : addTrailingDecimal(round(rating)) }
     </Badge>
 );
 
@@ -135,7 +138,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show })
                         <p>
                             <span onClick={toggle}>Click to {active ? 'hide' : 'reveal'} professor report.</span>
                             <Collapse isOpen={active} className={styles.statisticCollapse}>
-                                <p><b>{professor.name}</b> was scored <span className={`${ratingBadgeColor(data.average, true)} font-weight-500`}>{addTrailingDecimal(data.average)}/5.0</span> based on <b>{data.ratings} rating{data.ratings === 1 ? '' : 's'}</b>.</p>
+                                <p><b>{professor.name}</b> was scored <span className={`${ratingBadgeColor(round(data.average), true)} font-weight-500`}>{addTrailingDecimal(round(data.average))}/5.0</span> based on <b>{data.ratings} rating{data.ratings === 1 ? '' : 's'}</b>.</p>
                                 <p>Difficulty Score: <b className={difficultyColor(data.difficulty)}>{addTrailingDecimal(data.difficulty)}/5.0</b></p>
                                 <p>Would Retake: <b className={retakeRateColor(data.takeAgain)}>{data.takeAgain}%</b></p><br/>
 
