@@ -35,7 +35,7 @@ export const FeatureSection: React.FC<FeatureSectionProps> = props => (
                         <ul className="list-unstyled mt-5">
                             {
                                 props.tags.map(tag => 
-                                    <li className="py-2">
+                                    <li className="py-2" key={tag.display}>
                                         <div className="d-flex align-items-center">
                                             <div><Badge className="badge-circle mr-3" color={tag.color}>{tag.icon}</Badge></div>
                                             <div><h6 className="mb-0 text-white">{tag.display}</h6></div>

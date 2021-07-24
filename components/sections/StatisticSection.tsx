@@ -64,6 +64,7 @@ export const StatisticSection: React.FC<StatisticSectionProps> = ({ statistics, 
                         <div className={`card-deck ${styles.cardDeckFlex} ${styles.cardDeckTop} col-sm-12`}>
                             {statistics.map(statistic => (
                                 <StatisticCard
+                                    key={statistic.name}
                                     name={statistic.name}
                                     amount={statistic.amount}
                                     icon={statistic.icon}
@@ -83,6 +84,7 @@ export const StatisticSection: React.FC<StatisticSectionProps> = ({ statistics, 
                 <div className={`card-deck ${styles.cardDeckFlex} ${styles.cardDeckTop}`}>
                     {statistics.map(statistic => (
                         <StatisticCard
+                            key={statistic.name}
                             name={statistic.name}
                             amount={statistic.amount}
                             icon={statistic.icon}

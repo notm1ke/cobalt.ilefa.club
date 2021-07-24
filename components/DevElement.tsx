@@ -1,7 +1,14 @@
-import { isDevelopment } from '../util'
+import { isDevelopment, isPreview } from '../util'
 
-export const DevElement = ({ children }) => {
-    if (!isDevelopment())
+export interface DevElementProps {
+    allowStaging?: boolean;
+}
+
+export const DevElement: React.FC<DevElementProps> = ({ allowStaging, children }) => {
+    if (allowStaging && !isPreview())
+        return <></>;
+
+    if (!allowStaging && !isDevelopment())
         return <></>;
 
     return <>{children}</>;

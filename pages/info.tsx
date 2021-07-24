@@ -5,9 +5,9 @@ import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
 import { useStatistics } from '../hooks';
-import { ContentAreaNames } from '../util';
+import { ContentAreaNames, getLatestTimeValue } from '../util';
 import { UncontrolledTooltip } from 'reactstrap';
-import { Footer, IconCardXl, Nav, StatisticSection } from '../components';
+import { DevElement, Footer, IconCardXl, Nav, StatisticSection } from '../components';
 
 const modifiers = [
     {
@@ -184,8 +184,8 @@ const InfoPage = () => {
                                 <br/>
                                 {
                                     modifiers.map(modifier => (
-                                        <span className={styles.modifier}>
-                                            <code key={modifier.name} id={`tooltip-${modifier.name}`}>{modifier.name}</code>{" "}
+                                        <span className={styles.modifier} key={modifier.name}>
+                                            <code id={`tooltip-${modifier.name}`}>{modifier.name}</code>{" "}
                                             <UncontrolledTooltip delay={0} placement="top" target={`tooltip-${modifier.name}`}>
                                                 {modifier.tooltip}
                                             </UncontrolledTooltip>
@@ -241,6 +241,21 @@ const InfoPage = () => {
                             </span>
                         </h4>
                         
+                        <DevElement allowStaging>
+                            <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
+                                <i className="fa fa-laptop-code fa-fw"></i> Service Information
+                                <br/><span className={`text-white ${styles.infoSectionBody}`}>
+                                    This instance of Cobalt is running version <b>{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} ({process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : process.env.NEXT_PUBLIC_DEVICE ?? 'unknown'}</b>.
+                                    <ul className={`mt-3 no-li-decoration ${styles.internalInfo}`}>
+                                        <li><i className="fab fa-github fa-fw"></i> <b>Repository:</b> <InfoLink display="@ilefa/websites ➔ cobalt" href="https://github.com/notm1ke/cobalt.ilefa.club" newTab /></li>
+                                        <li><i className="fa fa-clock fa-fw"></i> <b>Uptime:</b> {process.env.NEXT_PUBLIC_START ? getLatestTimeValue((Date.now() - parseInt(process.env.NEXT_PUBLIC_START || '0') * 1000)) : 'unknown'}</li>
+                                        <li><i className="fa fa-code-branch fa-fw"></i> <b>Release Channel:</b> {process.env.NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL || 'unknown'}</li>
+                                        <li><i className="fa fa-comment-alt fa-fw"></i> <b>Commit Message:</b> {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE || 'unknown'}</li>
+                                    </ul>
+                                </span>
+                            </h4>
+                        </DevElement>
+
                         <h4 className={`text-white ${styles.infoSectionTitle}`}>
                             <i className="fa fa-balance-scale-left fa-fw"></i> Affiliations
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>

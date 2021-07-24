@@ -944,6 +944,46 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
 }
 
 /**
+ * Retrieves the formatted duration string
+ * for the given millis duration input.
+ * 
+ * @param time the time in milliseconds
+ */
+ export const getLatestTimeValue = (time: number) => {
+    let sec = Math.trunc(time / 1000) % 60;
+    let min = Math.trunc(time / 60000 % 60);
+    let hrs = Math.trunc(time / 3600000 % 24);
+    let days = Math.trunc(time / 86400000 % 30.4368);
+    let mon = Math.trunc(time / 2.6297424E9 % 12.0);
+    let yrs = Math.trunc(time / 3.15569088E10);
+
+    let y = `${yrs}y`;
+    let mo = `${mon}mo`;
+    let d = `${days}d`;
+    let h = `${hrs}h`;
+    let m = `${min}m`;
+    let s = `${sec}s`;
+
+    let result = '';
+    if (yrs !== 0) result += `${y}, `;
+    if (mon !== 0) result += `${mo}, `;
+    if (days !== 0) result += `${d}, `;
+    if (hrs !== 0) result += `${h}, `;
+    if (min !== 0) result += `${m}, `;
+    
+    result = result.substring(0, Math.max(0, result.length - 2));
+    if ((yrs !== 0 || mon !== 0 || days !== 0 || min !== 0 || hrs !== 0) && sec !== 0) {
+        result += ', ' + s;
+    }
+
+    if (yrs === 0 && mon === 0 && days === 0 && hrs === 0 && min === 0) {
+        result += s;
+    }
+
+    return result.trim();
+}
+
+/**
  * Generates either a JSX Element or a string
  * representing the proper grading type for a course.
  * 

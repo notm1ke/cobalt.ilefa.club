@@ -30,7 +30,7 @@ export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course }) => {
                 distinct
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .sort((a, b) => Number(b.rmpIds.length > 0) - Number(a.rmpIds.length > 0))
-                    .map(professor => <ProfessorView professor={professor} rmp={professor.rmpIds.length > 0} show={distinct.length === 1} />)
+                    .map(professor => <ProfessorView professor={professor} key={professor.name} rmp={professor.rmpIds.length > 0} show={distinct.length === 1} />)
             }
         </>
     )

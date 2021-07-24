@@ -7,11 +7,11 @@
     "url": "git@github.com:notm1ke/cobalt.ilefa.club"
   },
   "scripts": {
-    "dev": "next",
+    "dev": "NEXT_PUBLIC_VERCEL_ENV=development NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
     "build": "next build",
     "start": "next start",
     "start:prod": "NEXT_PUBLIC_VERCEL_ENV=production next",
-    "start:staging": "NEXT_PUBLIC_VERCEL_ENV=preview next",
+    "start:staging": "NEXT_PUBLIC_VERCEL_ENV=preview NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
     "type-check": "tsc"
   },
   "dependencies": {

@@ -27,3 +27,7 @@
 .inlineModifier {
     margin: 3px;
 }
+
+.internalInfo {
+    margin-left: -2.6rem !important;
+}
