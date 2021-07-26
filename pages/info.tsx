@@ -184,16 +184,11 @@ const InfoPage = () => {
                                 <br/>
                                 {
                                     modifiers.map(modifier => (
-                                        <span className={styles.modifier} key={modifier.name}>
-                                            wait  - compiling...
-event - compiled successfully
-wait  - compiling...
-event - compiled successfully
-wait  - compiling...
-event - compiled successfully
-wait  - compiling...
-event - compiled successfully
-
+                                        <span className={styles.modifier}>
+                                            <code key={modifier.name} id={`tooltip-${modifier.name}`}>{modifier.name}</code>{" "}
+                                            <UncontrolledTooltip delay={0} placement="top" target={`tooltip-${modifier.name}`}>
+                                                {modifier.tooltip}
+                                            </UncontrolledTooltip>
                                         </span>
                                     ))
                                 }
