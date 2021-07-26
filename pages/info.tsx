@@ -185,10 +185,15 @@ const InfoPage = () => {
                                 {
                                     modifiers.map(modifier => (
                                         <span className={styles.modifier} key={modifier.name}>
-                                            <code id={`tooltip-${modifier.name}`}>{modifier.name}</code>{" "}
-                                            <UncontrolledTooltip delay={0} placement="top" target={`tooltip-${modifier.name}`}>
-                                                {modifier.tooltip}
-                                            </UncontrolledTooltip>
+                                            wait  - compiling...
+event - compiled successfully
+wait  - compiling...
+event - compiled successfully
+wait  - compiling...
+event - compiled successfully
+wait  - compiling...
+event - compiled successfully
+
                                         </span>
                                     ))
                                 }

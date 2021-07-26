@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '../styling/inspection.module.css';
 
 import { CompleteCoursePayload, ContentAreaNames } from '../../util';
+import { DevElement } from '../DevElement';
 
 export interface OverviewTabProps {
     data: CompleteCoursePayload;
@@ -31,6 +32,10 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => (
             )
         }
         <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-tasks fa-fw"></i> Prerequisites</pre>
-        <p className={styles.descriptionLast}>{data.prerequisites}</p>
+        <p className={styles.description}>{data.prerequisites}</p>
+        <DevElement>
+            <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-history fa-fw"></i> Snapshots</pre>
+            <p className={styles.descriptionLast}>There are no snapshots available for <b>{data.name}</b>.</p>
+        </DevElement>
     </div>
 )

@@ -8,7 +8,7 @@ import Classrooms from '@ilefa/husky/classrooms.json';
 import { ErrorTab } from '.';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import { Collapse } from 'reactstrap';
+import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { mdiChevronDown } from '@mdi/js';
 import { SectionData } from '@ilefa/husky';
 import { IDataTableColumn } from 'react-data-table-component';
@@ -151,13 +151,30 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             name: 'Professor',
             selector: 'instructor',
             format: (row, _i) => row.instructor.trim().length ? row.instructor.replace('<br>', ' ').replace('&nbsp;', ' ') : 'Unknown',
-            sortable: true
+            sortable: true,
+            grow: 0.5,
         },
         {
             name: 'Schedule',
             selector: 'schedule',
             format: (row, i) => getMeetingTime(row.schedule.trim(), sections[i].location),
             sortable: true
+        },
+        {
+            name: 'Enrollment',
+            selector: 'enrollment.current',
+            sortable: true,
+            grow: 0,
+            format: (row, _i) => <span className={row.enrollment.full ? 'text-danger' : 'text-success'}>
+                                    {row.enrollment.current + '/' + row.enrollment.max} {row.enrollment.waitlist
+                                        ?   <>
+                                                <span className="text-primary" id={`tooltip-${row.section}`}>(+{row.enrollment.waitlist})</span>{" "}
+                                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-${row.section}`}>
+                                                    Waitlist Spaces: <b>{row.enrollment.waitlist}</b>
+                                                </UncontrolledTooltip>
+                                            </>
+                                        : ''}
+                                 </span>
         }
     ];
 
