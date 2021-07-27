@@ -2,7 +2,7 @@ import CourseMappings from '@ilefa/husky/courses.json';
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { CompleteCoursePayload, CourseAttributes, isValidCampus } from '../../../util';
-import { CampusType, COURSE_IDENTIFIER, searchCourse, SearchParts } from '@ilefa/husky';
+import { CampusType, COURSE_IDENTIFIER, getRawEnrollment, searchCourse, SearchParts } from '@ilefa/husky';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method && req.method !== 'GET')
@@ -10,6 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(405)
             .json({ message: 'Method not allowed' });
 
+    let start = Date.now();
     let { name, campus, bare, initial } = req.query;
     if (name instanceof Array || campus instanceof Array || bare instanceof Array || initial instanceof Array)
         return res
@@ -45,6 +46,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(404)
             .json({ message: 'Course not found' });
 
+    let patchedSections = await Promise.all(course.sections.map(async section => {
+        let enrollment = await getRawEnrollment(section.internal.termCode, section.internal.classNumber, section.internal.classSection);
+
+        return {
+            ...section,
+            enrollment: {
+                max: enrollment.total,
+                current: enrollment.available,
+                waitlist: section.enrollment.waitlist,
+                full: enrollment.overfill,
+            }
+        }
+    }));
+
     let payload: CompleteCoursePayload = {
         name: mappings.name,
         catalogName: mappings.catalogName,
@@ -54,11 +69,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         credits: parseInt(course.credits),
         prerequisites: course.prereqs,
         description: course.description,
-        sections: course.sections,
+        sections: patchedSections,
         professors: course.professors
     }
 
     return res
         .status(200)
-        .json(payload);
+        .json({
+            ...payload,
+            timings: Date.now() - start,
+        });
 }

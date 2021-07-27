@@ -7,21 +7,30 @@ import IsolatedScroll from 'react-isolated-scroll';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { CoursePayload, useCourseList } from '../hooks';
-import { FormGroup, InputGroupAddon, InputGroupText } from 'reactstrap'
 import { ContentArea, getIconForCourse, isValidCourseName } from '../util';
 import { ChangeEvent, SuggestionSelectedEventData } from 'react-autosuggest';
 
 import {
+    FormGroup,
+    InputGroupAddon,
+    InputGroupText,
+    UncontrolledTooltip
+} from 'reactstrap';
+
+import {
     mdiAlert,
+    mdiBackspace,
     mdiBeakerOutline,
     mdiFileDocumentEditOutline,
+    mdiHammerWrench,
     mdiLoading,
     mdiMagnify,
     mdiNumeric1Box,
     mdiNumeric2Box,
     mdiNumeric3Box,
     mdiNumeric4Box,
-    mdiNumeric4BoxMultiple
+    mdiNumeric4BoxMultiple,
+    mdiSprout
 } from '@mdi/js';
 
 type AttributeSymbol = {
@@ -40,6 +49,76 @@ type Modifiers = 'ca1'
                | 'q'
                | 'e';
 
+const modifierNames = {
+    ca1: 'Content Area 1',
+    ca2: 'Content Area 2',
+    ca3: 'Content Area 3',
+    ca4: 'Content Area 4',
+    ca4int: 'Content Area 4 (International)',
+    lab: 'Lab (L)',
+    w: 'Writing (W)',
+    q: 'Quantitative (Q)',
+    e: 'Environmental (E)'
+}
+
+const icons = {
+    ca1: mdiNumeric1Box,
+    ca2: mdiNumeric2Box,
+    ca3: mdiNumeric3Box,
+    ca4: mdiNumeric4Box,
+    ca4int: mdiNumeric4BoxMultiple,
+    lab: mdiSprout,
+    w: mdiHammerWrench,
+    q: mdiFileDocumentEditOutline,
+    e: mdiSprout
+}
+
+const defaultAdvancedProps = {
+    ca1: false,
+    ca2: false,
+    ca3: false,
+    ca4: false,
+    ca4int: false,
+    lab: false,
+    w: false,
+    q: false,
+    e: false
+}
+
+interface AdvancedSearchComponentProps {
+    show: boolean;
+    has: (param: Modifiers) => boolean;
+    toggle: (param: Modifiers) => void;
+    clear: () => void;
+}
+
+const AdvancedSearchComponent: React.FC<AdvancedSearchComponentProps> = ({ show, has, toggle, clear }) => (
+    <div className={`card ${styling.advancedInputCard} ${show ? '' : styling.hideAdvancedInput}`}>
+        <div className={`row pt--1 pb-2 ${styling.advancedInputCardBorder}`}>
+            {
+                Object.keys(icons).map(key => (
+                    <div className="col col-md-1 col-auto cursor-pointer shine" key={key} onClick={() => toggle(key as Modifiers)}>
+                        <span id={`tooltip-adv-${key}`}>
+                            <MdiIcon path={icons[key]} size={'23px'} className={has(key as Modifiers) ? 'text-primary' : 'text-dark'} />
+                        </span>
+                        <UncontrolledTooltip delay={0} placement="top" target={`tooltip-adv-${key}`}>
+                            {modifierNames[key]}
+                        </UncontrolledTooltip>
+                    </div>
+                ))
+            }
+            <div className="col col-md-1 col-auto mx-md-auto cursor-pointer shine" onClick={() => clear()}>
+                <span id="tooltip-adv-clear">
+                    <MdiIcon path={mdiBackspace} size={'23px'} className="text-danger" />
+                </span>
+                <UncontrolledTooltip delay={0} placement="top" target="tooltip-adv-clear">
+                    Clear all filters
+                </UncontrolledTooltip>
+            </div>
+        </div>
+    </div>
+)
+
 export const CobaltSearch = () => {
     const router = useRouter();
 
@@ -47,12 +126,30 @@ export const CobaltSearch = () => {
     const [loading, setLoading] = useState(false);
     const [errored, setErrored] = useState(false);
     const [suggestions, setSuggestions] = useState([] as CoursePayload[]);
-    
+    const [showAdvanced, setShowAdvanced] = useState(false);
+    const [advancedOpts, setAdvancedOpts] = useState(defaultAdvancedProps);
+
+    const hasAdvanced = (opt: Modifiers) => advancedOpts[opt];
+    const clearAdvanced = () => setAdvancedOpts(defaultAdvancedProps);
+
+    const toggleAdvanced = (opt: Modifiers) => {
+        setAdvancedOpts({
+            ...advancedOpts,
+            [opt]: !advancedOpts[opt]
+        });
+
+        setSuggestions(suggestFor(query));
+    }
+
     const { data, isLoading, isError } = useCourseList();
     
     const onClear = () => setSuggestions([]);
     const onChange = (_: any, { newValue }: ChangeEvent) => setQuery(newValue);
-    const onRequest = ({ value }: { value: string }) => setSuggestions(suggestFor(value));
+    const onRequest = ({ value }: { value: string }) => {
+        setShowAdvanced(false);
+        setSuggestions(suggestFor(value));
+    }
+
     const onSelect = (_: any, { suggestionValue }: SuggestionSelectedEventData<CoursePayload>) => {
         setLoading(true);
         router.push(`/course/${suggestionValue}`);
@@ -67,11 +164,17 @@ export const CobaltSearch = () => {
     ];
 
     const suggestFor = (input: string) => {
-        let modifiers = input
-            .split(' ')
-            .filter(input => input.startsWith('+'))
-            .map(token => token.substring(1))
-            .filter(isValidModifier);
+        let modifiers = [
+            ...input
+                .split(' ')
+                .filter(input => input.startsWith('+'))
+                .map(token => token.substring(1))
+                .filter(isValidModifier),
+            ...Object
+                .keys(advancedOpts)
+                .filter(opt => advancedOpts[opt])
+                .filter(isValidModifier)
+        ];
 
         if (!data)
             return [];
@@ -183,6 +286,9 @@ export const CobaltSearch = () => {
     }
 
     const onKeyUp = (e: any, suggestions: CoursePayload[]) => {
+        if (showAdvanced)
+            setShowAdvanced(false);
+
         if (e.keyCode !== 13 && !errored)
             return;
 
@@ -212,22 +318,30 @@ export const CobaltSearch = () => {
                     <>
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>
-                                <MdiIcon
-                                    spin={loading}
-                                    size="20px"
-                                    className={errored ? 'text-danger' : ''}
-                                    path={
-                                        loading
-                                            ? mdiLoading
-                                            : errored
-                                                ? mdiAlert
-                                                : mdiMagnify
-                                    }
-                                />
+                                <span onClick={() => setShowAdvanced(!showAdvanced)}>
+                                    <MdiIcon
+                                        spin={loading}
+                                        size="20px"
+                                        className={'text-gray cursor-pointer shine ' + (errored ? 'text-danger' : '')}
+                                        path={
+                                            loading
+                                                ? mdiLoading
+                                                : errored
+                                                    ? mdiAlert
+                                                    : mdiMagnify
+                                        }
+                                    />
+                                </span>
                             </InputGroupText>
                         </InputGroupAddon>
                         <div className={styling.inputBoxRadius}>
                             <input {...inputProps} />
+                            <AdvancedSearchComponent
+                                show={showAdvanced}
+                                has={hasAdvanced}
+                                toggle={toggleAdvanced}
+                                clear={clearAdvanced}
+                            />
                         </div>
                     </>
                 )}
@@ -255,7 +369,7 @@ export const CobaltSearch = () => {
                     )
                 }}
                 containerProps={{
-                    className: "input-group-alternative mb-4 input-group"
+                    className: 'input-group-alternative mb-4 input-group'
                 }}
                 inputProps={{
                     value: query,

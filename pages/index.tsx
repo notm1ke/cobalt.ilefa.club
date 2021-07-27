@@ -26,6 +26,9 @@ const HomePage = () => (
                                         An intelligent suite of tools built by UConn students, for UConn students.
                                     </h2>
                                     <CobaltSearch />
+                                    <small className="text-secondary">
+                                        <b>Protip:</b> Click on the search icon to toggle advanced filtering options, or try out <Link href="/info#search-modifiers"><a className="text-white font-weight-600 shine">search modifiers</a></Link> for quicker filtering.
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -92,38 +95,6 @@ const HomePage = () => (
                     }
                 ]}
             />
-            
-            <DevElement>
-                <FeatureSection
-                    title="Transportation"
-                    glyph="/glyphs/transport.svg"
-                    alt="Transportation Glyph"
-                    className="background-circuits"
-                    description={
-                        <>
-                            <b>Coming Soon</b><br/>
-                            Explore bus routes, parking lots & passes, and a lot more straight from Cobalt.
-                        </>
-                    }
-                    tags={[
-                        {
-                            icon: <i className="fa fa-bus-alt fa-fw"></i>,
-                            color: 'warp',
-                            display: 'Bus Routes & Live Feed'
-                        },
-                        {
-                            icon: <i className="fa fa-parking fa-fw"></i>,
-                            color: 'warp',
-                            display: 'Parking Lots'
-                        },
-                        {
-                            icon: <i className="fa fa-tag fa-fw"></i>,
-                            color: 'warp',
-                            display: 'Parking Permits'
-                        }
-                    ]}
-                />
-            </DevElement>
 
             <DevElement>
                 <FeatureSection

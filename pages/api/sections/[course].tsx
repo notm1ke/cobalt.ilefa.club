@@ -8,6 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(405)
             .json({ message: 'Method not allowed' });
 
+    let start = Date.now();
     let { course, campus } = req.query;
     if (course instanceof Array || campus instanceof Array)
         return res
@@ -32,5 +33,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res
         .status(200)
-        .json({ ...result.sections });
+        .json({
+            ...result.sections,
+            timings: Date.now() - start
+        });
 }

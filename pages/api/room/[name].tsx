@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(405)
             .json({ message: 'Method not allowed' });
 
+    let start = Date.now();
     let { name } = req.query;
     if (name instanceof Array)
         return res
@@ -56,5 +57,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res
         .status(200)
-        .json(complete);
+        .json({
+            ...complete,
+            timings: Date.now() - start
+        });
 }

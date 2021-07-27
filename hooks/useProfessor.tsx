@@ -2,8 +2,9 @@ import useSWR from 'swr';
 import * as Logger from '../util/logger';
 
 import { RateMyProfessorReport } from '@ilefa/husky';
+import { TimedRequest } from '../util';
 
-export type RmpResponse = RateMyProfessorReport & {
+export type RmpResponse = RateMyProfessorReport & TimedRequest & {
     mostRelevant: string;
 }
 
@@ -13,6 +14,7 @@ export interface ProfessorLookupProps {
 
 export type ProfessorResponse = {
     data: RmpResponse | null;
+    request: string;
     isLoading: boolean;
     isError: boolean;
 }
@@ -20,12 +22,14 @@ export type ProfessorResponse = {
 export const useProfessor = ({ rmpIds }: ProfessorLookupProps): ProfessorResponse => {
 
     const start = Date.now();
+    const url = `/api/professor/${rmpIds.join(',')}`;
     const fetcher = (url: string) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR(`/api/professor/${rmpIds.join(',')}`, fetcher);
+    const { data, error } = useSWR(url, fetcher);
 
     if (!data && !error) {
         return {
             data: null,
+            request: url,
             isLoading: true,
             isError: false
         }
@@ -37,6 +41,7 @@ export const useProfessor = ({ rmpIds }: ProfessorLookupProps): ProfessorRespons
         
         return {
             data: null,
+            request: url,
             isLoading: false,
             isError: true
         }
@@ -48,6 +53,7 @@ export const useProfessor = ({ rmpIds }: ProfessorLookupProps): ProfessorRespons
 
         return {
             data: null,
+            request: url,
             isLoading: false,
             isError: true
         }
@@ -56,7 +62,8 @@ export const useProfessor = ({ rmpIds }: ProfessorLookupProps): ProfessorRespons
     Logger.timings('useProfessor', 'Fetch', start);
     Logger.debug('useProfessor', 'Server response:', undefined, undefined, data);
     return {
-        data: data,
+        data,
+        request: url,
         isLoading: false,
         isError: false
     }

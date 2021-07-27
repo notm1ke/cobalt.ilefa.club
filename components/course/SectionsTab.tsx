@@ -8,11 +8,20 @@ import Classrooms from '@ilefa/husky/classrooms.json';
 import { ErrorTab } from '.';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { mdiChevronDown } from '@mdi/js';
 import { SectionData } from '@ilefa/husky';
+import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
-import { CompleteCoursePayload, getMeetingRoom, getMeetingTime } from '../../util';
+
+import {
+    CompleteCoursePayload,
+    getCampusIndicator,
+    getInstructorName,
+    getMeetingRoom,
+    getMeetingTime,
+    getModalityIndicator,
+    Modalities
+} from '../../util';
 
 export interface SectionsTabProps {
     data: CompleteCoursePayload;
@@ -57,7 +66,7 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                     <p><b>Term:</b> {data.term}</p>
                                     <p><b>Campus:</b> {data.campus}</p>
                                     <p><b>Modality:</b> {data.mode}</p>
-                                    <p><b>Instructor:</b> {data.instructor.trim().length ? data.instructor : 'Unknown'}</p>
+                                    <p><b>Instructor:</b> {data.instructor.trim().length ? getInstructorName(data.instructor) : 'Unknown'}</p>
                                     <p><b>Schedule:</b> {getMeetingTime(data.schedule, data.location)}</p>
                                     <p><b>Location:</b> {
                                         data.location.name === 'No Room Required - Online'
@@ -139,11 +148,20 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             name: 'Section',
             selector: 'section',
             sortable: true,
-            grow: 0
+            format: (row, _i) => <>
+                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}`}>[{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode)}]</b> {row.section}
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}`}>
+                                        <b>{row.campus}</b>
+                                        <br/><span className={styles.modalityTooltipType}>{row.mode}</span>
+                                        <br/><span className={styles.modalityTooltipDescription}>{Modalities[getModalityIndicator(row.mode)] || ''}</span>
+                                    </UncontrolledTooltip>
+                                 </>,
+            grow: 0.5
         },
         {
-            name: 'Campus',
-            selector: 'campus',
+            name: 'Room',
+            selector: 'location.name',
+            format: (row, _i) => row.location.name ? row.location.name === 'No Room Required - Online' ? 'None' : getMeetingRoom(row.location.name).join(', ') : 'Unknown',
             sortable: true,
             grow: 0,
         },
@@ -152,12 +170,12 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             selector: 'instructor',
             format: (row, _i) => row.instructor.trim().length ? row.instructor.replace('<br>', ' ').replace('&nbsp;', ' ') : 'Unknown',
             sortable: true,
-            grow: 0.5,
+            grow: 0.65,
         },
         {
             name: 'Schedule',
             selector: 'schedule',
-            format: (row, i) => getMeetingTime(row.schedule.trim(), sections[i].location),
+            format: (row, i) => getMeetingTime(row.schedule.trim(), sections[i].location, true),
             sortable: true
         },
         {

@@ -51,27 +51,39 @@
     color: #777;
 }
 
+@media screen and (min-width: 1000px) {
+    .inputBoxRadius {
+        width: 96%;
+    }
+}
+
 @media screen and (min-width: 800px) {
     .inputBoxRadius {
-        width: 91% !important;
+        width: 91%;
+    }
+}
+
+@media screen and (min-width: 431px) {
+    .inputBoxRadius {
+        width: 90%;
     }
 }
 
 @media screen and (min-width: 430px) {
     .inputBoxRadius {
-        width: 89% !important;
+        width: 89%;
     }
 }
 
 @media screen and (min-width: 400px) {
     .inputBoxRadius {
-        width: 88% !important;
+        width: 88%;
     }
 }
 
 @media screen and (min-width: 350px) {
     .inputBoxRadius {
-        width: 87% !important;
+        width: 87%;
     }
 }
 
@@ -91,4 +103,17 @@
     /* border-right: #ec0d0d 3px solid !important; */
     /* border-left: unset !important; */
     /* padding-right: calc(1.5em + 1.25rem); */
+}
+
+.hideAdvancedInput {
+    display: none;
+}
+
+.advancedInputCard {
+    border: unset !important;
+    border-radius: unset !important;
+}
+
+.advancedInputCardBorder {
+    margin-left: -0.4rem !important;
 }

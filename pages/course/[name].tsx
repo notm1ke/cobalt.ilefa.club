@@ -7,7 +7,14 @@ import globalStyles from '../../components/styling/home.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useCourse } from '../../hooks';
-import { CompleteCoursePayload, getIconForCourse, matchGradingType } from '../../util';
+
+import {
+    CompleteCoursePayload,
+    getIconForCourse,
+    isDevelopment,
+    matchGradingType,
+    MetricsEvent
+} from '../../util';
 
 import {
     Card,
@@ -22,11 +29,13 @@ import {
 
 import {
     DataView,
+    DevElement,
     ErrorTab,
     ErrorView,
     Footer,
     Loader,
     LoaderTab,
+    MetricsTab,
     Nav,
     OverviewTab,
     ProfessorsTab,
@@ -133,6 +142,13 @@ const TABS = [
         name: 'Professors',
         id: 'professors',
         idInt: 2,
+    },
+    {
+        icon: 'fa fa-broadcast-tower',
+        name: 'Metrics',
+        id: 'metrics',
+        idInt: 3,
+        devOnly: true
     }
 ];
 
@@ -144,8 +160,9 @@ const CourseInspection = () => {
 
     if (name) name = name.toUpperCase();
 
-    const { data, isLoading, isError } = useCourse({ name, initial: true });
+    const { data, request, isLoading, isError } = useCourse({ name, initial: true });
     const [activeTab, setActiveTab] = useState('overview');
+    let metrics: MetricsEvent[] = [];
 
     if (isLoading) return <Loader />;
     if (isError) return <ErrorView title="Error" message="Something went wrong while retrieving data." />;
@@ -156,6 +173,9 @@ const CourseInspection = () => {
         setActiveTab(state);
     }
 
+    const recordMetric = (event: MetricsEvent) => metrics.push(event);
+    recordMetric({ request, success: true, time: data.timings });
+    
     const info = getSidebarInfo(data, setActiveTab);
     const icon = getIconForCourse(name, styles.courseIcon, 40);
 
@@ -218,21 +238,22 @@ const CourseInspection = () => {
                                                         role="tablist"
                                                     >
                                                         {
-                                                            TABS.map(entry => 
-                                                                <NavItem key={entry.id}>
-                                                                    <NavLink
-                                                                        aria-selected={activeTab === entry.id}
-                                                                        className={classnames(`mb-sm-3 mb-md-0 pills-primary cursor-pointer`, {
-                                                                            active: activeTab === entry.id,
-                                                                            show: activeTab === entry.id,
-                                                                        })}
-                                                                        onClick={e => changeTab(e, entry.id)}
-                                                                        role="tab"
-                                                                    >
-                                                                        <i className={entry.icon + " fa-fw mr-1"}></i> {entry.name}
-                                                                    </NavLink>
-                                                                </NavItem>
-                                                            )
+                                                            TABS.map(entry => {
+                                                                if (entry.devOnly && !isDevelopment()) return <></>;
+                                                                return <NavItem key={entry.id}>
+                                                                            <NavLink
+                                                                                aria-selected={activeTab === entry.id}
+                                                                                className={classnames(`mb-sm-3 mb-md-0 pills-primary cursor-pointer`, {
+                                                                                    active: activeTab === entry.id,
+                                                                                    show: activeTab === entry.id,
+                                                                                })}
+                                                                                onClick={e => changeTab(e, entry.id)}
+                                                                                role="tab"
+                                                                            >
+                                                                                <i className={entry.icon + " fa-fw mr-1"}></i> {entry.name}
+                                                                            </NavLink>
+                                                                        </NavItem>
+                                                            })
                                                         }
                                                     </Navbar>
                                                 </div>
@@ -248,7 +269,7 @@ const CourseInspection = () => {
                                                         <TabPane tabId="professors">
                                                             {
                                                                 data && !isLoading && !isError && (
-                                                                    <ProfessorsTab course={data} />
+                                                                    <ProfessorsTab course={data} recordMetric={recordMetric} />
                                                                 )
                                                             }
                                                             {
@@ -258,6 +279,11 @@ const CourseInspection = () => {
                                                                 isError && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" />
                                                             }
                                                         </TabPane>
+                                                        <DevElement>
+                                                            <TabPane tabId="metrics">
+                                                                <MetricsTab metrics={metrics} />
+                                                            </TabPane>
+                                                        </DevElement>
                                                     </TabContent>
                                                 </div>
                                             </CardBody>

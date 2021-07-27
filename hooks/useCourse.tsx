@@ -2,7 +2,7 @@ import useSWR from 'swr';
 import * as Logger from '../util/logger';
 
 import { CampusType } from '@ilefa/husky';
-import { CompleteCoursePayload } from '../util';
+import { CompleteCoursePayload, TimedRequest } from '../util';
 
 export interface CourseLookupProps {
     name: string;
@@ -11,8 +11,11 @@ export interface CourseLookupProps {
     initial?: boolean;
 }
 
+export type CourseInspectionPayload = CompleteCoursePayload & TimedRequest;
+
 export type CourseInspectionResult = {
-    data: CompleteCoursePayload | null;
+    data: CourseInspectionPayload | null;
+    request: string;
     isLoading: boolean;
     isError: boolean;
 }
@@ -48,6 +51,7 @@ export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
     if (!data && !error) {
         return {
             data: null,
+            request: req,
             isLoading: true,
             isError: false
         }
@@ -59,6 +63,7 @@ export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
         
         return {
             data: null,
+            request: req,
             isLoading: false,
             isError: true
         }
@@ -69,6 +74,7 @@ export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
         Logger.debug('useCourse', `The server responded with: ${data?.message}`, Logger.LogLevelColor.ERROR, !noop);        
         return {
             data: null,
+            request: req,
             isLoading: false,
             isError: true
         }
@@ -78,6 +84,7 @@ export const useCourse = (props: CourseLookupProps): CourseInspectionResult => {
     Logger.debug('useCourse', `Server response:`, undefined, !noop, data);
     return {
         data,
+        request: req,
         isLoading: false,
         isError: false
     }

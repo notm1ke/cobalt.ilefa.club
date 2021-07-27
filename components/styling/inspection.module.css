@@ -307,3 +307,44 @@
         padding-right: unset !important;
     }
 }
+
+.campusIndicator {
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: 600;
+    letter-spacing: -0.05rem;
+}
+
+.metricsEntry {
+    font-family: 'Roboto Mono', monospace !important;
+    letter-spacing: -0.05rem;
+}
+
+.modalityTooltipType {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 0.8rem;
+}
+
+.modalityTooltipDescription {
+    font-size: 0.75rem;
+}
+
+.statisticListProf {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    width: 100% !important;
+    position: relative !important;
+}
+
+@media screen and (min-width: 374px) {
+    .statisticListProf .details {
+        border-left: unset !important;
+        overflow: unset !important;
+    }
+}
+
+@media screen and (min-width: 770px) {
+    .statisticListProf .details {
+        border-left: 1px solid #eee !important;
+        overflow: unset !important;
+    }
+}

@@ -51,32 +51,32 @@ const ELEMENTS: NavElement[] = [
         href: '/buildings',
         key: 'buildings',
     },
-    {
-        name: 'transport',
-        icon: 'fa fa-bus-alt',
-        href: '/transport',
-        key: 'transport',
-        devOnly: true,
-        dropdown: {
-            mode: 'icons',
-            items: [
-                {
-                    name: 'Busses',
-                    href: '/busses',
-                    icon: <i className="fa fa-bus-alt fa-fw"></i>,
-                    color: 'bg-primary',
-                    content: 'Explore all information regarding the campus bus system.',
-                },
-                {
-                    name: 'Parking',
-                    href: '/parking',
-                    icon: <i className="fa fa-parking fa-fw"></i>,
-                    color: 'bg-primary',
-                    content: 'Explore all information regarding parking on campus.',
-                }
-            ]
-        }
-    },
+    // {
+    //     name: 'transport',
+    //     icon: 'fa fa-bus-alt',
+    //     href: '/transport',
+    //     key: 'transport',
+    //     devOnly: true,
+    //     dropdown: {
+    //         mode: 'icons',
+    //         items: [
+    //             {
+    //                 name: 'Busses',
+    //                 href: '/busses',
+    //                 icon: <i className="fa fa-bus-alt fa-fw"></i>,
+    //                 color: 'bg-primary',
+    //                 content: 'Explore all information regarding the campus bus system.',
+    //             },
+    //             {
+    //                 name: 'Parking',
+    //                 href: '/parking',
+    //                 icon: <i className="fa fa-parking fa-fw"></i>,
+    //                 color: 'bg-primary',
+    //                 content: 'Explore all information regarding parking on campus.',
+    //             }
+    //         ]
+    //     }
+    // },
     {
         name: 'snapshots',
         icon: 'fa fa-history',

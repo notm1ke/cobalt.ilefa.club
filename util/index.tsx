@@ -109,6 +109,20 @@ import {
     mdiWrench
 } from '@mdi/js';
 
+export type TimedRequest = {
+    timings: number;
+}
+
+export type MetricsEvent = {
+    request: string;
+    success: boolean;
+    time: number;
+}
+
+export interface IMetricsComponent {
+    recordMetric: (event: MetricsEvent) => void;
+}
+
 export type CompleteCoursePayload = {
     name: string;
     catalogName: string;
@@ -182,6 +196,7 @@ export const RMP_TAG_CONS = [
 
 export const ROOM_NAME_REGEX = /^[a-zA-Z]{1,}\d{2,}[a-zA-Z]*$/;
 export const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+export const NO_PROTOCOL_URL_REGEX = /([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?/;
 
 export type StatisticsQueryMode = 'full'
                                 | 'courses'
@@ -214,12 +229,13 @@ export enum BuildingAddresses {
     B4_A = 'Horsebarn Hill Road, Storrs CT 06269',
     B5 = 'Horsebarn Hill Road, Storrs CT 06269',
     BCH = '354 Mansfield Road, Unit 2045, Storrs CT 06269',
+    BISH = ' 337 Mansfield Road, Storrs CT 06269',
     BOUS = '406 Babbidge Road, Unit 1020, Storrs CT 06269',
     BPB = '91 N. Eagleville Road, Storrs CT 06269',
     BRON = '260 Glenbrook Road, Storrs CT 06269',
     BUSN = '2100 Hillside Road, Unit 1041, Storrs CT 06269',
     CAST = '261 Glenbrook Road, Unit 2237, Storrs CT 06269',
-    CHM = '55 N. Eagleville Road, Unit 3060, Storrs CT 06269',
+    CHEM = '55 N. Eagleville Road, Unit 3060, Storrs CT 06269',
     CRU = 'Horsebarn Hill Road, Storrs CT 06269',
     DODD = '405 Babbidge Road, Unit 1205, Storrs CT 06269',
     DRMU = '802 Bolton Road, Unit 1127, Storrs CT 06269',
@@ -304,12 +320,13 @@ export enum BuildingDescriptions {
     B4_A = 'There is no description for this building.',
     B5 = 'There is no description for this building.',
     BCH = 'Home to the Center for Integrative GeoSciences, Beach Hall (BCH) also houses classrooms, molecular and cell biology laboratories, and faculty offices. It is named for Charles Lewis Beach, the University’s fifth President (1908-1928).',
+    BISH = 'The Art Printshop is located in Bishop Center (BISH) and has work rooms and equipment for printmaking.',
     BOUS = 'Home to the psychology department, one of the most popular undergraduate majors, the Bousfield Building (BOUS) features classrooms, laboratory space, and faculty offices.',
     BPB = 'The tallest building on campus and home to a cluster of research programs with overlapping interests, the Biology/Physics Building (BPB) includes the Department of Molecular and Cell Biology, facilities for the Department of Physics, laboratories, greenhouses, and a biological collection with more than 125,000 specimens ranging from birds and mammals to fish and plants.',
     BRON = 'The Bronwell Building (BRON), also known as Engineering III, is where the biomedical engineering program classrooms, student laboratories, and faculty offices are located.',
     BUSN = 'The School of Business Building (BUSN) houses classrooms as well as faculty and administrative offices for five business departments – management, marketing, accounting, finance, and operations and information management.',
     CAST = 'Also known as Engineering I, the Castleman Building (CAST) is where the dean of the School of Engineering and several engineering faculty have offices as well as classroom space.',
-    CHM = 'The Chemistry Building (CHEM) includes four wings for teaching and research laboratories, lecture halls, and administrative offices, linked by a four-story atrium space. It is also home to Chem Café.',
+    CHEM = 'The Chemistry Building (CHEM) includes four wings for teaching and research laboratories, lecture halls, and administrative offices, linked by a four-story atrium space. It is also home to Chem Café.',
     CRU = 'The Cattle Resource Unit (CRU) houses replacement dairy heifers for the KDC beef cows and is utilized by the department\'s teaching, research, and extension programs. Currently closed to the public due to the COVID-19 pandemic.',
     DODD = 'The Dodd Center (DODD) is the archive for University records and other special collections. The Human Rights Institute and the Center for Judaic Studies and Contemporary Jewish Life are also in this building. In 1995, the Dodd Center was dedicated by President Clinton. It is named for the late Sen. Thomas Joseph Dodd, whose son, former Sen. Christopher J. Dodd, played a crucial role in the Center’s development. doddcenter.uconn.edu',
     DRMU = 'The Drama-Music Building (DRMU) within the Fine Arts Complex (FAC) provides classroom and practice space for music and drama students.',
@@ -394,12 +411,13 @@ export enum BuildingMaps {
     B4_A = 'https://www.google.com/maps/place/Center+for+Environmental+Science+and+Engineering/@41.8150623,-72.2412724,19z/data=!4m5!3m4!1s0x89e68a296359e6d7:0xe261d85d00d1b4b1!8m2!3d41.8149739!4d-72.2402231',
     B5 = 'https://www.google.com/maps/place/41%C2%B048\'54.8%22N+72%C2%B014\'28.5%22W/@41.8150623,-72.2412724,19z/data=!4m6!3m5!1s0x89e68a2958dc0f71:0x99060b3e5e2442dc!7e2!8m2!3d41.8152123!4d-72.2412387',
     BCH = 'https://www.google.com/maps/place/Charles+Lewis+Beach+Hall,+Storrs,+CT+06269/@41.8105411,-72.2535746,17z/data=!4m5!3m4!1s0x89e68a3b1e390d11:0x45f71f4c61676c90!8m2!3d41.8095173!4d-72.2500181',
+    BISH = 'https://www.google.com/maps/place/337+Mansfield+Rd,+Storrs,+CT+06269/@41.8064094,-72.2510179,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3cafafffff:0x9665f6a023fb5738!8m2!3d41.8064054!4d-72.2488239',
     BOUS = 'https://www.google.com/maps/place/Weston+A.+Bousfield+Psychology+Building/@41.8065932,-72.2525501,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3c9abde9ef:0x2235ed76c7989a4b!8m2!3d41.8068445!4d-72.2506475',
     BPB = 'https://www.google.com/maps/place/Biology%2FPhysics+Bldg,+Storrs,+CT+06269/@41.8065932,-72.2525501,17z/data=!4m5!3m4!1s0x89e68a390540df77:0xf3c25a2c3a9979c5!8m2!3d41.80988!4d-72.2566459',
     BRON = 'https://www.google.com/maps/place/Arthur+B.+Bronwell+Building/@41.809884,-72.2588399,17z/data=!4m5!3m4!1s0x89e68a3944a6e131:0x99ad44a1fedcc925!8m2!3d41.8087046!4d-72.2548837',
     BUSN = 'https://www.google.com/maps/place/School+of+Business+Building,+2100+Hillside+Rd,+Storrs,+CT+06269/@41.8087661,-72.2571409,17z/data=!4m5!3m4!1s0x89e68a3c2536727b:0xca88a9240b464ef8!8m2!3d41.8059341!4d-72.2536754',
     CAST = 'https://www.google.com/maps/place/Francis+L.Castleman+Bldg,+Storrs,+CT+06269/@41.8081309,-72.256942,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a39517f4a07:0xa9e8b7fce525fb37!8m2!3d41.8081269!4d-72.254748',
-    CHM = 'https://www.google.com/maps/place/Chemistry+Bldg,+Storrs,+CT+06269/@41.8081309,-72.256942,17z/data=!4m5!3m4!1s0x89e68a3a266f1c99:0x5c9ee21191de7c4e!8m2!3d41.810827!4d-72.2538765',
+    CHEM = 'https://www.google.com/maps/place/Chemistry+Bldg,+Storrs,+CT+06269/@41.8081309,-72.256942,17z/data=!4m5!3m4!1s0x89e68a3a266f1c99:0x5c9ee21191de7c4e!8m2!3d41.810827!4d-72.2538765',
     CRU = 'https://www.google.com/maps/place/UConn+Department+of+Animal+Science/@41.8104467,-72.2579589,16z/data=!4m5!3m4!1s0x89e68a303e39996f:0xac62350d7b134e59!8m2!3d41.8131362!4d-72.2494796',
     DODD = 'https://www.google.com/maps/place/Thomas+J.+Dodd+Research+Center/@41.810831,-72.2560705,17z/data=!4m5!3m4!1s0x89e68a3cf5955555:0x1a614c48cca2a911!8m2!3d41.8056123!4d-72.250863',
     DRMU = 'https://www.google.com/maps/place/Music+Bldg,+Storrs,+CT+06269/@41.805312,-72.2472171,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a239f1ffe33:0xa751c1186677e15c!8m2!3d41.805308!4d-72.2450231',
@@ -469,6 +487,17 @@ export enum BuildingMaps {
     YNG = 'https://www.google.com/maps/place/Wilfred+B.Young+Bldg,+Storrs,+CT+06269/@41.8121557,-72.2504963,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3002f0b9c5:0x86e6604eb51a5236!8m2!3d41.8121517!4d-72.2483023'
 }
 
+export enum Modalities {
+    WW = 'These classes never meet in person, nor are you expected to be available at any particular time for classroom instruction. These courses are taught asynchronously with no pre-assigned meeting times.',
+    DL = 'These classes never meet in person, but you are expected to deliver instruction synchronously at the times for which the class is scheduled.',
+    HB = 'These classes have both in-person and online components. Classes will not meet in person for all scheduled meetings. At least 25% of mandatory instruction for the class will occur in person.',
+    HR = 'These classes have both in-person and online components. Classes will not meet in-person for all scheduled meetings. Less than 25% of mandatory instruction for the class will occur in person',
+    SP = 'These classes will meet during all scheduled class times. However, groups of students in the class will alternate in-person and virtual attendance as designated by the instructor to maintain reduced density in classrooms.',
+    IP = 'These classes will meet in person during all scheduled class times.',
+    SL = 'This mode indicates a service learning class, with instruction times and locations to be determined by the instructor.',
+    AR = 'These are meant for clinical placements, field placements, independent study, internships, and research hours. They do not require a classroom or meeting time but are considered to be in person.'
+}
+
 /**
  * Retrieves a specialized icon for a given building.
  * 
@@ -497,7 +526,7 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "BRON": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "BUSN": return <MdiIcon path={mdiAccountTie} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "CAST": return <MdiIcon path={mdiHammerWrench} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "CHM": return <MdiIcon path={mdiFlask} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "CHEM": return <MdiIcon path={mdiFlask} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "CRU": return <MdiIcon path={mdiCow} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "DODD": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "DRMU": return <MdiIcon path={mdiMusicNote} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -779,9 +808,28 @@ export const getCampusIndicator = (campus: string) => {
     if (campus === 'stamford') return 'Z';
     if (campus === 'waterbury') return 'W';
     if (campus === 'off-campus') return 'O';
-    if (campus.replace(' ', '_') === 'avery_point')
-        return 'A';
+    if (campus === 'avery point') return 'A';
 
+    return '?';
+}
+
+/**
+ * Returns the modality indicator for the provided
+ * modality string.
+ * 
+ * @param modality the modality string
+ */
+export const getModalityIndicator = (modality: string) => {
+    modality = modality.toLowerCase();
+    if (modality === 'online') return 'WW';
+    if (modality === 'distance learning') return 'DL';
+    if (modality === 'hybrid/blended') return 'HB';
+    if (modality === 'hybrid/blended reduced seat time') return 'HR';
+    if (modality === 'split') return 'SP';
+    if (modality === 'in person') return 'IP';
+    if (modality === 'service learning') return 'SL';
+    if (modality === 'by arrangement') return 'AR';
+    
     return '?';
 }
 
@@ -827,16 +875,37 @@ export const addTrailingDecimal = (int: number) => {
  * 
  * @param schedule the schedule payload provided for the course
  * @param location the location object for a course
+ * @param showFirst [optional] only show the first meeting time
  */
-export const getMeetingTime = (schedule: string, location: { name: string }) => {
-    if (schedule.trim() === '12:00am-12:00am')
-        return 'Does not meet'
+export const getMeetingTime = (schedule: string, location: { name: string }, showFirst?: boolean) => {
+    if (schedule === '12:00am‑12:00am')
+        return 'No Meeting Time'
 
-    if (schedule.trim().length)
-        return replaceAll(schedule.trim(), /<br\/*>/, ' & ');
+    if (schedule.trim().length) {
+        const cleanTime = (schedule: string) => {
+            let copy = schedule.trim();
+            copy = replaceAll(copy, 'Mo', 'M');
+            copy = replaceAll(copy, 'We', 'W');
+            copy = replaceAll(copy, 'Fr', 'F');
+            return copy;
+        }
+
+        let split = schedule.trim().split(/<br\/*>/);
+        if (split.length === 1)
+            return cleanTime(split.join(''));
+
+        if (showFirst)
+            return cleanTime(split[0]) + '*';
+
+        let copy = schedule.trim();
+        copy = replaceAll(copy, /<br\/*>/, ' & ');
+        copy = cleanTime(copy);
+
+        return copy;
+    }
 
     if (location.name === 'No Room Required - Online')
-        return 'Does not meet';
+        return 'No Meeting Time';
 
     return 'Unknown';
 }
@@ -857,6 +926,22 @@ export const getMeetingRoom = (room: string) =>
         .filter(str => !!str);
 
 /**
+ * Returns a sanitized string for a provided
+ * instructor string. Some strings will include
+ * unrendered html entities or elements, and this
+ * will convert them to whitespace to fit our needs.
+ * 
+ * @param instructor the provided instructor string
+ */
+export const getInstructorName = (instructor: string) => {
+    let copy = instructor.trim();
+    copy = replaceAll(copy, /<br\/*>/, ' ');
+    copy = replaceAll(copy, '&nbsp;', ' ');
+
+    return copy;
+}
+
+/**
  * Returns whether a given string is a valid course name.
  * @param input the string to test
  */
@@ -870,7 +955,9 @@ export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.tes
  */
 export const getEnumKeyByEnumValue = (target: any, value: string) => {
     let keys = Object.keys(target).filter((x) => target[x] == value);
-    return keys.length > 0 ? keys[0] : undefined;
+    return keys.length > 0
+        ? keys[0]
+        : undefined;
 }
 
 /**

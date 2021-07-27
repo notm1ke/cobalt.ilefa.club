@@ -11,7 +11,9 @@ export interface ProfessorsLookupProps {
 export type ProfessorsResponse = {
     data: {
         professors: ProfessorData[];
+        timings: number;
     } | null;
+    request: string;
     isLoading: boolean;
     isError: boolean;
 }
@@ -19,11 +21,13 @@ export type ProfessorsResponse = {
 export const useProfessors = ({ course, campus }: ProfessorsLookupProps): ProfessorsResponse => {
 
     const start = Date.now();
+    const url = `/api/professors/${course + (campus ? `?campus=${campus}` : '')}`;
     const fetcher = (url: string) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR(`/api/professors/${course + (campus ? `?campus=${campus}` : '')}`, fetcher);
+    const { data, error } = useSWR(url, fetcher);
 
     if (!data && !error) return {
         data: null,
+        request: url,
         isLoading: true,
         isError: false
     }
@@ -34,6 +38,7 @@ export const useProfessors = ({ course, campus }: ProfessorsLookupProps): Profes
         
         return {
             data: null,
+            request: url,
             isLoading: false,
             isError: true
         }
@@ -45,6 +50,7 @@ export const useProfessors = ({ course, campus }: ProfessorsLookupProps): Profes
 
         return {
             data: null,
+            request: url,
             isLoading: false,
             isError: true
         }
@@ -54,6 +60,7 @@ export const useProfessors = ({ course, campus }: ProfessorsLookupProps): Profes
     Logger.debug('useProfessors', `Server response:`, undefined, undefined, data);
     return {
         data,
+        request: url,
         isLoading: false,
         isError: false
     }

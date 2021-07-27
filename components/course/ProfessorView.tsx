@@ -8,9 +8,15 @@ import { useState } from 'react';
 import { useProfessor } from '../../hooks';
 import { ProfessorData } from '@ilefa/husky';
 import { Badge, Collapse } from 'reactstrap';
-import { addTrailingDecimal, RMP_TAG_CONS, RMP_TAG_PROS } from '../../util';
 
-export interface ProfessorViewProps {
+import {
+    addTrailingDecimal,
+    IMetricsComponent,
+    RMP_TAG_CONS,
+    RMP_TAG_PROS
+} from '../../util';
+
+export interface ProfessorViewProps extends IMetricsComponent {
     professor: ProfessorData;
     rmp: boolean;
     show: boolean;
@@ -88,12 +94,12 @@ const proOrConSorting = (tag: string) => {
     return RmpTagOrdinal.UNKNOWN;
 }
 
-export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show }) => {
+export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, recordMetric }) => {
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
 
     if (!professor.rmpIds.length) return (
-        <div className={styles.statisticList}>
+        <div className={`${styles.statisticList} ${styles.statisticListProf}`}>
             <li className={styles.statisticItem} key={professor.name}>
                 <div className={styles.statisticImage} onClick={toggle}>
                     <MdiIcon path={getLetterIcon(professor.name)} className="fa-fw text-primary" />
@@ -122,12 +128,17 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show })
         </div>
     );
 
-    const { data, isLoading, isError } = useProfessor({ rmpIds: professor.rmpIds });
-    if (isLoading || isError) return <></>;
-    if (!data) return <></>;
+    const { data, request, isLoading, isError } = useProfessor({ rmpIds: professor.rmpIds });
+    if (isError) {
+        recordMetric({ request, success: false, time: -1 })
+        return <></>;
+    }
+
+    if (isLoading || !data) return <></>;
+    recordMetric({ request, success: true, time: data.timings })
     
     return (
-        <div className={styles.statisticList}>
+        <div className={`${styles.statisticList} ${styles.statisticListProf}`}>
             <li className={styles.statisticItem} key={professor.name}>
                 <div className={styles.statisticImage} onClick={toggle}>
                     <MdiIcon path={getLetterIcon(professor.name)} className="fa-fw text-primary" />

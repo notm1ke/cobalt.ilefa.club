@@ -1,14 +1,17 @@
 import useSWR from 'swr';
 import * as Logger from '../util/logger';
 
-import { CompleteRoomPayload } from '../util';
+import { CompleteRoomPayload, TimedRequest } from '../util';
 
 export interface RoomLookupProps {
     name: string;
 }
 
+export type RoomInspectionPayload = CompleteRoomPayload & TimedRequest;
+
 export type RoomInspectionResult = {
-    data: CompleteRoomPayload | null;
+    data: RoomInspectionPayload | null;
+    request: string;
     isLoading: boolean;
     isError: boolean;
 }
@@ -16,11 +19,13 @@ export type RoomInspectionResult = {
 export const useRoom = (props: RoomLookupProps): RoomInspectionResult => {
 
     const start = Date.now();
+    const url = `/api/room/${props.name}`
     const fetcher = (url: string) => fetch(url).then(r => r.json());
     const { data, error } = useSWR(`/api/room/${props.name}`, fetcher);
 
     if (!data && !error) return {
         data: null,
+        request: url,
         isLoading: true,
         isError: false
     }
@@ -31,6 +36,7 @@ export const useRoom = (props: RoomLookupProps): RoomInspectionResult => {
         
         return {
             data: null,
+            request: url,
             isLoading: false,
             isError: true
         }
@@ -42,6 +48,7 @@ export const useRoom = (props: RoomLookupProps): RoomInspectionResult => {
 
         return {
             data: null,
+            request: url,
             isLoading: true,
             isError: true
         }
@@ -52,6 +59,7 @@ export const useRoom = (props: RoomLookupProps): RoomInspectionResult => {
 
     return {
         data,
+        request: url,
         isLoading: false,
         isError: false
     }

@@ -1,8 +1,8 @@
-import { capitalizeFirst, sum } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getRmpReport, RateMyProfessorReport } from '@ilefa/husky';
+import { capitalizeFirst, sum, TimedRequest } from '../../../util';
 
-type RmpResponse = RateMyProfessorReport & {
+type RmpResponse = RateMyProfessorReport & TimedRequest & {
     mostRelevant: string;
 }
 
@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(405)
             .json({ message: 'Method not allowed' });
 
+    let start = Date.now();
     let { rmpId } = req.query;
     if (rmpId instanceof Array)
         return res
@@ -49,6 +50,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             difficulty: averageDifficulty,
             tags: [...new Set(tags.map(tag => capitalizeFirst(tag.toLowerCase())))],
             mostRelevant: mostRelevant,
+            timings: Date.now() - start
         }
 
         return res
@@ -65,7 +67,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     let complete: RmpResponse = {
         ...result,
-        mostRelevant: rmpId
+        mostRelevant: rmpId,
+        timings: Date.now() - start
     }
 
     return res

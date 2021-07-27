@@ -56,13 +56,21 @@ export const useCourseList = (): CourseListResponse => {
         }
     }
 
-    let res = [...new Set(data.courses)];
+    let distinct = Array
+        .from(new Set(data
+            .courses
+            .map(course => course.name)))
+            .map(name => ({
+                ...data
+                .courses
+                .find(course => course.name === name)
+            }));
+
     Logger.timings('useCourseList', 'Fetch', start);
-    Logger.debug('useCourseList', 'Server response:', undefined, undefined, res);
+    Logger.debug('useCourseList', 'Server response:', undefined, undefined, distinct);
 
     return {
-        // get distinct courses (for some reason it has duplicates dont ask)
-        data: { courses: res as CoursePayload[] },
+        data: { courses: distinct as CoursePayload[] },
         isLoading: false,
         isError: false
     }
