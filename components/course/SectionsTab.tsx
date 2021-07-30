@@ -14,6 +14,7 @@ import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
 
 import {
+    BuildingCodes,
     CompleteCoursePayload,
     getCampusIndicator,
     getInstructorName,
@@ -161,7 +162,36 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
         {
             name: 'Room',
             selector: 'location.name',
-            format: (row, _i) => row.location.name ? row.location.name === 'No Room Required - Online' ? 'None' : getMeetingRoom(row.location.name).join(', ') : 'Unknown',
+            format: (row, _i) => {
+                let room: string | JSX.Element = row.location.name
+                    ? row.location.name === 'No Room Required - Online'
+                    ? 'None'
+                    : getMeetingRoom(row.location.name).join(', ')
+                    : 'Unknown';
+
+                let tokens = room.split(', ');
+                if (tokens.length > 1) {
+                    let all = getMeetingRoom(row.location.name);
+                    room = <>{all[0]} <span className={styles.extraRoomsIndicator}>({'+' + (all.length - 1)})</span></>;
+                }
+
+                return <>
+                            <span id={`tooltip-room-${row.section}`}>{room}</span>
+                            {
+                                room !== 'None' && room !== 'Unknown' && (
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-room-${row.section}`}>
+                                        {
+                                            tokens.map((token, i) => {
+                                                let code = Object.keys(BuildingCodes).find(key => token.startsWith(key));
+                                                if (!code) return <><span>{token}</span>{i !== tokens.length - 1 ? <br/> : ''}</>
+                                                return <><span className={styles.roomTooltip}>{BuildingCodes[code]} {token.split(code).map(ent => ent.trim()).join('')}</span>{i !== tokens.length - 1 ? <br/> : ''}</>;
+                                            })
+                                        }
+                                    </UncontrolledTooltip>
+                                )
+                            }
+                        </>
+            },
             sortable: true,
             grow: 0,
         },

@@ -1,6 +1,7 @@
 import useSWR from 'swr';
-import { StatisticsQueryMode } from '../util';
 import * as Logger from '../util/logger';
+
+import { StatisticsQueryMode } from '../util';
 
 export type StatisticsResponse = {
     data: {

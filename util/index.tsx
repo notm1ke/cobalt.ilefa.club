@@ -15,6 +15,7 @@ import {
 import {
     mdiAbacus,
     mdiAccountMultiple,
+    mdiAccountQuestion,
     mdiAccountTie,
     mdiAccountVoice,
     mdiAlphabetGreek,
@@ -28,16 +29,19 @@ import {
     mdiBookshelf,
     mdiBottleTonicPlus,
     mdiBrain,
+    mdiCalculatorVariant,
     mdiCameraBurst,
     mdiCashMultiple,
     mdiChartBellCurve,
     mdiCityVariant,
+    mdiClipboardPulse,
     mdiCogs,
     mdiCommaCircleOutline,
     mdiCow,
     mdiCurrencyUsd,
     mdiDiamondStone,
     mdiDna,
+    mdiDog,
     mdiDomain,
     mdiDramaMasks,
     mdiDraw,
@@ -106,6 +110,7 @@ import {
     mdiVote,
     mdiWaterPump,
     mdiWaves,
+    mdiWeightLifter,
     mdiWrench
 } from '@mdi/js';
 
@@ -212,6 +217,107 @@ export type CompleteRoomPayload = Classroom & {
         code: string;
         mapUrl: string;
     }
+}
+
+export enum BuildingCodes {
+    ABL = "Agricultural Biotechnology Laboratory",
+    ACS = "Art Ceramic Studio",
+    ACD = "Avery Point",
+    ADC = "Art Design Building",
+    AES = "Architectural and Engineering Services",
+    APS = "Art Printshop",
+    ARJ = "Arjona",
+    ARTB = "Art Building",
+    ATWR = "Atwater Laboratory",
+    AUST = "Austin",
+    B1 = "Biobehavioral Science #1",
+    B3 = "Biobehavioral Science #3",
+    B4_A = "Biobehavioral Science #4 and Annex",
+    B5 = "Biobehavioral Science #5",
+    BCH = "Beach Hall",
+    BISH = "Bishop",
+    BOUS = "W.A. Bousfield",
+    BPB = "Biology/Physics Building",
+    BRON = "Bronwell",
+    BUSN = "School of Business",
+    CAST = "Castleman",
+    CHEM = "Chemistry Building",
+    CRU = "Cattle Resource Center",
+    DODD = "Dodd Center",
+    DRMU = "Drama/Music Building",
+    DWTN = "Stamford Downtown",
+    E2 = "Engineering II",
+    FG = "Floriculture Greenhouse",
+    FSB = "Family Studies Building",
+    GAMP = "Gampel Pavilion",
+    GANT = "Gant Central Building",
+    GC = "Gant Central Building",
+    GENT = "Gentry",
+    GN = "Gant North Building",
+    GP = "Gant Plaza Building",
+    GRE = "Greer Field House",
+    GS = "Gant South Building",
+    GW = "Gant West Building",
+    HALL = "Hall Dorm",
+    HAWL = "Hawley Armory",
+    HBL = "Homer Babbidge Library",
+    HDC = "Human Development Center",
+    HEW = "Hewitt",
+    HH = "Honors House",
+    HJT = "Jorgensen Theatre",
+    HPL = "Hartford Public Library",
+    HTB = "Hartford Times Building",
+    HU1 = "Horse Unit 1",
+    HU2 = "Horse Unit 2",
+    IMS = "Gant North Building",
+    ITE = "Information Technology Engineering",
+    JONS = "RE. Jones",
+    JRB = "J. Ray Ryan Building",
+    KEL = "Kellogg Dairy Center",
+    KLIN = "M.S. Klinck",
+    KNS = "Koons Hall",
+    LAFA = "Lafayette",
+    LH = "McHugh Hall",
+    LSA = "Life Science Annex",
+    LOR = "Lorentzon Stables",
+    LU1 = "Livestock Unit 1",
+    LU2 = "Livestock Unit 2",
+    MAN = "Manchester Hall",
+    MARN = "Avery Point Marine Science",
+    MCHU = "McHugh Hall",
+    MONT = "Monteith",
+    MSB = "Gant South Building",
+    MUSB = "Music Building",
+    MLIB = "Music Library",
+    OAK = "Oak Hall",
+    PB = "Gant West Building",
+    PBB = "Pharmacy/Biology Building",
+    PCSB = "D.C. Phillips",
+    PR = "Putnam Refectory",
+    PU1 = "Poultry Farm Unit 1",
+    RHBA = "Ratcliffe Hicks",
+    ROWE = "John W. Rowe Center",
+    SCHN = "Andre Schenker",
+    SHA = "Storrs Hall Annex",
+    SPRH = "Shipee Hall",
+    SRH = "Sprague Hall",
+    SSW = "Hartford Social Work",
+    STRS = "Storrs Hall",
+    TLS = "Torrey Life Sciences",
+    TSK = "Tasker Building",
+    USRH = "Stamford Residence Hall",
+    UTEB = "United Technologies Building",
+    VARC = "Visual Arts Resource Center",
+    VDM = "J. Louis von der Mehden Recital Hall",
+    WCB = "Wilbur Cross Building",
+    WGC = "Graduate Center",
+    WIDM = "Widmer Wing",
+    WITE = "George C. White Building",
+    WOOD = "Wood Hall",
+    WSH = "Williams Student Health",
+    WSRH = "Wilson South Residence Hall",
+    WTBY = "Waterbury Downtown",
+    YNG = "W.B. Young"
 }
 
 export enum BuildingAddresses {
@@ -514,16 +620,17 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "APS": return <MdiIcon path={mdiCameraBurst} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "ARJ": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "ARTB": return <MdiIcon path={mdiDraw} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "ATWR": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "ATWR": return <MdiIcon path={mdiDog} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "AUST": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "B1": return <MdiIcon path={mdiBrain} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "B3": return <MdiIcon path={mdiBrain} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "B4_A": return <MdiIcon path={mdiBrain} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "B5": return <MdiIcon path={mdiBrain} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "BCH": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "BCH": return <MdiIcon path={mdiEarth} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "BISH": return <MdiIcon path={mdiCameraBurst} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "BOUS": return <MdiIcon path={mdiHeadSnowflake} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "BPB": return <MdiIcon path={mdiSafetyGoggles} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "BRON": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "BRON": return <MdiIcon path={mdiBio} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "BUSN": return <MdiIcon path={mdiAccountTie} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "CAST": return <MdiIcon path={mdiHammerWrench} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "CHEM": return <MdiIcon path={mdiFlask} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -542,7 +649,7 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "GS": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "GW": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "HALL": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "HAWL": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "HAWL": return <MdiIcon path={mdiWeightLifter} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "HBL": return <MdiIcon path={mdiLibrary} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "HDC": return <MdiIcon path={mdiHumanQueue} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "HEW": return <MdiIcon path={mdiPrescription} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -553,10 +660,10 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "IMS": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "ITE": return <MdiIcon path={mdiMonitor} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "JONS": return <MdiIcon path={mdiFoodApple} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "JRB": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "JRB": return <MdiIcon path={mdiBottleTonicPlus} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "KEL": return <MdiIcon path={mdiCow} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "KLIN": return <MdiIcon path={mdiSprout} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "KNS": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "KNS": return <MdiIcon path={mdiDna} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "LAFA": return <MdiIcon path={mdiHome} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "LH": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "LSA": return <MdiIcon path={mdiDna} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -565,7 +672,7 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "LU2": return <MdiIcon path={mdiPig} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "MAN": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "MCHU": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "MONT": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "MONT": return <MdiIcon path={mdiCalculatorVariant} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "MSB": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "MUSB": return <MdiIcon path={mdiMusicNote} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "MLIB": return <MdiIcon path={mdiBookMusic} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -575,13 +682,13 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "PCSB": return <MdiIcon path={mdiHumanGreetingProximity} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "PR": return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "PU1": return <MdiIcon path={mdiEgg} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "RHBA": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "ROWE": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "RHBA": return <MdiIcon path={mdiSprout} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "ROWE": return <MdiIcon path={mdiAccountQuestion} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "SCHN": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "SHA": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "SPRH": return <MdiIcon path={mdiHome} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "SRH": return <MdiIcon path={mdiHome} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "STRS": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "STRS": return <MdiIcon path={mdiClipboardPulse} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "TLS": return <MdiIcon path={mdiDna} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "TSK": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "UTEB": return <MdiIcon path={mdiHammerWrench} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -590,11 +697,11 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "WCB": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WGC": return <MdiIcon path={mdiSchool} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WIDM": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "WITE": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "WITE": return <MdiIcon path={mdiCow} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WOOD": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WSH": return <MdiIcon path={mdiHeart} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WSRH": return <MdiIcon path={mdiHome} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "YNG": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "YNG": return <MdiIcon path={mdiSprout} className={`fa-fw ${classes}`} size={`${size}px`} />;
         default: return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
     }
 }
@@ -926,6 +1033,41 @@ export const getMeetingRoom = (room: string) =>
         .filter(str => !!str);
 
 /**
+ * Returns the room number for a given string.
+ * 
+ * This exists since Husky currently has some invalid
+ * data for the rooms specifically in STRSWW (Storrs Hall Widmer Wing)
+ * and WH (Wood Hall).
+ * 
+ * @param room the room string
+ * @param buildingCode the building code for the room
+ */
+export const getRoomNumber = (room: string, buildingCode: string) => {
+    return room.split(getRealRoomCode(room, buildingCode))[1].trim();
+}
+
+/**
+ * Returns the real room code for a given string.
+ * 
+ * This exists since Husky currently has some invalid
+ * data for the rooms specifically in STRSWW (Storrs Hall Widmer Wing)
+ * and WH (Wood Hall).
+ * 
+ * @param room the room string
+ * @param buildingCode the building code for the room
+ */
+export const getRealRoomCode = (room: string, buildingCode: string) => {
+    let code = buildingCode;
+    if (room.startsWith('STRSWW'))
+        code = 'STRSWW';
+
+    if (room.startsWith('WH'))
+        code = 'WH';
+
+    return code;
+}
+
+/**
  * Returns a sanitized string for a provided
  * instructor string. Some strings will include
  * unrendered html entities or elements, and this
@@ -1068,6 +1210,50 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
     }
 
     return result.trim();
+}
+
+/**
+ * Returns a word form of a provided
+ * number. Useful for number emotes.
+ * 
+ * @param int the number to convert
+ * @see https://gist.github.com/ForbesLindesay/5467742
+ */
+ export const intToWords = (int: number) => {
+    let ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+                'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+                'seventeen', 'eighteen', 'nineteen'];
+
+    let tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty',
+                'ninety'];
+  
+    let numString = int.toString();
+    if (int < 0) return null;
+    if (int === 0) return 'zero';
+  
+    //the case of 1 - 20
+    if (int < 20) {
+        return ones[int];
+    }
+  
+    if (numString.length === 2) {
+        return tens[numString[0]] + ' ' + ones[numString[1]];
+    }
+  
+    //100 and more
+    if (numString.length == 3) {
+        if (numString[1] === '0' && numString[2] === '0')
+            return ones[numString[0]] + ' hundred';
+        else
+            return ones[numString[0]] + ' hundred and ' + intToWords(+(numString[1] + numString[2]));
+    }
+  
+    if (numString.length === 4) {
+        var end = +(numString[1] + numString[2] + numString[3]);
+        if (end === 0) return ones[numString[0]] + ' thousand';
+        if (end < 100) return ones[numString[0]] + ' thousand and ' + intToWords(end);
+        return ones[numString[0]] + ' thousand ' + intToWords(end);
+    }
 }
 
 /**

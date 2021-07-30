@@ -2,8 +2,8 @@ import Link from 'next/link';
 import styles from '../styling/building.module.css';
 import cardStyles from '../styling/card.module.css';
 
-import { capitalizeFirst, getIconForRoom } from '../../util';
 import { BoardType, Classroom, SeatingType, TechType } from '@ilefa/husky';
+import { BuildingCodes, capitalizeFirst, getIconForRoom, getRealRoomCode, getRoomNumber } from '../../util';
 
 export interface BuildingRoomCardProps {
     room: Classroom;
@@ -13,7 +13,7 @@ export interface BuildingRoomCardProps {
 export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = props => {
     let icon = getIconForRoom(props.room, '', 20);
     let room = props.room;
-    let prettyName = room.building.code + ' ' + room.name.split(room.building.code)[1];
+    let prettyName = getRealRoomCode(room.name, room.building.code) + ' ' + getRoomNumber(room.name, room.building.code);
 
     return (
         <div className={`card shadow shadow-lg--hover mt-5 ${cardStyles.rgCardSm}`}>
@@ -23,7 +23,7 @@ export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = props => {
                         <h5>
                             <Link href={`/room/${room.name}`}>
                                 <a className={`${cardStyles.cardSectionTitle} text-primary-light`}>
-                                    {icon ?? ''} {room.building.name} {room.name.split(room.building.code)[1]}
+                                    {icon ?? ''} {BuildingCodes[room.building.code]} {getRoomNumber(room.name, room.building.code)}
                                 </a>
                             </Link>
                         </h5>
@@ -34,10 +34,10 @@ export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = props => {
                         
                         <p className="text-dark mb-4">
                             <b>Technical Facts:</b>
-                            <ul>
+                            <ul className={styles.technicalFacts}>
                                 <li><b>Seating:</b> {SeatingType[room.seatingType]}</li>
                                 <li><b>Air Conditioning:</b> {room.airConditioned ? 'Yes' : 'No'}</li>
-                                <li><b>Board:</b> {BoardType[room.boardType]}</li>
+                                <li><b>Board:</b> {BoardType[room.boardType] || 'Unknown'}</li>
                                 <li><b>Tech:</b> {TechType[room.techType]}</li>
                                 <li><b>Livestream:</b> {" "}
                                     {

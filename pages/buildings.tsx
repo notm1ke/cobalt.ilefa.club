@@ -4,33 +4,80 @@ import MdiIcon from '@mdi/react';
 
 import styles from '../components/styling/building.module.css';
 import globalStyles from '../components/styling/home.module.css';
+import searchStyles from '../components/styling/search.module.css';
 
-import { useState } from 'react';
-import { useBuildings } from '../hooks';
-import { Footer, Nav } from '../components';
-import { BuildingRoomCard } from '../components';
-import { mdiInformation, mdiMapSearch } from '@mdi/js';
+import { useEffect, useState } from 'react';
+import { BuildingPayload, useBuildings } from '../hooks';
+import { BuildingRoomCard, Footer, Nav } from '../components';
+import { InputGroupAddon, InputGroupText, UncontrolledTooltip } from 'reactstrap';
+
+import {
+    mdiAlert,
+    mdiInformation,
+    mdiLoading,
+    mdiMagnify,
+    mdiMapSearch
+} from '@mdi/js';
 
 import {
     BuildingAddresses,
     BuildingDescriptions,
     BuildingMaps,
-    getIconForBuilding
+    getIconForBuilding,
+    intToWords
 } from '../util';
 
 const BuildingsPage = () => {
-    const { data, isLoading, isError } = useBuildings();    
+    const { data, isLoading, isError } = useBuildings();
+
+    const [search, setSearch] = useState('');
     const [hideNoRooms, setHideNoRooms] = useState(true);
+    const [results, setResults] = useState<BuildingPayload[]>([]);
 
     const toggleNoRooms = () => setHideNoRooms(!hideNoRooms);
+    const resetResults = () => setResults(data.buildings!);
 
-    const enabled = !isLoading && !isError;
+    const predicates: ((input: string, building: BuildingPayload) => boolean)[] = [
+        (input, { name }) => name.toLowerCase().includes(input)
+                                || name.toLowerCase().slice(0, input.length) === input.toLowerCase(),
+        (input, { code }) => code.toLowerCase().includes(input)
+                                || code.toLowerCase().slice(0, input.length) === input.toLowerCase()
+                                || BuildingDescriptions[code]?.toLowerCase()?.includes(input)
+                                || BuildingAddresses[code]?.toLowerCase()?.includes(input),
+        (input, { rooms }) => rooms.some(room => room.name.toLowerCase().slice(0, input.length) === input.toLowerCase())
+                                || rooms.some(room => room.name.toLowerCase().includes(input))
+    ];
+
+    const onSearch = (query: string) => {
+        setSearch(query);
+
+        if (!query || !query.trim())
+            return resetResults();
+
+        return filter(query);
+    }
+
+    const filter = (query: string) => setResults(data
+        .buildings!
+        .filter(building => predicates
+            .some(predicate => predicate(query, building))));
+
+    const enabled = !isLoading
+        && !isError
+        && data.buildings;
+
+    useEffect(() => {
+        if (!enabled)
+            return;
+
+        setResults(data.buildings!);
+    }, [enabled]);
 
     return (
         <main>
             <Head>
                 <title>Cobalt » Buildings</title>
-                <meta name="description" content={`Explore various buildings around the UConn Storrs campus.`} />
+                <meta name="description" content={`Explore buildings around all UConn campuses.`} />
             </Head>
             <Nav/>
             <div className="position-relative background-gradient">
@@ -43,11 +90,39 @@ const BuildingsPage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>Buildings</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            Various buildings around the Storrs campus
+                                            Explore {data?.buildings?.length ? intToWords(data.buildings.length) + ' different' : ''} buildings around four of UConn's campuses
                                         </h2>
-                                        <span className={`btn btn-white shine btn-icon mt-3 mb-sm-0 text-lowercase ${styles.hideNoRoomsButton}`} onClick={() => toggleNoRooms()}>
-                                            { hideNoRooms ? 'show all buildings' : 'show buildings with rooms' }
-                                        </span>
+                                        <div className="input-group-alternative mb-4 input-group">
+                                            <InputGroupAddon addonType="prepend">
+                                                <InputGroupText>
+                                                    <span className={enabled ? 'cursor-pointer shine' : ''} onClick={() => toggleNoRooms()} id="tooltip-adv-filter">
+                                                        <MdiIcon
+                                                            size="20px"
+                                                            className={isError ? 'text-danger' : 'text-gray'}
+                                                            spin={isLoading}
+                                                            path={isLoading
+                                                                ? mdiLoading
+                                                                : isError
+                                                                    ? mdiAlert
+                                                                    : mdiMagnify}
+                                                        />
+                                                    </span>
+                                                    <UncontrolledTooltip delay={0} placement="top" target="tooltip-adv-filter">
+                                                        Click to {hideNoRooms ? 'show' : 'hide'} buildings with no rooms
+                                                    </UncontrolledTooltip>
+                                                </InputGroupText>
+                                            </InputGroupAddon>
+                                            <div className={searchStyles.inputBoxRadius}>
+                                                <input
+                                                    type="text"
+                                                    value={search}
+                                                    disabled={!enabled}
+                                                    placeholder={isLoading ? 'Loading..' : isError ? 'Something went wrong..' : 'Search for any building or room..'}
+                                                    className="form-control-alternative form-control"
+                                                    onChange={e => onSearch(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -57,30 +132,14 @@ const BuildingsPage = () => {
                 <section className={`section ${styles.buildingSection} background-circuits`}>
                     <div className="container" id="body">
                         {
-                            isLoading && (
-                                <h4 className={`text-white text-center display-5 mb-7`}>
-                                    <i className="fa fa-spinner fa-spin fa-fw"></i> Loading..
-                                </h4>
-                            )
-                        }
-
-                        {
-                            isError && (
-                                <h4 className={`text-white text-center display-5 mb-7`}>
-                                    <i className="fa fa-exclamation-circle fa-fw"></i> Something went wrong while retrieving data from the web.
-                                </h4>
-                            )
-                        }
-
-                        {
-                            enabled && data
-                                .buildings!
+                            enabled && results
                                 .filter(({ rooms }) => {
                                     if (hideNoRooms)
                                         return rooms.length > 0;
                                     return true;
                                 })
                                 .map(building => {
+                                    let name = building.name;
                                     let addr = BuildingAddresses[building.code];
                                     if (!addr) addr = 'NONE';
 
@@ -89,15 +148,15 @@ const BuildingsPage = () => {
                                         <h4 className={`text-white ${styles.buildingSectionTitle} mb-7`} id={building.code} key={building.code}>
                                             { getIconForBuilding(building.code as any, styles.buildingIcon, 24) } {building.name} ({building.code})
                                             <br/><span className={`text-white ${styles.buildingSectionBody}`}>
-                                                The <b>{building.rooms.length ? building.rooms[0].building.name : building.name}</b> Building {addr === 'NONE' ? 'does not have an address' : <>is located {atOn} <a href={BuildingMaps[building.code]} className={`text-light ${styles.buildingLink} shine`} target="_blank" rel="noopener noreferrer">{BuildingAddresses[building.code]}</a></>}.
+                                                The <b>{name.endsWith('Building') ? name : name + ' Building'}</b> {addr === 'NONE' ? 'does not have an address' : <>is located {atOn} <a href={BuildingMaps[building.code]} className={`text-light ${styles.buildingLink} shine`} target="_blank" rel="noopener noreferrer">{BuildingAddresses[building.code]}</a></>}.
                                                 <br/>
                                                 {BuildingDescriptions[building.code] || 'This building does not have a description.'}
                                                 <br/>
-                                                <a href={BuildingMaps[building.code]} className="btn btn-white shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
+                                                <a href={BuildingMaps[building.code]} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
                                                     <span className="btn-inner--icon"><MdiIcon path={mdiMapSearch} size="20px" /></span>
                                                     <span className="btn-inner--text">View on Google Maps</span>
                                                 </a>
-                                                <a href={`https://maps.uconn.edu/m/info/${building.code}`} className="btn btn-white shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
+                                                <a href={`https://maps.uconn.edu/m/info/${building.code}`} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
                                                     <span className="btn-inner--icon"><MdiIcon path={mdiInformation} size="20px" /></span>
                                                     <span className="btn-inner--text">Information</span>
                                                 </a>

@@ -9,15 +9,8 @@ import { useRoom } from '../../hooks';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Card, CardBody, Badge } from 'reactstrap';
-import { CompleteRoomPayload, getIconForRoom } from '../../util';
-
-import {
-    BoardType,
-    BuildingCode,
-    LectureCaptureType,
-    SeatingType,
-    TechType
-} from '@ilefa/husky';
+import { BuildingCodes, CompleteRoomPayload, getIconForRoom } from '../../util';
+import { BoardType, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
 
 import {
     DataView,
@@ -165,7 +158,7 @@ const ClassroomInspection = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>{icon}{styledName}</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            { BuildingCode[data.building.code] }
+                                            { BuildingCodes[data.building.code] }
                                         </h2>
                                     </div>
                                 </div>

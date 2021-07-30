@@ -2,13 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
-import {
-    CobaltSearch,
-    DevElement,
-    FeatureSection,
-    Footer,
-    Nav,
-} from '../components';
+import { CobaltSearch, DevElement, FeatureSection, Footer, Nav } from '../components';
 
 const HomePage = () => (
     <main>
@@ -98,7 +92,6 @@ const HomePage = () => (
 
             <DevElement>
                 <FeatureSection
-                    flip
                     title="Snapshots"
                     glyph="/glyphs/snapshot.svg"
                     alt="Snapshot Glyph"

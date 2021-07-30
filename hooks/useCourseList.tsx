@@ -51,7 +51,7 @@ export const useCourseList = (): CourseListResponse => {
         Logger.debug('useCourseList', `The server responded with: ${data?.message}`, Logger.LogLevelColor.ERROR);
         return {
             data: null,
-            isLoading: true,
+            isLoading: false,
             isError: true
         }
     }

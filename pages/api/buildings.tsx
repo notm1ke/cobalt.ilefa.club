@@ -1,6 +1,6 @@
 import Classrooms from '@ilefa/husky/classrooms.json';
 
-import { BuildingCode } from '@ilefa/husky';
+import { BuildingCodes } from '../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -13,11 +13,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .status(200)
         .json({
             buildings: Object
-                .keys(BuildingCode)
+                .keys(BuildingCodes)
                 .map(ent => ({
                     code: ent,
-                    name: BuildingCode[ent],
-                    rooms: Classrooms.filter(room => room.name.startsWith(ent))
+                    name: BuildingCodes[ent],
+                    rooms: Classrooms.filter(room => room.building.code === ent)
                 }))
         });
 }

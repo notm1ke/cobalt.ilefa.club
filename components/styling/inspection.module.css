@@ -348,3 +348,13 @@
         overflow: unset !important;
     }
 }
+
+.extraRoomsIndicator {
+    vertical-align: top;
+    font-size: 0.6rem !important;
+    font-family: 'Roboto Mono' monospace !important;
+}
+
+.roomTooltip {
+    font-size: 0.65rem !important;
+}

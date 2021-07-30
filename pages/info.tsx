@@ -4,10 +4,17 @@ import Head from 'next/head';
 import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
-import { useStatistics } from '../hooks';
-import { ContentAreaNames, getLatestTimeValue } from '../util';
 import { UncontrolledTooltip } from 'reactstrap';
-import { DevElement, Footer, IconCardXl, Nav, StatisticSection } from '../components';
+import { useLatestCommit, useStatistics } from '../hooks';
+import { ContentAreaNames, getLatestTimeValue } from '../util';
+
+import {
+    DevElement,
+    Footer,
+    IconCardXl,
+    Nav,
+    StatisticSection
+} from '../components';
 
 const modifiers = [
     {
@@ -133,6 +140,7 @@ const InfoLink: React.FC<InfoLinkProps> = ({ display, href, classes, newTab }) =
 
 const InfoPage = () => {
     const { data, isLoading, isError } = useStatistics('full');
+    const { data: commit, isLoading: commitLoading, isError: commitError } = useLatestCommit('ilefa', 'husky');
 
     return (
         <main>
@@ -169,7 +177,15 @@ const InfoPage = () => {
                                 <br/>
                                 <a href="https://github.com/ilefa/husky" target="_blank" rel="noopener noreferrer" className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase">
                                     <span className="btn-inner--icon"><i className="fab fa-github"></i></span>
-                                    <span className="btn-inner--text">@ilefa/husky</span>
+                                    <span className="btn-inner--text font-weight-600">
+                                        @ilefa/husky ➔ {
+                                            commitLoading
+                                                ? <i className="fa fa-spinner fa-spin fa-fw"></i> 
+                                                : commitError
+                                                    ? <span>no_git_id</span>
+                                                    : <span>{commit!.commitId}</span>
+                                        }
+                                    </span>
                                 </a>
                             </span>
                         </h4>
