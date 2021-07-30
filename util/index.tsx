@@ -983,10 +983,13 @@ export const addTrailingDecimal = (int: number) => {
  * @param schedule the schedule payload provided for the course
  * @param location the location object for a course
  * @param showFirst [optional] only show the first meeting time
+ * @param showFirstChar [optional] character to display if showFirst is true
  */
-export const getMeetingTime = (schedule: string, location: { name: string }, showFirst?: boolean) => {
+export const getMeetingTime = (schedule: string, location: { name: string }, showFirst?: boolean, showFirstChar?: string, asArray?: boolean): string | string[] => {
     if (schedule === '12:00am‑12:00am')
-        return 'No Meeting Time'
+        return asArray
+            ? ['No Meeting Time']
+            : 'No Meeting Time';
 
     if (schedule.trim().length) {
         const cleanTime = (schedule: string) => {
@@ -999,22 +1002,31 @@ export const getMeetingTime = (schedule: string, location: { name: string }, sho
 
         let split = schedule.trim().split(/<br\/*>/);
         if (split.length === 1)
-            return cleanTime(split.join(''));
+            if (asArray)
+                return [cleanTime(split.join(''))];
+            else return cleanTime(split.join(''));
 
         if (showFirst)
-            return cleanTime(split[0]) + '*';
+            return cleanTime(split[0]) + (showFirstChar || '*');
 
         let copy = schedule.trim();
         copy = replaceAll(copy, /<br\/*>/, ' & ');
         copy = cleanTime(copy);
 
+        if (asArray)
+            return copy.split(' & ');
+
         return copy;
     }
 
     if (location.name === 'No Room Required - Online')
-        return 'No Meeting Time';
+        return asArray
+            ? ['No Meeting Time']
+            : 'No Meeting Time';
 
-    return 'Unknown';
+    return asArray
+        ? ['Unknown']
+        : 'Unknown';
 }
 
 /**

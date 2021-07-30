@@ -171,8 +171,8 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
 
                 let tokens = room.split(', ');
                 if (tokens.length > 1) {
-                    let all = getMeetingRoom(row.location.name);
-                    room = <>{all[0]} <span className={styles.extraRoomsIndicator}>({'+' + (all.length - 1)})</span></>;
+                    let all = getMeetingRoom(row.location.name).sort((a, b) => a.localeCompare(b));
+                    room = <>{all[0]} <span className={styles.extraRoomsIndicator}>{'+' + (all.length - 1)}</span></>;
                 }
 
                 return <>
@@ -181,11 +181,13 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                                 room !== 'None' && room !== 'Unknown' && (
                                     <UncontrolledTooltip delay={0} placement="top" target={`tooltip-room-${row.section}`}>
                                         {
-                                            tokens.map((token, i) => {
-                                                let code = Object.keys(BuildingCodes).find(key => token.startsWith(key));
-                                                if (!code) return <><span>{token}</span>{i !== tokens.length - 1 ? <br/> : ''}</>
-                                                return <><span className={styles.roomTooltip}>{BuildingCodes[code]} {token.split(code).map(ent => ent.trim()).join('')}</span>{i !== tokens.length - 1 ? <br/> : ''}</>;
-                                            })
+                                            tokens
+                                                .sort((a, b) => a.localeCompare(b))
+                                                .map((token, i) => {
+                                                    let code = Object.keys(BuildingCodes).find(key => token.startsWith(key));
+                                                    if (!code) return <><span>{token}</span>{i !== tokens.length - 1 ? <br/> : ''}</>
+                                                    return <><span className={styles.roomTooltip}>{BuildingCodes[code]} {token.split(code).map(ent => ent.trim()).join('')}</span>{i !== tokens.length - 1 ? <br/> : ''}</>;
+                                                })
                                         }
                                     </UncontrolledTooltip>
                                 )
@@ -205,7 +207,22 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
         {
             name: 'Schedule',
             selector: 'schedule',
-            format: (row, i) => getMeetingTime(row.schedule.trim(), sections[i].location, true),
+            format: (row, i) => {
+                let tokens = getMeetingTime(row.schedule.trim(), sections[i].location, false, undefined, true) as string[];
+                if (tokens.join('') === 'No Meeting Time' || tokens.join('') === 'Unknown')
+                    return tokens;
+
+                return <>
+                    <span id={`tooltip-schedule-${row.section}`}><>{tokens[0]} {tokens.length !== 1 ? <span className={styles.extraRoomsIndicator}>{'+' + (tokens.length - 1)}</span> : <></>}</></span>
+                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-schedule-${row.section}`}>
+                        {
+                            (getMeetingTime(row.schedule.trim(), sections[i].location, false, undefined, false) as string)
+                                .split(' & ')
+                                .map((time, i, arr) => <><span className={styles.roomTooltip}>{time}</span>{i !== arr.length - 1 ? <br/> : ''}</>)
+                        }
+                    </UncontrolledTooltip>
+                </>;
+            },
             sortable: true
         },
         {

@@ -351,10 +351,10 @@
 
 .extraRoomsIndicator {
     vertical-align: top;
-    font-size: 0.6rem !important;
+    font-size: 0.525rem !important;
     font-family: 'Roboto Mono' monospace !important;
 }
 
 .roomTooltip {
-    font-size: 0.65rem !important;
+    font-size: 0.75rem !important;
 }
