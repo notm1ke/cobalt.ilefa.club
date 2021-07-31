@@ -5,12 +5,15 @@ import styles from '../styling/inspection.module.css';
 import * as Icons from '@mdi/js';
 
 import { useState } from 'react';
-import { useProfessor } from '../../hooks';
-import { ProfessorData } from '@ilefa/husky';
 import { Badge, Collapse } from 'reactstrap';
+import { ProfessorData } from '@ilefa/husky';
+import { BluepagesRecord } from '@ilefa/bluepages';
+import { useBluepages, useProfessor } from '../../hooks';
 
 import {
     addTrailingDecimal,
+    capitalizeFirst,
+    getCampusIndicator,
     IMetricsComponent,
     RMP_TAG_CONS,
     RMP_TAG_PROS
@@ -62,6 +65,23 @@ const retakeRateColor = (percent: number) => {
     return styles.ratingRedText;
 }
 
+interface BluepagesAttributeProps {
+    data: BluepagesRecord;
+    attribute: keyof BluepagesRecord;
+    display: string | JSX.Element;
+    transform?: (attrib: string) => string;
+}
+
+const BluepagesAttribute: React.FC<BluepagesAttributeProps> = ({ data, attribute, display, transform }) => (
+    <>
+        {
+            data[attribute] && (
+                <li>{display} <b>{transform ? transform(data[attribute]!) : data[attribute]}</b></li>
+            )
+        }
+    </>
+)
+
 const round = (num: number) => Math.round(num * 100) / 100;
 
 const generateRatingBadge = (rating: number) => (
@@ -70,8 +90,8 @@ const generateRatingBadge = (rating: number) => (
     </Badge>
 );
 
-const getLetterIcon = (name: string) => {
-    return Icons[`mdiAlpha${name.substring(0, 1).toUpperCase()}Circle`] || Icons.mdiAccountCircle;
+const getLetterIcon = (name: string, def?: string) => {
+    return Icons[`mdiAlpha${name.substring(0, 1).toUpperCase()}Circle`] || (def ?? Icons.mdiAccountCircle);
 }
 
 const proOrCon = (tag: string) => {
@@ -98,6 +118,13 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
 
+    const { data: bluepages, request: bluepagesRequest, isLoading: bluepagesLoading, isError: bluepagesError } = useBluepages({ name: professor.name });
+    if (bluepagesError)
+        recordMetric({ request: bluepagesRequest, success: false, time: -1 });
+
+    if (bluepages)
+        recordMetric({ request: bluepagesRequest, success: true, time: bluepages.timings });
+
     if (!professor.rmpIds.length) return (
         <div className={`${styles.statisticList} ${styles.statisticListProf}`}>
             <li className={styles.statisticItem} key={professor.name}>
@@ -110,14 +137,35 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                         <p>
                             <span onClick={toggle}>Click to {active ? 'hide' : 'reveal'} professor report.</span>
                             <Collapse isOpen={active} className={styles.statisticCollapse}>
-                                <p><b>Sections Taught:</b></p>
-                                <ul>
+                                <p><b>Bluepages Report:</b></p>
+                                <ul className={styles.ratingTags}>
+                                    { bluepagesLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
+                                    { bluepagesError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+
                                     {
-                                        professor.sections.map(ent => (
-                                            <li key={ent.section}>
-                                                <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
-                                            </li>
-                                        ))
+                                        bluepages && !bluepagesLoading && (
+                                            <>
+                                                <BluepagesAttribute data={bluepages} attribute="email" display="Email:" />
+                                                <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />
+                                                <BluepagesAttribute data={bluepages} attribute="building" display="Building:" />
+                                                <BluepagesAttribute data={bluepages} attribute="department" display="Dept:" />
+                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => capitalizeFirst(title.toLowerCase())} />
+                                            </>
+                                        )
+                                    }
+                                </ul> 
+
+                                <p><b>Sections Taught:</b></p>
+                                <ul className={styles.ratingTags}>
+                                    {
+                                        professor
+                                            .sections
+                                            .sort((a, b) => getCampusIndicator(a.campus).localeCompare(getCampusIndicator(b.campus)))
+                                            .map(ent => (
+                                                <li key={ent.section}>
+                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                </li>
+                                            ))
                                     }
                                 </ul>
                             </Collapse>
@@ -133,9 +181,9 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
         recordMetric({ request, success: false, time: -1 })
         return <></>;
     }
-
+    
     if (isLoading || !data) return <></>;
-    recordMetric({ request, success: true, time: data.timings })
+    recordMetric({ request, success: true, time: data.timings });
     
     return (
         <div className={`${styles.statisticList} ${styles.statisticListProf}`}>
@@ -158,12 +206,13 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                 <br/><br/>
 
                                 <p><b>Student-Assigned Tags:</b></p>
-                                <ul>
+                                <ul className={styles.ratingTags}>
                                     {
                                         !data.tags.length && (
                                             <li>None</li>
                                         )
                                     }
+
                                     {
                                         data
                                             .tags
@@ -176,16 +225,34 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                             ))
                                     }
                                 </ul>
+                                
+                                <p><b>Bluepages Report:</b></p>
+                                <ul className={styles.ratingTags}>
+                                    { bluepagesLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
+                                    { bluepagesError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+
+                                    {
+                                        bluepages && !bluepagesLoading && (
+                                            <>
+                                                <BluepagesAttribute data={bluepages} attribute="email" display="Email:" />
+                                                <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />
+                                                <BluepagesAttribute data={bluepages} attribute="building" display="Building:" />
+                                                <BluepagesAttribute data={bluepages} attribute="department" display="Dept:" />
+                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => capitalizeFirst(title.toLowerCase())} />
+                                            </>
+                                        )
+                                    }
+                                </ul>
 
                                 <p><b>Sections Taught:</b></p>
-                                <ul>
+                                <ul className={styles.ratingTags}>
                                     {
                                         professor
                                             .sections
-                                            .sort((a, b) => a.campus.localeCompare(b.campus))
+                                            .sort((a, b) => getCampusIndicator(a.campus).localeCompare(getCampusIndicator(b.campus)))
                                             .map(ent => (
                                                 <li key={ent.section}>
-                                                    <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
                                                 </li>
                                             ))
                                     }

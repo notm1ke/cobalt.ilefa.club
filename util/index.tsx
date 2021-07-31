@@ -915,7 +915,10 @@ export const getCampusIndicator = (campus: string) => {
     if (campus === 'stamford') return 'Z';
     if (campus === 'waterbury') return 'W';
     if (campus === 'off-campus') return 'O';
-    if (campus === 'avery point') return 'A';
+
+    // apparently the campus string contains a weird space character
+    if (campus.replace(/\s/, '') === 'averypoint')
+        return 'A';
 
     return '?';
 }
@@ -1070,6 +1073,9 @@ export const getRoomNumber = (room: string, buildingCode: string) => {
  */
 export const getRealRoomCode = (room: string, buildingCode: string) => {
     let code = buildingCode;
+    if (room.startsWith('CHM'))
+        code = 'CHEM';
+
     if (room.startsWith('STRSWW'))
         code = 'STRSWW';
 

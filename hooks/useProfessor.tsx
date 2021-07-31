@@ -1,8 +1,8 @@
 import useSWR from 'swr';
 import * as Logger from '../util/logger';
 
-import { RateMyProfessorReport } from '@ilefa/husky';
 import { TimedRequest } from '../util';
+import { RateMyProfessorReport } from '@ilefa/husky';
 
 export type RmpResponse = RateMyProfessorReport & TimedRequest & {
     mostRelevant: string;

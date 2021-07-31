@@ -358,3 +358,8 @@
 .roomTooltip {
     font-size: 0.75rem !important;
 }
+
+.ratingTags {
+    margin-left: -40px !important;
+    list-style: none;
+}

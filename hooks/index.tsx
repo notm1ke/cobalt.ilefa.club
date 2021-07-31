@@ -1,3 +1,4 @@
+export * from './useBluepages';
 export * from './useBuildings';
 export * from './useCourse';
 export * from './useCourseList';

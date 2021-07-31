@@ -21,6 +21,7 @@ import {
     getMeetingRoom,
     getMeetingTime,
     getModalityIndicator,
+    getRealRoomCode,
     Modalities
 } from '../../util';
 
@@ -166,7 +167,9 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                 let room: string | JSX.Element = row.location.name
                     ? row.location.name === 'No Room Required - Online'
                     ? 'None'
-                    : getMeetingRoom(row.location.name).join(', ')
+                    : getMeetingRoom(row.location.name)
+                        .map(name => getRealRoomCode(row.location.name, row.location.name.split(' ')[0]) + ' ' + name.split(' ')[1])
+                        .join(', ')
                     : 'Unknown';
 
                 let tokens = room.split(', ');
@@ -200,7 +203,47 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
         {
             name: 'Professor',
             selector: 'instructor',
-            format: (row, _i) => row.instructor.trim().length ? row.instructor.replace('<br>', ' ').replace('&nbsp;', ' ') : 'Unknown',
+            format: (row, _i) => {
+                // TODO: make this better - this is spaghetti but it works ¯\_(ツ)_/¯
+                let cleanName: string | string[] = row.instructor.trim().length
+                    ? row
+                        .instructor
+                        .split(', ')
+                        .map(name => name
+                            .replace(/<br\/*>/, ' ')
+                            .replace('&nbsp;', ' '))
+                        .join('')
+                        .split(', ')
+                        .map(name => name
+                            .replace(/<br\/*>/, ' ')
+                            .replace('&nbsp;', ' '))
+                        .join(', ')
+                        .split(', ')
+                    : 'Unknown';
+
+                let display = <>{cleanName}</>;
+                if (cleanName instanceof Array && cleanName.length > 1)
+                    display = <>{cleanName[0]} <span className={styles.extraRoomsIndicator}>{'+' + (cleanName.length - 1)}</span></>;
+
+                return (
+                    <>
+                        <span id={`tooltip-prof-${row.section}`}>{display}</span>
+                        {
+                            row.instructor.trim().length && (
+                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-prof-${row.section}`}>
+                                    {
+                                        cleanName instanceof Array
+                                            ? cleanName
+                                                .sort((a: string, b: string) => a.localeCompare(b))
+                                                .map((name: string) => <><span>{name}</span><br/></>)
+                                            : display
+                                    }
+                                </UncontrolledTooltip>
+                            )
+                        }
+                    </>
+                )
+            },
             sortable: true,
             grow: 0.65,
         },
