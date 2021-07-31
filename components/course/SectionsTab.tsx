@@ -22,7 +22,8 @@ import {
     getMeetingTime,
     getModalityIndicator,
     getRealRoomCode,
-    Modalities
+    Modalities,
+    replaceAll
 } from '../../util';
 
 export interface SectionsTabProps {
@@ -204,39 +205,31 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             name: 'Professor',
             selector: 'instructor',
             format: (row, _i) => {
-                // TODO: make this better - this is spaghetti but it works ¯\_(ツ)_/¯
-                let cleanName: string | string[] = row.instructor.trim().length
-                    ? row
-                        .instructor
-                        .split(', ')
-                        .map(name => name
-                            .replace(/<br\/*>/, ' ')
-                            .replace('&nbsp;', ' '))
-                        .join('')
-                        .split(', ')
-                        .map(name => name
-                            .replace(/<br\/*>/, ' ')
-                            .replace('&nbsp;', ' '))
-                        .join(', ')
-                        .split(', ')
-                    : 'Unknown';
+                let cleanName = row.instructor.trim();
+                if (cleanName.length) {
+                    cleanName = replaceAll(cleanName, /<br\/*>/, ' ');
+                    cleanName = replaceAll(cleanName, '&nbsp;', ' ');
+                    cleanName = replaceAll(cleanName, /\(\w+\)/, '')
+                }
+
+                if (!cleanName.length)
+                    cleanName = 'Unknown';
 
                 let display = <>{cleanName}</>;
-                if (cleanName instanceof Array && cleanName.length > 1)
-                    display = <>{cleanName[0]} <span className={styles.extraRoomsIndicator}>{'+' + (cleanName.length - 1)}</span></>;
+                if (cleanName.split(', ').length > 1)
+                    display = <>{cleanName.split(', ')[0]} <span className={styles.extraRoomsIndicator}>{'+' + (cleanName.split(', ').length - 1)}</span></>;
 
                 return (
                     <>
                         <span id={`tooltip-prof-${row.section}`}>{display}</span>
                         {
-                            row.instructor.trim().length && (
+                            row.instructor.trim() && (
                                 <UncontrolledTooltip delay={0} placement="top" target={`tooltip-prof-${row.section}`}>
                                     {
-                                        cleanName instanceof Array
-                                            ? cleanName
-                                                .sort((a: string, b: string) => a.localeCompare(b))
-                                                .map((name: string) => <><span>{name}</span><br/></>)
-                                            : display
+                                        cleanName
+                                            .split(', ')
+                                            .sort((a: string, b: string) => a.localeCompare(b))
+                                            .map((name: string) => <><span>{name}</span><br/></>)
                                     }
                                 </UncontrolledTooltip>
                             )
