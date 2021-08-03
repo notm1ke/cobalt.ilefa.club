@@ -14,12 +14,8 @@ export interface RoomLookupProps {
 export type RoomInspectionPayload = CompleteRoomPayload & TimedRequest & UnshapedApiResponse;
 
 export const useRoom = ({ name }: RoomLookupProps): DefaultShapedHook<RoomInspectionPayload> => { 
-    let noop = false;
     let url = `/api/room/${name}`;
-    if (!name) {
-        noop = true;
-        url = '/api/noop';
-    }
+    if (!name) url = '/api/noop';
 
     return createRemoteHook<RoomInspectionPayload, DefaultShapedHook<RoomInspectionPayload>>('Room', url,
         (type, data, _err, url) => {

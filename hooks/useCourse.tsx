@@ -32,12 +32,8 @@ export const useCourse = ({ name, campus, bare, initial }: CourseLookupProps): D
                     : '?') 
                     + `initial=${initial}` : '')}`
 
-    let noop = false;
     let url = `/api/course/${name + queryString}`;
-    if (!name) {
-        noop = true;
-        url = '/api/noop';
-    }
+    if (!name) url = '/api/noop';
 
     return createRemoteHook<CourseInspectionPayload, DefaultShapedHook<CourseInspectionPayload>>('Course', url,
         (type, data, _err, url) => {
