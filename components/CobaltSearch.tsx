@@ -141,7 +141,7 @@ export const CobaltSearch = () => {
         setSuggestions(suggestFor(query));
     }
 
-    const { data, isLoading, isError } = useCourseList();
+    const [data, isLoading, isError] = useCourseList();
     
     const onClear = () => setSuggestions([]);
     const onChange = (_: any, { newValue }: ChangeEvent) => setQuery(newValue);
@@ -180,7 +180,6 @@ export const CobaltSearch = () => {
             return [];
             
         let res = data
-            .courses
             .filter(course => predicates.some(predicate => predicate(input.split(' ').filter(token => !token.startsWith('+')).join(' '), course)))
             .sort((a, b) => {
                 let aStart = a.name.toLowerCase().slice(0, input.length) === input.toLowerCase();

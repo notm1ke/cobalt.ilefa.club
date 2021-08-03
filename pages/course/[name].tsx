@@ -7,6 +7,7 @@ import globalStyles from '../../components/styling/home.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useCourse } from '../../hooks';
+import { decode as decodeEntities } from 'html-entities';
 
 import {
     CompleteCoursePayload,
@@ -160,13 +161,13 @@ const CourseInspection = () => {
 
     if (name) name = name.toUpperCase();
 
-    const { data, request, isLoading, isError } = useCourse({ name, initial: true });
+    const [course, request, loading, error] = useCourse({ name, initial: true });
     const [activeTab, setActiveTab] = useState('overview');
     let metrics: MetricsEvent[] = [];
 
-    if (isLoading) return <Loader />;
-    if (isError) return <ErrorView title="Error" message="Something went wrong while retrieving data." />;
-    if (!data) return <Loader />;
+    if (loading) return <Loader />;
+    if (error) return <ErrorView title="Error" message="Something went wrong while retrieving data." />;
+    if (!course) return <Loader />;
 
     const changeTab = (e, state) => {
         e.preventDefault();
@@ -174,16 +175,16 @@ const CourseInspection = () => {
     }
 
     const recordMetric = (event: MetricsEvent) => metrics.push(event);
-    recordMetric({ request, success: true, time: data.timings });
+    recordMetric({ request, success: true, time: course.timings });
     
-    const info = getSidebarInfo(data, setActiveTab);
+    const info = getSidebarInfo(course, setActiveTab);
     const icon = getIconForCourse(name, styles.courseIcon, 40);
 
     return (
         <main>
             <Head>
-                <title>Cobalt » {data.name}</title>
-                <meta name="description" content={`View more information about ${data.name} on Cobalt.`} />
+                <title>Cobalt » {name.toUpperCase()}</title>
+                <meta name="description" content={`View more information about ${name.toUpperCase()} on Cobalt.`} />
             </Head>
             <Nav/>
             <div className="position-relative background-gradient">
@@ -196,7 +197,7 @@ const CourseInspection = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>{icon}{name.toUpperCase()}</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            { data.catalogName }
+                                            { decodeEntities(course.catalogName) }
                                         </h2>
                                     </div>
                                 </div>
@@ -261,22 +262,22 @@ const CourseInspection = () => {
                                                 <div className={styles.tabBody}>
                                                     <TabContent activeTab={activeTab} id="tab">
                                                         <TabPane tabId="overview">
-                                                            <OverviewTab data={data} />
+                                                            <OverviewTab data={course} />
                                                         </TabPane>
                                                         <TabPane tabId="sections">
-                                                            <SectionsTab data={data} />
+                                                            <SectionsTab data={course} />
                                                         </TabPane>
                                                         <TabPane tabId="professors">
                                                             {
-                                                                data && !isLoading && !isError && (
-                                                                    <ProfessorsTab course={data} recordMetric={recordMetric} />
+                                                                course && !loading && !error && (
+                                                                    <ProfessorsTab course={course} recordMetric={recordMetric} />
                                                                 )
                                                             }
                                                             {
-                                                                isLoading && <LoaderTab />
+                                                                loading && <LoaderTab />
                                                             }
                                                             {
-                                                                isError && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" />
+                                                                error && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" />
                                                             }
                                                         </TabPane>
                                                         <DevElement>

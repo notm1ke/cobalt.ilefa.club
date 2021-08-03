@@ -122,7 +122,7 @@ const ClassroomInspection = () => {
 
     if (name) name = name.toUpperCase();
 
-    const { data, isLoading, isError } = useRoom({ name });
+    const [room, _request, loading, error] = useRoom({ name });
     const [rendered, setRendered] = useState(false);
 
     useEffect(() => {
@@ -133,19 +133,19 @@ const ClassroomInspection = () => {
         return () => setRendered(false);
     }, []);
 
-    if (isLoading) return <Loader />;
-    if (isError) return <ErrorView title="Error" message="Something went wrong while retrieving data." />;
-    if (!data) return <Loader />;
+    if (loading) return <Loader />;
+    if (error) return <ErrorView title="Error" message="Something went wrong while retrieving data." />;
+    if (!room) return <Loader />;
 
-    const info = getSidebarInfo(data);
-    const icon = getIconForRoom(data, styles.courseIcon, 40);
-    const styledName = data.building.code + ' ' + data.name.slice(data.building.code.length);
+    const info = getSidebarInfo(room);
+    const icon = getIconForRoom(room, styles.courseIcon, 40);
+    const styledName = room.building.code + ' ' + room.name.slice(room.building.code.length);
 
     return (
         <main>
             <Head>
-                <title>Cobalt » {data.name}</title>
-                <meta name="description" content={`View more information about ${data.name} on Cobalt.`} />
+                <title>Cobalt » {room.name}</title>
+                <meta name="description" content={`View more information about ${room.name} on Cobalt.`} />
             </Head>
             <Nav/>
             <div className="position-relative background-gradient">
@@ -158,7 +158,7 @@ const ClassroomInspection = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>{icon}{styledName}</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            { BuildingCodes[data.building.code] }
+                                            { BuildingCodes[room.building.code] }
                                         </h2>
                                     </div>
                                 </div>
@@ -198,14 +198,14 @@ const ClassroomInspection = () => {
                                                     <div className={styles.tabBody}>
                                                         <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-chalkboard-teacher fa-fw"></i> Overview</pre>
                                                         <p className={`${styles.description}`}>
-                                                            <b>Seating:</b> {SeatingType[data.seatingType]}<br/>
-                                                            <b>Board:</b> {BoardType[data.boardType]}<br/>
-                                                            <b>Technology:</b> {TechType[data.techType]}<br/>
-                                                            {data.techDescription && <><b>Installed Tech:</b> {data.techDescription}<br/></>}
-                                                            <b>Lecture Capture:</b> {LectureCaptureType[data.lectureCapture]}<br/><br/>
-                                                            <Link href={`/buildings#${data.building.code}`}>
+                                                            <b>Seating:</b> {SeatingType[room.seatingType]}<br/>
+                                                            <b>Board:</b> {BoardType[room.boardType]}<br/>
+                                                            <b>Technology:</b> {TechType[room.techType]}<br/>
+                                                            {room.techDescription && <><b>Installed Tech:</b> {room.techDescription}<br/></>}
+                                                            <b>Lecture Capture:</b> {LectureCaptureType[room.lectureCapture]}<br/><br/>
+                                                            <Link href={`/buildings#${room.building.code}`}>
                                                                 <a className="text-primary-light shine">
-                                                                    <i className="fa fa-link fa-fw"></i> View more information about <b className="">{data.building.name}</b>.
+                                                                    <i className="fa fa-link fa-fw"></i> View more information about <b className="">{room.building.name}</b>.
                                                                 </a>
                                                             </Link>
                                                         </p>
@@ -213,14 +213,14 @@ const ClassroomInspection = () => {
                                                         {/* <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-code fa-fw"></i> Raw Data</pre>
                                                         <pre className={styles.description}>{JSON.stringify(data, null, 3)}</pre><br/> */}
                                                         <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-camera-retro fa-fw"></i> 360&#176; View</pre>
-                                                        { !data.threeSixtyView && <p className={`${styles.description} mb--3`}>360&#176; View is not available for <b>{styledName}</b>.</p> }
-                                                        { data.threeSixtyView && rendered && <ThreeSixtyRenderer src={data.threeSixtyView} height={500} timeAnim={false} /> }
-                                                        { data.liveStreamUrl &&
+                                                        { !room.threeSixtyView && <p className={`${styles.description} mb--3`}>360&#176; View is not available for <b>{styledName}</b>.</p> }
+                                                        { room.threeSixtyView && rendered && <ThreeSixtyRenderer src={room.threeSixtyView} height={500} timeAnim={false} /> }
+                                                        { room.liveStreamUrl &&
                                                             (
                                                                 <>
                                                                     <br/>
                                                                     <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-broadcast-tower fa-fw"></i> Live Stream</pre>
-                                                                    <iframe src={data.liveStreamUrl} height={500} width={'100%'} ></iframe>
+                                                                    <iframe src={room.liveStreamUrl} height={500} width={'100%'} ></iframe>
                                                                 </>
                                                             )
                                                         }

@@ -10,9 +10,9 @@ export interface ProfessorsTabProps extends IMetricsComponent {
 }
 
 export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetric }) => {
-    let { data, request, isLoading, isError } = useProfessors({ course: course.name });
-    if (isLoading) return <LoaderTab />;
-    if (isError || !data?.professors) {
+    let [data, request, loading, error] = useProfessors({ course: course.name });
+    if (loading) return <LoaderTab />;
+    if (error || !data) {
         recordMetric({ request, success: false, time: -1 });
         return <ErrorTab />;
     }
@@ -20,12 +20,12 @@ export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetr
     recordMetric({ request, success: true, time: data.timings });
 
     const distinct = data
-        .professors
+        .professors!
         .map(ent => ({ ...ent, name: ent.name.trim() }))
         .filter(ent => !ent.name.includes(','))
         .filter(ent => !!ent.name);
     
-    if (!data.professors.length) return (
+    if (!data.professors!.length) return (
         <ErrorTab message="There aren't any professors teaching this course." color="text-gray" />
     )
 

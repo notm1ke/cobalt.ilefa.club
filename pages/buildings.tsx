@@ -28,14 +28,14 @@ import {
 } from '../util';
 
 const BuildingsPage = () => {
-    const { data, isLoading, isError } = useBuildings();
+    const [buildings, loading, error] = useBuildings();
 
     const [search, setSearch] = useState('');
     const [hideNoRooms, setHideNoRooms] = useState(true);
     const [results, setResults] = useState<BuildingPayload[]>([]);
 
     const toggleNoRooms = () => setHideNoRooms(!hideNoRooms);
-    const resetResults = () => setResults(data.buildings!);
+    const resetResults = () => setResults(buildings!);
 
     const predicates: ((input: string, building: BuildingPayload) => boolean)[] = [
         (input, { name }) => name.toLowerCase().includes(input)
@@ -57,20 +57,20 @@ const BuildingsPage = () => {
         return filter(query);
     }
 
-    const filter = (query: string) => setResults(data
-        .buildings!
+    const filter = (query: string) => setResults(
+        buildings!
         .filter(building => predicates
             .some(predicate => predicate(query, building))));
 
-    const enabled = !isLoading
-        && !isError
-        && data.buildings;
+    const enabled = !loading
+        && !error
+        && buildings;
 
     useEffect(() => {
         if (!enabled)
             return;
 
-        setResults(data.buildings!);
+        setResults(buildings!);
     }, [enabled]);
 
     return (
@@ -90,7 +90,7 @@ const BuildingsPage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>Buildings</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            Explore {data?.buildings?.length ? intToWords(data.buildings.length) + ' different' : ''} buildings around four of UConn's campuses
+                                            Explore {buildings?.length ? intToWords(buildings.length) + ' different' : ''} buildings around four of UConn's campuses
                                         </h2>
                                         <div className="input-group-alternative mb-4 input-group">
                                             <InputGroupAddon addonType="prepend">
@@ -98,11 +98,11 @@ const BuildingsPage = () => {
                                                     <span className={enabled ? 'cursor-pointer shine' : ''} onClick={() => toggleNoRooms()} id="tooltip-adv-filter">
                                                         <MdiIcon
                                                             size="20px"
-                                                            className={isError ? 'text-danger' : 'text-gray'}
-                                                            spin={isLoading}
-                                                            path={isLoading
+                                                            className={error ? 'text-danger' : 'text-gray'}
+                                                            spin={loading}
+                                                            path={loading
                                                                 ? mdiLoading
-                                                                : isError
+                                                                : error
                                                                     ? mdiAlert
                                                                     : mdiMagnify}
                                                         />
@@ -117,7 +117,7 @@ const BuildingsPage = () => {
                                                     type="text"
                                                     value={search}
                                                     disabled={!enabled}
-                                                    placeholder={isLoading ? 'Loading..' : isError ? 'Something went wrong..' : 'Search for any building or room..'}
+                                                    placeholder={loading ? 'Loading..' : error ? 'Something went wrong..' : 'Search for any building or room..'}
                                                     className="form-control-alternative form-control"
                                                     onChange={e => onSearch(e.target.value)}
                                                 />

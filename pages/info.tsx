@@ -139,8 +139,8 @@ const InfoLink: React.FC<InfoLinkProps> = ({ display, href, classes, newTab }) =
     </a>;
 
 const InfoPage = () => {
-    const { data, isLoading, isError } = useStatistics('full');
-    const { data: commit, isLoading: commitLoading, isError: commitError } = useLatestCommit('ilefa', 'husky');
+    const [stats, sLoading, sError] = useStatistics('full');
+    const [commit, cLoading, cError] = useLatestCommit('ilefa', 'husky');
 
     return (
         <main>
@@ -179,11 +179,11 @@ const InfoPage = () => {
                                     <span className="btn-inner--icon"><i className="fab fa-github"></i></span>
                                     <span className="btn-inner--text font-weight-600">
                                         @ilefa/husky ➔ {
-                                            commitLoading
+                                            cLoading
                                                 ? <i className="fa fa-spinner fa-spin fa-fw"></i> 
-                                                : commitError
+                                                : cError
                                                     ? <span>no_git_id</span>
-                                                    : <span>{commit!.commitId}</span>
+                                                    : <span>{commit!.shaShort}</span>
                                         }
                                     </span>
                                 </a>
@@ -216,7 +216,7 @@ const InfoPage = () => {
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 It's no secret that Cobalt handles a lot of data while serving requests - so we thought it would be cool to pair this data with our <InfoLink display="snapshot dataset" href="https://github.com/ilefa/snapshots" newTab /> in order to visualize this data semester-by-semester.
                                 {
-                                    isError && (
+                                    sError && (
                                         <IconCardXl headerText="Whoops" headerColor="text-danger" iconColor="bg-danger">
                                             <span className="text-dark">
                                                 Hmm, an error occurred while retrieving statistics data from the web.
@@ -227,7 +227,7 @@ const InfoPage = () => {
                                 }
 
                                 {
-                                    isLoading && (
+                                    sLoading && (
                                         <StatisticSection
                                             className="background-circuits"
                                             section={false}
@@ -239,14 +239,14 @@ const InfoPage = () => {
                                 }
 
                                 {
-                                    data && (
+                                    stats && (
                                         <StatisticSection
                                             className="background-circuits"
                                             section={false}
                                             statistics={
                                                 statMarkers.map(marker => ({
                                                     ...marker,
-                                                    amount: data[marker.key ?? marker.name.toLowerCase()],
+                                                    amount: stats[marker.key ?? marker.name.toLowerCase()],
                                                     loading: false,
                                                     change: 0
                                                 }))

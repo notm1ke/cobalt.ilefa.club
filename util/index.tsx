@@ -1,4 +1,5 @@
 import MdiIcon from '@mdi/react';
+import * as Logger from './logger';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -113,6 +114,7 @@ import {
     mdiWeightLifter,
     mdiWrench
 } from '@mdi/js';
+import useSWR from 'swr';
 
 export type TimedRequest = {
     timings: number;
@@ -122,10 +124,30 @@ export type MetricsEvent = {
     request: string;
     success: boolean;
     time: number;
+    data?: any;
 }
 
 export interface IMetricsComponent {
     recordMetric: (event: MetricsEvent) => void;
+}
+
+export type UnshapedApiResponse = {
+    message?: string;
+}
+
+export type GenericShapedHook = any[];
+
+export type DefaultShapedHook<T extends UnshapedApiResponse> = [
+    T | null, // data
+    string,   // request url
+    boolean,  // loading
+    boolean   // error
+];
+
+export enum ApiResponseType {
+    LOADING,
+    ERROR,
+    SUCCESS
 }
 
 export type CompleteCoursePayload = {
@@ -1272,6 +1294,47 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
         if (end < 100) return ones[numString[0]] + ' thousand and ' + intToWords(end);
         return ones[numString[0]] + ' thousand ' + intToWords(end);
     }
+}
+
+/**
+ * Creates a request to the target ``req`` url
+ * and then generates a hook response based on the
+ * ``Response`` and ``Return`` passed to the function.
+ * 
+ * @param req the request url
+ * @param name the name of the hook for debug logging
+ * @param transform how to transform the result into a Return shaped object
+ */
+export const createRemoteHook = <Response extends UnshapedApiResponse, Return extends GenericShapedHook>(
+    name: string,
+    req: string,
+    transform: (type: ApiResponseType, data: Response | null | undefined, error: boolean, url: string) => Return
+): Return => {
+    const start = Date.now();
+    const fetcher = (url: string) => fetch(url)
+        .then(res => res.json())
+        .then(res => res as Response);
+
+    const { data, error } = useSWR(req, fetcher);
+
+    if (!data && !error)
+        return transform(ApiResponseType.LOADING, null, false, req);
+    
+    if (error) {
+        Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
+        Logger.debug(`use${name}`, `The server responded with an unknown error.`, Logger.LogLevelColor.ERROR);
+        return transform(ApiResponseType.ERROR, null, true, req);
+    }
+
+    if (data && data.message) {
+        Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
+        Logger.debug(`use${name}`, `The server responded with: ${data.message}`, Logger.LogLevelColor.ERROR);
+        return transform(ApiResponseType.ERROR, null, true, req);
+    }
+
+    Logger.timings(`use${name}`, 'Fetch', start);
+    Logger.debug(`use${name}`, 'Server response:', undefined, undefined, data);
+    return transform(ApiResponseType.SUCCESS, data, false, req);
 }
 
 /**

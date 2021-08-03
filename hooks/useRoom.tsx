@@ -1,67 +1,35 @@
-import useSWR from 'swr';
-import * as Logger from '../util/logger';
-
-import { CompleteRoomPayload, TimedRequest } from '../util';
+import {
+    ApiResponseType,
+    CompleteRoomPayload,
+    createRemoteHook,
+    DefaultShapedHook,
+    TimedRequest,
+    UnshapedApiResponse
+} from '../util';
 
 export interface RoomLookupProps {
     name: string;
 }
 
-export type RoomInspectionPayload = CompleteRoomPayload & TimedRequest;
+export type RoomInspectionPayload = CompleteRoomPayload & TimedRequest & UnshapedApiResponse;
 
-export type RoomInspectionResult = {
-    data: RoomInspectionPayload | null;
-    request: string;
-    isLoading: boolean;
-    isError: boolean;
-}
-
-export const useRoom = (props: RoomLookupProps): RoomInspectionResult => {
-
-    const start = Date.now();
-    const url = `/api/room/${props.name}`
-    const fetcher = (url: string) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR(`/api/room/${props.name}`, fetcher);
-
-    if (!data && !error) return {
-        data: null,
-        request: url,
-        isLoading: true,
-        isError: false
-    }
-    
-    if (error) {
-        Logger.timings('useRoom', 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
-        Logger.debug('useRoom', `The server responded with an unknown error.`, Logger.LogLevelColor.ERROR);
-        
-        return {
-            data: null,
-            request: url,
-            isLoading: false,
-            isError: true
-        }
+export const useRoom = ({ name }: RoomLookupProps): DefaultShapedHook<RoomInspectionPayload> => { 
+    let noop = false;
+    let url = `/api/room/${name}`;
+    if (!name) {
+        noop = true;
+        url = '/api/noop';
     }
 
-    if (data && data.message) {
-        Logger.timings('useRoom', 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
-        Logger.debug('useRoom', `The server responded with: ${data?.message}`, Logger.LogLevelColor.ERROR);
-
-        return {
-            data: null,
-            request: url,
-            isLoading: true,
-            isError: true
-        }
-    }
-
-    Logger.timings('useRoom', 'Fetch', start);
-    Logger.debug('useRoom', 'Server response:', undefined, undefined, data);
-
-    return {
-        data,
-        request: url,
-        isLoading: false,
-        isError: false
-    }
-
+    return createRemoteHook<RoomInspectionPayload, DefaultShapedHook<RoomInspectionPayload>>('Room', url,
+        (type, data, _err, url) => {
+            switch (type) {
+                case ApiResponseType.ERROR:
+                    return [null, url, false, true];
+                case ApiResponseType.LOADING:
+                    return [null, url, true, false];
+                case ApiResponseType.SUCCESS:
+                    return [data!, url, false, false];
+            }
+        });
 }

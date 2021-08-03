@@ -117,13 +117,7 @@ const proOrConSorting = (tag: string) => {
 export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, recordMetric }) => {
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
-
-    const { data: bluepages, request: bluepagesRequest, isLoading: bluepagesLoading, isError: bluepagesError } = useBluepages({ name: professor.name });
-    if (bluepagesError)
-        recordMetric({ request: bluepagesRequest, success: false, time: -1 });
-
-    if (bluepages)
-        recordMetric({ request: bluepagesRequest, success: true, time: bluepages.timings });
+    const [bluepages, _request, bLoading, bError] = useBluepages({ name: professor.name, recordMetric });
 
     if (!professor.rmpIds.length) return (
         <div className={`${styles.statisticList} ${styles.statisticListProf}`}>
@@ -139,11 +133,11 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                             <Collapse isOpen={active} className={styles.statisticCollapse}>
                                 <p><b>Bluepages Report:</b></p>
                                 <ul className={styles.ratingTags}>
-                                    { bluepagesLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
-                                    { bluepagesError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+                                    { bLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
+                                    { bError && <li>Information is not available about <b>{professor.name}</b>.</li> }
 
                                     {
-                                        bluepages && !bluepagesLoading && (
+                                        bluepages && !bLoading && (
                                             <>
                                                 <BluepagesAttribute data={bluepages} attribute="email" display="Email:" />
                                                 <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />
@@ -176,13 +170,13 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
         </div>
     );
 
-    const { data, request, isLoading, isError } = useProfessor({ rmpIds: professor.rmpIds });
-    if (isError) {
+    const [data, request, loading, error] = useProfessor({ rmpIds: professor.rmpIds });
+    if (error) {
         recordMetric({ request, success: false, time: -1 })
         return <></>;
     }
     
-    if (isLoading || !data) return <></>;
+    if (loading || !data) return <></>;
     recordMetric({ request, success: true, time: data.timings });
     
     return (
@@ -228,11 +222,11 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                 
                                 <p><b>Bluepages Report:</b></p>
                                 <ul className={styles.ratingTags}>
-                                    { bluepagesLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
-                                    { bluepagesError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+                                    { bLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
+                                    { bError && <li>Information is not available about <b>{professor.name}</b>.</li> }
 
                                     {
-                                        bluepages && !bluepagesLoading && (
+                                        bluepages && !bLoading && (
                                             <>
                                                 <BluepagesAttribute data={bluepages} attribute="email" display="Email:" />
                                                 <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />

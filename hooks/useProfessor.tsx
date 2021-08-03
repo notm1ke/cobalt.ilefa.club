@@ -1,71 +1,30 @@
-import useSWR from 'swr';
-import * as Logger from '../util/logger';
-
-import { TimedRequest } from '../util';
 import { RateMyProfessorReport } from '@ilefa/husky';
 
-export type RmpResponse = RateMyProfessorReport & TimedRequest & {
-    mostRelevant: string;
-}
+import {
+    ApiResponseType,
+    createRemoteHook,
+    DefaultShapedHook,
+    TimedRequest,
+    UnshapedApiResponse
+} from '../util';
 
 export interface ProfessorLookupProps {
     rmpIds: string[];
 }
 
-export type ProfessorResponse = {
-    data: RmpResponse | null;
-    request: string;
-    isLoading: boolean;
-    isError: boolean;
+export type RmpResponse = RateMyProfessorReport & TimedRequest & UnshapedApiResponse & {
+    mostRelevant: string;
 }
 
-export const useProfessor = ({ rmpIds }: ProfessorLookupProps): ProfessorResponse => {
-
-    const start = Date.now();
-    const url = `/api/professor/${rmpIds.join(',')}`;
-    const fetcher = (url: string) => fetch(url).then(r => r.json());
-    const { data, error } = useSWR(url, fetcher);
-
-    if (!data && !error) {
-        return {
-            data: null,
-            request: url,
-            isLoading: true,
-            isError: false
-        }
-    }
-
-    if (error) {
-        Logger.timings('useProfessor', 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
-        Logger.debug('useProfessor', `The server responded with an unknown error.`, Logger.LogLevelColor.ERROR);
-        
-        return {
-            data: null,
-            request: url,
-            isLoading: false,
-            isError: true
-        }
-    }
-
-    if (data && data.message) {
-        Logger.timings('useProfessor', 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
-        Logger.debug('useProfessor', `The server responded with: ${data?.message}`, Logger.LogLevelColor.ERROR);
-
-        return {
-            data: null,
-            request: url,
-            isLoading: false,
-            isError: true
-        }
-    }
-
-    Logger.timings('useProfessor', 'Fetch', start);
-    Logger.debug('useProfessor', 'Server response:', undefined, undefined, data);
-    return {
-        data,
-        request: url,
-        isLoading: false,
-        isError: false
-    }
-
-}
+export const useProfessor = ({ rmpIds }: ProfessorLookupProps): DefaultShapedHook<RmpResponse> =>
+    createRemoteHook<RmpResponse, DefaultShapedHook<RmpResponse>>('Professor', `/api/professor/${rmpIds.join(',')}`,
+        (type, data, _err, url) => {
+            switch (type) {
+                case ApiResponseType.ERROR:
+                    return [null, url, false, true];
+                case ApiResponseType.LOADING:
+                    return [null, url, true, false];
+                case ApiResponseType.SUCCESS:
+                    return [data!, url, false, false];
+            }
+        });

@@ -1,8 +1,9 @@
 import React from 'react';
 import styles from '../styling/inspection.module.css';
 
-import { CompleteCoursePayload, ContentAreaNames } from '../../util';
 import { DevElement } from '../DevElement';
+import { decode as decodeEntities } from 'html-entities';
+import { CompleteCoursePayload, ContentAreaNames } from '../../util';
 
 export interface OverviewTabProps {
     data: CompleteCoursePayload;
@@ -11,7 +12,7 @@ export interface OverviewTabProps {
 export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => (
     <div className={styles.tabBody}>
         <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-alt fa-fw"></i> Course Description</pre>
-        <p className={styles.description}>{data.description}</p>
+        <p className={styles.description}>{decodeEntities(data.description)}</p>
         <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-file-alt fa-fw"></i> Content Areas</pre>
         {
             !!data.attributes.contentAreas.length && (
@@ -32,7 +33,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => (
             )
         }
         <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-tasks fa-fw"></i> Prerequisites</pre>
-        <p className={styles.description}>{data.prerequisites}</p>
+        <p className={styles.description}>{decodeEntities(data.prerequisites)}</p>
         <DevElement>
             <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-history fa-fw"></i> Snapshots</pre>
             <p className={styles.descriptionLast}>There are no snapshots available for <b>{data.name}</b>.</p>
