@@ -5,6 +5,8 @@ export * from './ErrorView';
 export * from './Footer';
 export * from './Loader';
 export * from './Nav';
+export * from './Ribbon';
+export * from './StatusRibbon';
 
 export * from './cards/BuildingRoomCard';
 export * from './cards/IconCard';

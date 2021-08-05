@@ -1,3 +1,4 @@
+import useSWR from 'swr';
 import MdiIcon from '@mdi/react';
 import * as Logger from './logger';
 
@@ -10,7 +11,9 @@ import {
     COURSE_IDENTIFIER,
     ProfessorData,
     SeatingType,
-    SectionData
+    SectionData,
+    UConnService,
+    UConnServiceStatus
 } from '@ilefa/husky';
 
 import {
@@ -114,7 +117,40 @@ import {
     mdiWeightLifter,
     mdiWrench
 } from '@mdi/js';
-import useSWR from 'swr';
+
+export type Color = 'blue'
+                  | 'indigo'
+                  | 'purple'
+                  | 'pink'
+                  | 'red'
+                  | 'orange'
+                  | 'yellow'
+                  | 'green'
+                  | 'teal'
+                  | 'cyan'
+                  | 'white'
+                  | 'gray'
+                  | 'gray-dark'
+                  | 'light'
+                  | 'lighter'
+                  | 'primary'
+                  | 'secondary'
+                  | 'success'
+                  | 'info'
+                  | 'warning'
+                  | 'danger'
+                  | 'light'
+                  | 'dark'
+                  | 'default'
+                  | 'primary-light'
+                  | 'warp'
+                  | 'red'
+                  | 'dark-red'
+                  | 'blue'
+                  | 'yellow'
+                  | 'white'
+                  | 'neutral'
+                  | 'darker';
 
 export type TimedRequest = {
     timings: number;
@@ -149,6 +185,33 @@ export enum ApiResponseType {
     ERROR,
     SUCCESS
 }
+
+export type CustomUConnServiceReport = {
+    service: string;
+    display: string;
+    status: UConnServiceStatus;
+    time: number;
+}
+
+export const CustomUConnServices = [
+    ...Object
+        .keys(UConnService)
+        .map(key => key.toLowerCase())
+        .filter(key => key !== 'unknown'),
+    'catalog',
+    'phonebook',
+];
+
+export type CustomUConnServiceString = 'aurora'
+                                     | 'email'
+                                     | 'huskyct'
+                                     | 'kfs'
+                                     | 'netid'
+                                     | 'network'
+                                     | 'student_admin'
+                                     | 'webex'
+                                     | 'catalog'
+                                     | 'phonebook';
 
 export type CompleteCoursePayload = {
     name: string;
@@ -888,6 +951,26 @@ export const getIconForRoom = (room: CompleteRoomPayload | Classroom, classes = 
 }
 
 /**
+ * Returns the display name for a given
+ * custom service string.
+ * 
+ * @param custom the custom uconn service string
+ */
+export const getDisplayNameForService = (custom: CustomUConnServiceString) => {
+    if (custom in Object.keys(UConnService))
+        return UConnService[custom];
+
+    switch (custom.toLowerCase()) {
+        case 'catalog':
+            return 'Course Catalog';
+        case 'phonebook':
+            return 'Phonebook';
+        default:
+            return capitalizeFirst(custom.toLowerCase());
+    }
+}
+
+/**
  * Typeguard to verify that a string is a valid {@link CampusType}.
  * @param input the string to verify
  */
@@ -1135,8 +1218,13 @@ export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.tes
  * @param target the target enum
  * @param value the value to search by
  */
-export const getEnumKeyByEnumValue = (target: any, value: string) => {
-    let keys = Object.keys(target).filter((x) => target[x] == value);
+export const getEnumKeyByEnumValue = (target: any, value: string, caseSensitive = true) => {
+    let keys = Object
+        .keys(target)
+        .filter(x => caseSensitive
+            ? target[x] == value
+            : target[x].toLowerCase() == value.toLowerCase());
+
     return keys.length > 0
         ? keys[0]
         : undefined;
@@ -1304,18 +1392,22 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
  * @param req the request url
  * @param name the name of the hook for debug logging
  * @param transform how to transform the result into a Return shaped object
+ * @param pollTime [optional] millis to wait before fetching new data (disabled by default)
  */
 export const createRemoteHook = <Response extends UnshapedApiResponse, Return extends GenericShapedHook>(
     name: string,
     req: string,
-    transform: (type: ApiResponseType, data: Response | null | undefined, error: boolean, url: string) => Return
+    transform: (type: ApiResponseType, data: Response | null | undefined, error: boolean, url: string) => Return,
+    pollTime?: number
 ): Return => {
     const start = Date.now();
     const fetcher = (url: string) => fetch(url)
         .then(res => res.json())
         .then(res => res as Response);
 
-    const { data, error } = useSWR(req, fetcher);
+    const { data, error } = useSWR(req, fetcher, {
+        refreshInterval: pollTime || 0
+    });
 
     if (!data && !error)
         return transform(ApiResponseType.LOADING, null, false, req);

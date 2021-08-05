@@ -1,0 +1,91 @@
+import axios from 'axios';
+
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getServiceStatus, UConnService, UConnServiceStatus } from '@ilefa/husky';
+
+import {
+    CustomUConnServices,
+    CustomUConnServiceString,
+    getDisplayNameForService,
+    getEnumKeyByEnumValue
+} from '../../util';
+
+export const ValidCustomServices = [
+    {
+        name: 'Catalog',
+        token: 'catalog',
+        url: 'https://catalog.uconn.edu/directory-of-courses'
+    },
+    {
+        name: 'Phonebook',
+        token: 'phonebook',
+        url: 'https://phonebook.uconn.edu'
+    },
+]
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+    if (req.method && req.method !== 'GET')
+        return res
+            .status(405)
+            .json({ message: 'Method not allowed' });
+
+    let { include } = req.query;
+    if (include instanceof Array)
+        return res
+            .status(400)
+            .json({ message: 'Invalid included services payload' });
+
+    if (!include)
+        return res
+            .status(400)
+            .json({ message: 'Included services parameter missing' });
+
+    if (include === 'all')
+        include = CustomUConnServices.join(',');
+
+    let filtered = include
+        .split(',')
+        .map(token => token.toLowerCase().replace(/\s/, '_'))
+        .filter(token => CustomUConnServices.includes(token));
+
+    let status: any[] = [];
+    let std = filtered
+        .map(key => convertCustomToManaged(key))
+        .filter(key => key !== 'UNKNOWN')
+        .map(key => UConnService[key]);
+
+    if (std.length)
+        status.push(...await getServiceStatus(...std));
+
+    let custom = await Promise.all(filtered
+        .filter(token => ValidCustomServices.some(srv => srv.token === token))
+        .map(token => ValidCustomServices.find(srv => srv.token === token))
+        .map(async token => await getRemoteStatus(token!.name, token!.url)));
+
+    status.push(...custom.map(srv => ({ ...srv, display: getDisplayNameForService(srv.service as CustomUConnServiceString) })));
+
+    return res
+        .status(200)
+        .json({ status });
+}
+
+const getRemoteStatus = async (name: string, url: string, degradedThreshold = 2500, timeout = 5000): Promise<any> => {
+    const start = Date.now();
+    return await axios
+        .get(url, { timeout })
+        .then(_ => {
+            let diff = Date.now() - start;
+            let status = diff >= degradedThreshold
+                ? UConnServiceStatus.DEGRADED
+                : UConnServiceStatus.OPERATIONAL;
+
+            return ({
+                service: name,
+                status,
+                time: Date.now()
+            });
+        })
+        .catch(_ => ({ service: name, status: UConnServiceStatus.OUTAGE, time: Date.now() }));
+}
+
+const convertCustomToManaged = (service: string) => getEnumKeyByEnumValue(UConnService, service.toUpperCase().replace('_', ' '), false) || 'UNKNOWN';
