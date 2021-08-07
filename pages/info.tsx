@@ -4,13 +4,13 @@ import Head from 'next/head';
 import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
+import { useStatistics } from '../hooks';
+import { ContentAreaNames } from '../util';
 import { UncontrolledTooltip } from 'reactstrap';
-import { useLatestCommit, useStatistics } from '../hooks';
-import { ContentAreaNames, getLatestTimeValue } from '../util';
 
 import {
-    DevElement,
     Footer,
+    GitButton,
     IconCardXl,
     Nav,
     StatisticSection
@@ -139,8 +139,7 @@ const InfoLink: React.FC<InfoLinkProps> = ({ display, href, classes, newTab }) =
     </a>;
 
 const InfoPage = () => {
-    const [stats, sLoading, sError] = useStatistics('full');
-    const [commit, cLoading, cError] = useLatestCommit('ilefa', 'husky');
+    const [stats, loading, error] = useStatistics('full');
 
     return (
         <main>
@@ -175,18 +174,7 @@ const InfoPage = () => {
                                 Husky works by scraping the <InfoLink display="course catalog" href="https://catalog.uconn.edu" newTab /> to compile the relevant information about courses.
                                 For more information, see the linked GitHub repository below.
                                 <br/>
-                                <a href="https://github.com/ilefa/husky" target="_blank" rel="noopener noreferrer" className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase">
-                                    <span className="btn-inner--icon"><i className="fab fa-github"></i></span>
-                                    <span className="btn-inner--text font-weight-600">
-                                        @ilefa/husky ➔ {
-                                            cLoading
-                                                ? <i className="fa fa-spinner fa-spin fa-fw"></i> 
-                                                : cError
-                                                    ? <span>no_git_id</span>
-                                                    : <span>{commit!.shaShort}</span>
-                                        }
-                                    </span>
-                                </a>
+                                <GitButton owner="ilefa" repo="husky" />
                             </span>
                         </h4>
                         
@@ -216,7 +204,7 @@ const InfoPage = () => {
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 It's no secret that Cobalt handles a lot of data while serving requests - so we thought it would be cool to pair this data with our <InfoLink display="snapshot dataset" href="https://github.com/ilefa/snapshots" newTab /> in order to visualize this data semester-by-semester.
                                 {
-                                    sError && (
+                                    error && (
                                         <IconCardXl headerText="Whoops" headerColor="text-danger" iconColor="bg-danger">
                                             <span className="text-dark">
                                                 Hmm, an error occurred while retrieving statistics data from the web.
@@ -227,7 +215,7 @@ const InfoPage = () => {
                                 }
 
                                 {
-                                    sLoading && (
+                                    loading && (
                                         <StatisticSection
                                             className="background-circuits"
                                             section={false}
@@ -256,21 +244,6 @@ const InfoPage = () => {
                                 }
                             </span>
                         </h4>
-                        
-                        <DevElement allowStaging>
-                            <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
-                                <i className="fa fa-laptop-code fa-fw"></i> Service Information
-                                <br/><span className={`text-white ${styles.infoSectionBody}`}>
-                                    This instance of Cobalt is running version <b>{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} ({process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : process.env.NEXT_PUBLIC_DEVICE ?? 'unknown'}</b>.
-                                    <ul className={`mt-3 no-li-decoration ${styles.internalInfo}`}>
-                                        <li><i className="fab fa-github fa-fw"></i> <b>Repository:</b> <InfoLink display="@ilefa/websites ➔ cobalt" href="https://github.com/notm1ke/cobalt.ilefa.club" newTab /></li>
-                                        <li><i className="fa fa-clock fa-fw"></i> <b>Uptime:</b> {process.env.NEXT_PUBLIC_START ? getLatestTimeValue((Date.now() - parseInt(process.env.NEXT_PUBLIC_START || '0') * 1000)) : 'unknown'}</li>
-                                        <li><i className="fa fa-code-branch fa-fw"></i> <b>Release Channel:</b> {process.env.NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL || 'unknown'}</li>
-                                        <li><i className="fa fa-comment-alt fa-fw"></i> <b>Commit Message:</b> {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE || 'unknown'}</li>
-                                    </ul>
-                                </span>
-                            </h4>
-                        </DevElement>
 
                         <h4 className={`text-white ${styles.infoSectionTitle}`}>
                             <i className="fa fa-balance-scale-left fa-fw"></i> Affiliations

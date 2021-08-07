@@ -27,6 +27,10 @@
     vertical-align: middle !important;
 }
 
+.vaSub {
+    vertical-align: sub !important;
+}
+
 .noBorder {
     border: none !important;
 }

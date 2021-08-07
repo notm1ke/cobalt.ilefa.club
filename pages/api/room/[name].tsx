@@ -24,7 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: 'Invalid room name' });
 
-    let mappings = Classrooms.filter(mapping => mapping.name === name)[0];
+    let mappings = Classrooms.find(mapping => mapping.name === name);
     if (!mappings)
         return res
             .status(404)
@@ -50,6 +50,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         building: {
             name: mappings.building.name,
             code: mappings.building.code,
+            campus: mappings.building.campus,
             mapUrl: BuildingMaps[mappings.building.code]
         },
         liveStreamUrl: streamUrl

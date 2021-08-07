@@ -6,8 +6,8 @@ import styles from './styling/ribbon.module.css';
 import { Ribbon } from '.';
 import { useStatus } from '../hooks';
 import { UConnServiceStatus } from '@ilefa/husky';
-import { mdiAlert, mdiReloadAlert } from '@mdi/js';
-import { Color, CustomUConnServiceString } from '../util';
+import { mdiAlert, mdiEyeCheck, mdiReloadAlert } from '@mdi/js';
+import { capitalizeFirst, Color, CustomUConnServiceString } from '../util';
 
 type RibbonGenerator = {
     level: UConnServiceStatus;
@@ -59,6 +59,16 @@ const RibbonMessages: RibbonOpts[] = [
                 <b>Cobalt's</b> functionality has been impacted due to outages affecting the {concatNames(names)}{" "}
                 — see more on the <RibbonLink display="IT Status" href="https://itstatus.uconn.edu" newTab /> page.
             </>
+    },
+    {
+        level: UConnServiceStatus.REPORTING,
+        color: 'primary-light',
+        icon: <MdiIcon path={mdiEyeCheck} size={'25px'} className={styles.mdiIcon} />,
+        message: (names: string[]) =>
+            <>
+                {concatNames(names, true)} are currently monitoring their status after an incident
+                — see more on the <RibbonLink display="IT Status" href="https://itstatus.uconn.edu" newTab /> page.
+            </>
     }
 ]
 
@@ -86,6 +96,11 @@ export const StatusRibbon: React.FC<StatusRibbonProps> = ({ track, ignore, dismi
     if (!nonOperational.some(srv => srv.status === UConnServiceStatus.OUTAGE)
         && nonOperational.some(srv => srv.status === UConnServiceStatus.DEGRADED))
             level = UConnServiceStatus.DEGRADED;
+
+    // no outages or degraded, only reporting
+    if (!nonOperational.some(srv => srv.status === UConnServiceStatus.DEGRADED)
+        && nonOperational.some(srv => srv.status === UConnServiceStatus.REPORTING))
+            level = UConnServiceStatus.REPORTING;
     
     let names = nonOperational
         .filter(srv => srv.status === level)
@@ -95,12 +110,20 @@ export const StatusRibbon: React.FC<StatusRibbonProps> = ({ track, ignore, dismi
     return generateRibbon({ level, names, dismissible, className });
 }
 
-const concatNames = (names: string[]) =>
+const concatNames = (names: string[], capFirst = false) =>
     <span>
         {
             names.length === 1
-                ? <b>{names[0]}</b>
-                : <><b>{names.slice(0, names.length - 1).join(', ')}</b> and <b>{names.slice(names.length - 1)}</b></>
+                ? <b>{capFirst ? capitalizeFirst(names[0].toLowerCase()) : names[0]}</b>
+                : <><b>{names.slice(0, names.length - 1)
+                    .map(name => capFirst
+                        ? capitalizeFirst(name.toLowerCase())
+                        : name)
+                    .join(', ')}</b> and <b>{capFirst
+                        ? names
+                            .slice(names.length - 1)
+                            .map(name => capitalizeFirst(name.toLowerCase()))
+                        : names.slice(names.length - 1)}</b></>
         }
     </span>
 

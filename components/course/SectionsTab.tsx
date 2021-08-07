@@ -9,12 +9,11 @@ import { ErrorTab } from '.';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { mdiChevronDown } from '@mdi/js';
-import { SectionData } from '@ilefa/husky';
+import { BuildingCode, SectionData } from '@ilefa/husky';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
 
 import {
-    BuildingCodes,
     CompleteCoursePayload,
     getCampusIndicator,
     getInstructorName,
@@ -152,8 +151,8 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             selector: 'section',
             sortable: true,
             format: (row, _i) => <>
-                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}`}>[{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode)}]</b> {row.section}
-                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}`}>
+                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}`}>[{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode)}]</b> {row.section}
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}-${row.campus}`}>
                                         <b>{row.campus}</b>
                                         <br/><span className={styles.modalityTooltipType}>{row.mode}</span>
                                         <br/><span className={styles.modalityTooltipDescription}>{Modalities[getModalityIndicator(row.mode)] || ''}</span>
@@ -188,9 +187,9 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                                             tokens
                                                 .sort((a, b) => a.localeCompare(b))
                                                 .map((token, i) => {
-                                                    let code = Object.keys(BuildingCodes).find(key => token.startsWith(key));
+                                                    let code = Object.keys(BuildingCode).find(key => token.startsWith(key));
                                                     if (!code) return <><span>{token}</span>{i !== tokens.length - 1 ? <br/> : ''}</>
-                                                    return <><span className={styles.roomTooltip}>{BuildingCodes[code]} {token.split(code).map(ent => ent.trim()).join('')}</span>{i !== tokens.length - 1 ? <br/> : ''}</>;
+                                                    return <><span className={styles.roomTooltip}>{BuildingCode[code]} {token.split(code).map(ent => ent.trim()).join('')}</span>{i !== tokens.length - 1 ? <br/> : ''}</>;
                                                 })
                                         }
                                     </UncontrolledTooltip>

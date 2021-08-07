@@ -5,12 +5,19 @@ import ThreeSixtyRenderer from 'react-photosphere';
 import styles from '../../components/styling/inspection.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 
-import { useRoom } from '../../hooks';
+import { RoomInspectionPayload, useRoom } from '../../hooks';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Card, CardBody, Badge } from 'reactstrap';
-import { BuildingCodes, CompleteRoomPayload, getIconForRoom } from '../../util';
-import { BoardType, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
+import { capitalizeFirst, CompleteRoomPayload, getIconForRoom, RoomImageMode } from '../../util';
+
+import {
+    BoardType,
+    BuildingCode,
+    LectureCaptureType,
+    SeatingType,
+    TechType
+} from '@ilefa/husky';
 
 import {
     DataView,
@@ -114,6 +121,16 @@ const generateAmenityBadge = (bool: boolean | undefined) => (
     </Badge>
 );
 
+const getImageMode = ({ threeSixtyView }: RoomInspectionPayload) => {
+    if (!threeSixtyView)
+        return null;
+    
+    if (threeSixtyView.startsWith('https://live.staticflickr.com'))
+        return RoomImageMode.THREE_SIXTY;
+
+    return RoomImageMode.STATIC;
+}
+
 const ClassroomInspection = () => {
     const router = useRouter();
     let { name } = router.query;
@@ -139,6 +156,8 @@ const ClassroomInspection = () => {
 
     const info = getSidebarInfo(room);
     const icon = getIconForRoom(room, styles.courseIcon, 40);
+    const imageMode = getImageMode(room);
+
     const styledName = room.building.code + ' ' + room.name.slice(room.building.code.length);
 
     return (
@@ -158,7 +177,7 @@ const ClassroomInspection = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>{icon}{styledName}</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            { BuildingCodes[room.building.code] }
+                                            { BuildingCode[room.building.code] }
                                         </h2>
                                     </div>
                                 </div>
@@ -198,8 +217,9 @@ const ClassroomInspection = () => {
                                                     <div className={styles.tabBody}>
                                                         <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-chalkboard-teacher fa-fw"></i> Overview</pre>
                                                         <p className={`${styles.description}`}>
-                                                            <b>Seating:</b> {SeatingType[room.seatingType]}<br/>
-                                                            <b>Board:</b> {BoardType[room.boardType]}<br/>
+                                                            <b>Campus:</b> {capitalizeFirst(room.building.campus.toLowerCase())}<br/>
+                                                            <b>Seating:</b> {SeatingType[room.seatingType || 'UNKNOWN']}<br/>
+                                                            <b>Board:</b> {BoardType[room.boardType || 'UNKNOWN']}<br/>
                                                             <b>Technology:</b> {TechType[room.techType]}<br/>
                                                             {room.techDescription && <><b>Installed Tech:</b> {room.techDescription}<br/></>}
                                                             <b>Lecture Capture:</b> {LectureCaptureType[room.lectureCapture]}<br/><br/>
@@ -209,12 +229,12 @@ const ClassroomInspection = () => {
                                                                 </a>
                                                             </Link>
                                                         </p>
-                                                        
                                                         {/* <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-code fa-fw"></i> Raw Data</pre>
                                                         <pre className={styles.description}>{JSON.stringify(data, null, 3)}</pre><br/> */}
-                                                        <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-camera-retro fa-fw"></i> 360&#176; View</pre>
-                                                        { !room.threeSixtyView && <p className={`${styles.description} mb--3`}>360&#176; View is not available for <b>{styledName}</b>.</p> }
-                                                        { room.threeSixtyView && rendered && <ThreeSixtyRenderer src={room.threeSixtyView} height={500} timeAnim={false} /> }
+                                                        <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-camera-retro fa-fw"></i> {imageMode === RoomImageMode.THREE_SIXTY ? <>360&#176; View</> : <>Room Image</>}</pre>
+                                                        { !room.threeSixtyView && <p className={`${styles.description} mb--3`}>No images are available for <b>{styledName}</b>.</p> }
+                                                        { room.threeSixtyView && imageMode === RoomImageMode.STATIC && <img src={room.threeSixtyView} height={500} /> }
+                                                        { room.threeSixtyView && imageMode === RoomImageMode.THREE_SIXTY && rendered && <ThreeSixtyRenderer src={room.threeSixtyView} height={500} timeAnim={false} /> }
                                                         { room.liveStreamUrl &&
                                                             (
                                                                 <>

@@ -22,7 +22,7 @@ export type BuildingPayload = {
 };
 
 export const useBuildings = (): BuildingShapedResponse =>
-    createRemoteHook<BuildingResponse, BuildingShapedResponse>('Bluepages', `/api/buildings`,
+    createRemoteHook<BuildingResponse, BuildingShapedResponse>('Buildings', `/api/buildings`,
         (type, data, _err, _url) => {
             switch (type) {
                 case ApiResponseType.ERROR:

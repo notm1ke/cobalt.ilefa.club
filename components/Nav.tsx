@@ -51,38 +51,45 @@ const ELEMENTS: NavElement[] = [
         href: '/buildings',
         key: 'buildings',
     },
-    // {
-    //     name: 'transport',
-    //     icon: 'fa fa-bus-alt',
-    //     href: '/transport',
-    //     key: 'transport',
-    //     devOnly: true,
-    //     dropdown: {
-    //         mode: 'icons',
-    //         items: [
-    //             {
-    //                 name: 'Busses',
-    //                 href: '/busses',
-    //                 icon: <i className="fa fa-bus-alt fa-fw"></i>,
-    //                 color: 'bg-primary',
-    //                 content: 'Explore all information regarding the campus bus system.',
-    //             },
-    //             {
-    //                 name: 'Parking',
-    //                 href: '/parking',
-    //                 icon: <i className="fa fa-parking fa-fw"></i>,
-    //                 color: 'bg-primary',
-    //                 content: 'Explore all information regarding parking on campus.',
-    //             }
-    //         ]
-    //     }
-    // },
     {
         name: 'snapshots',
         icon: 'fa fa-history',
         href: '/snapshots',
         key: 'snapshots',
         devOnly: true,
+    },
+    {
+        name: 'internal',
+        icon: 'fa fa-bug',
+        href: '/internal',
+        key: 'internal',
+        devOnly: true,
+        // dropdown: {
+        //     mode: 'icons',
+        //     items: [
+        //         {
+        //             name: 'service information',
+        //             href: '/internal',
+        //             icon: <i className="fa fa-terminal fa-fw"></i>,
+        //             color: 'bg-primary',
+        //             content: 'Inspect information about this instance.',
+        //         },
+        //         {
+        //             name: 'upstream status',
+        //             href: '/internal',
+        //             icon: <i className="fa fa-cloud fa-fw"></i>,
+        //             color: 'bg-primary',
+        //             content: 'Inspect upstream provider statuses.',
+        //         },
+        //         {
+        //             name: 'platform tests',
+        //             href: '/transfer',
+        //             icon: <i className="fa fa-vial fa-fw"></i>,
+        //             color: 'bg-primary',
+        //             content: 'Inspect various functionality of Cobalt.',
+        //         }
+        //     ]
+        // }
     },
     {
         name: 'information',
@@ -173,14 +180,13 @@ export const Nav = () => {
 
                                     if (element.dropdown && element.dropdown.mode === 'normal')
                                         return <UncontrolledDropdown nav>
-                                            <DropdownToggle nav className={styles.navLink}>
-                                                <i className="ni ni-collection d-lg-none mr-1" />
+                                            <DropdownToggle nav caret className={styles.navLink}>
                                                 <span className="nav-link-inner--text">{element.name}</span>
                                             </DropdownToggle>
-                                            <DropdownMenu>
+                                            <DropdownMenu className={`dropdown-menu ${styles.normalDropdownPosition}`}>
                                                 {
                                                     element.dropdown.items.map(item =>
-                                                        <DropdownItem to={item.href} tag={Link}>
+                                                        <DropdownItem href={item.href || '#'}>
                                                             {item.name}
                                                         </DropdownItem>
                                                     )

@@ -117,7 +117,14 @@ const proOrConSorting = (tag: string) => {
 export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, recordMetric }) => {
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
+    
+    const [data, request, loading, error] = useProfessor({ rmpIds: professor.rmpIds });
     const [bluepages, _request, bLoading, bError] = useBluepages({ name: professor.name, recordMetric });
+
+    if (error) {
+        recordMetric({ request, success: false, time: -1 })
+        professor.rmpIds = [];
+    }
 
     if (!professor.rmpIds.length) return (
         <div className={`${styles.statisticList} ${styles.statisticListProf}`}>
@@ -169,12 +176,6 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
             </li>
         </div>
     );
-
-    const [data, request, loading, error] = useProfessor({ rmpIds: professor.rmpIds });
-    if (error) {
-        recordMetric({ request, success: false, time: -1 })
-        return <></>;
-    }
     
     if (loading || !data) return <></>;
     recordMetric({ request, success: true, time: data.timings });

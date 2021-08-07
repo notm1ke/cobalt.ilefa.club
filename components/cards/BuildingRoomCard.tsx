@@ -2,18 +2,30 @@ import Link from 'next/link';
 import styles from '../styling/building.module.css';
 import cardStyles from '../styling/card.module.css';
 
-import { BoardType, Classroom, SeatingType, TechType } from '@ilefa/husky';
-import { BuildingCodes, capitalizeFirst, getIconForRoom, getRealRoomCode, getRoomNumber } from '../../util';
+import {
+    BoardType,
+    BuildingCode,
+    Classroom,
+    TechType
+} from '@ilefa/husky';
+
+import {
+    capitalizeFirst,
+    getIconForRoom,
+    getRealRoomCode,
+    getRoomNumber,
+    ShortenedSeatingType
+} from '../../util';
 
 export interface BuildingRoomCardProps {
     room: Classroom;
-    iconColor?: string;
 }
 
-export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = props => {
-    let icon = getIconForRoom(props.room, '', 20);
-    let room = props.room;
-    let prettyName = getRealRoomCode(room.name, room.building.code) + ' ' + getRoomNumber(room.name, room.building.code);
+export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = ({ room }) => {
+    let icon = getIconForRoom(room, '', 20);
+    let shortName = getRealRoomCode(room.name, room.building.code) + ' ' + getRoomNumber(room.name, room.building.code);
+    let name = BuildingCode[room.building.code] + ' ' + getRoomNumber(room.name, room.building.code);
+    if (name.length > 18) name = room.building.code + ' ' + getRoomNumber(room.name, room.building.code);
 
     return (
         <div className={`card shadow shadow-lg--hover mt-5 ${cardStyles.rgCardSm}`}>
@@ -23,22 +35,22 @@ export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = props => {
                         <h5>
                             <Link href={`/room/${room.name}`}>
                                 <a className={`${cardStyles.cardSectionTitle} text-primary-light`}>
-                                    {icon ?? ''} {BuildingCodes[room.building.code]} {getRoomNumber(room.name, room.building.code)}
+                                    {icon ?? ''} {name}
                                 </a>
                             </Link>
                         </h5>
 
                         <p className="text-dark">
-                            <b>{prettyName}</b> can seat <b>{room.capacity.full} {room.capacity.full === 1 ? 'person' : 'people'}</b>.
+                            <b>{shortName}</b> can seat <b>{room.capacity.full} {room.capacity.full === 1 ? 'person' : 'people'}</b>.
                         </p>
                         
                         <p className="text-dark mb-4">
                             <b>Technical Facts:</b>
                             <ul className={styles.technicalFacts}>
-                                <li><b>Seating:</b> {SeatingType[room.seatingType]}</li>
+                                <li><b>Seating:</b> {ShortenedSeatingType[room.seatingType || 'UNKNOWN']}</li>
                                 <li><b>Air Conditioning:</b> {room.airConditioned ? 'Yes' : 'No'}</li>
-                                <li><b>Board:</b> {BoardType[room.boardType] || 'Unknown'}</li>
-                                <li><b>Tech:</b> {TechType[room.techType]}</li>
+                                <li><b>Board:</b> {BoardType[room.boardType || 'UNKNOWN']}</li>
+                                <li><b>Tech:</b> {TechType[room.techType || 'UNKNOWN']}</li>
                                 <li><b>Livestream:</b> {" "}
                                     {
                                         room.liveStreamUrl
@@ -53,7 +65,7 @@ export const BuildingRoomCard: React.FC<BuildingRoomCardProps> = props => {
                             </ul>
                         </p>
                         <div className={styles.projectCardLink}>
-                            <Link href={`/room/${room.name}`}>
+                            <Link href={`/room/${room.building.code + room.room}`}>
                                 <a className="btn btn-dark btn-sm text-lowercase shine">
                                     <i className="fa fa-search fa-fw mr-1"></i> see more information
                                 </a>

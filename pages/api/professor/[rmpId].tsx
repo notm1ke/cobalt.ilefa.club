@@ -25,7 +25,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({ message: 'Invalid professor ID' });
 
     let all = rmpId.split(',');
-    if (all.length > 0) {
+    if (all.length > 1) {
         let results = await Promise.all(all.map(id => getRmpReport(id)));
         let modified = results
             .map((ent, i) => ({
@@ -58,9 +58,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json(master);
     }
 
-
-    let result = await getRmpReport(rmpId);
-    if (!result)
+    let result = await getRmpReport(rmpId).catch(_ => null);
+    if (!result || isNaN(result.ratings))
         return res
             .status(404)
             .json({ message: 'Professor not found' });

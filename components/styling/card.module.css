@@ -17,6 +17,13 @@
     font-size: 20px !important;
 }
 
+.cardSectionBody {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.25rem !important;
+    font-weight: 300 !important;
+    letter-spacing: -0.01rem;
+}
+
 .iconDpositionSpecialized {
     margin-right: -27px;
     margin-top: -2px;

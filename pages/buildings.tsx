@@ -23,6 +23,7 @@ import {
     BuildingAddresses,
     BuildingDescriptions,
     BuildingMaps,
+    CampusSorting,
     getIconForBuilding,
     intToWords
 } from '../util';
@@ -46,6 +47,8 @@ const BuildingsPage = () => {
                                 || BuildingAddresses[code]?.toLowerCase()?.includes(input),
         (input, { rooms }) => rooms.some(room => room.name.toLowerCase().slice(0, input.length) === input.toLowerCase())
                                 || rooms.some(room => room.name.toLowerCase().includes(input))
+                                || rooms[0]?.building.campus.toLowerCase().includes(input)
+                                || rooms[0]?.building.campus.toLowerCase().startsWith(input)
     ];
 
     const onSearch = (query: string) => {
@@ -90,7 +93,7 @@ const BuildingsPage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>Buildings</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            Explore {buildings?.length ? intToWords(buildings.length) + ' different' : ''} buildings around four of UConn's campuses
+                                            Explore {buildings?.length ? intToWords(buildings.length) + ' different' : ''} buildings around five of UConn's campuses
                                         </h2>
                                         <div className="input-group-alternative mb-4 input-group">
                                             <InputGroupAddon addonType="prepend">
@@ -117,7 +120,7 @@ const BuildingsPage = () => {
                                                     type="text"
                                                     value={search}
                                                     disabled={!enabled}
-                                                    placeholder={loading ? 'Loading..' : error ? 'Something went wrong..' : 'Search for any building or room..'}
+                                                    placeholder={loading ? 'Loading..' : error ? 'Something went wrong..' : 'Search for any building, room, or campus..'}
                                                     className="form-control-alternative form-control"
                                                     onChange={e => onSearch(e.target.value)}
                                                 />
@@ -138,6 +141,7 @@ const BuildingsPage = () => {
                                         return rooms.length > 0;
                                     return true;
                                 })
+                                .sort((a, b) => CampusSorting[a.rooms[0]?.building.campus] - CampusSorting[b.rooms[0]?.building.campus])
                                 .map(building => {
                                     let name = building.name;
                                     let addr = BuildingAddresses[building.code];

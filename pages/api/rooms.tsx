@@ -28,14 +28,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .json({
             rooms: Classrooms.map(ent => {
                 if (mode === 'name')
-                    return ent.name
+                    return ent.name;
+
                 return {
                     ...ent,
                     building: {
                         name: ent.building.name,
                         code: ent.building.code,
                         mapUrl: BuildingMaps[ent.building.code]
-                    }
+                    },
+                    threeSixtyView: ent.threeSixtyView || null,
                 };
             })
         });

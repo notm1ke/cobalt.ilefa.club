@@ -13,7 +13,6 @@ import {
     StatusRibbon
 } from '../components';
 
-
 const HomePage = () => {
     return (
         <main>

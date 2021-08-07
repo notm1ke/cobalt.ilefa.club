@@ -33,3 +33,9 @@
     left: -8px !important;
     width: 350px !important;
 }
+
+.normalDropdownPosition {
+    margin-top: 52px !important;
+    left: -8px !important;
+    /* width: 350px !important; */
+}

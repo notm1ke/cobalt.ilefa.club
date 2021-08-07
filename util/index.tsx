@@ -257,6 +257,19 @@ export enum GradingTypeNames {
     REGISTERED = 'Registered'
 }
 
+export enum CampusSorting {
+    STORRS,
+    HARTFORD,
+    STAMFORD,
+    WATERBURY,
+    AVERY_POINT
+}
+
+export enum RoomImageMode {
+    THREE_SIXTY,
+    STATIC
+}
+
 export const RMP_TAG_PROS = [
     'gives good feedback',
     'respected',
@@ -300,113 +313,14 @@ export type CompleteRoomPayload = Classroom & {
     building: {
         name: string;
         code: string;
+        campus: string;
         mapUrl: string;
     }
 }
 
-export enum BuildingCodes {
-    ABL = "Agricultural Biotechnology Laboratory",
-    ACS = "Art Ceramic Studio",
-    ACD = "Avery Point",
-    ADC = "Art Design Building",
-    AES = "Architectural and Engineering Services",
-    APS = "Art Printshop",
-    ARJ = "Arjona",
-    ARTB = "Art Building",
-    ATWR = "Atwater Laboratory",
-    AUST = "Austin",
-    B1 = "Biobehavioral Science #1",
-    B3 = "Biobehavioral Science #3",
-    B4_A = "Biobehavioral Science #4 and Annex",
-    B5 = "Biobehavioral Science #5",
-    BCH = "Beach Hall",
-    BISH = "Bishop",
-    BOUS = "W.A. Bousfield",
-    BPB = "Biology/Physics Building",
-    BRON = "Bronwell",
-    BUSN = "School of Business",
-    CAST = "Castleman",
-    CHEM = "Chemistry Building",
-    CRU = "Cattle Resource Center",
-    DODD = "Dodd Center",
-    DRMU = "Drama/Music Building",
-    DWTN = "Stamford Downtown",
-    E2 = "Engineering II",
-    FG = "Floriculture Greenhouse",
-    FSB = "Family Studies Building",
-    GAMP = "Gampel Pavilion",
-    GANT = "Gant Central Building",
-    GC = "Gant Central Building",
-    GENT = "Gentry",
-    GN = "Gant North Building",
-    GP = "Gant Plaza Building",
-    GRE = "Greer Field House",
-    GS = "Gant South Building",
-    GW = "Gant West Building",
-    HALL = "Hall Dorm",
-    HAWL = "Hawley Armory",
-    HBL = "Homer Babbidge Library",
-    HDC = "Human Development Center",
-    HEW = "Hewitt",
-    HH = "Honors House",
-    HJT = "Jorgensen Theatre",
-    HPL = "Hartford Public Library",
-    HTB = "Hartford Times Building",
-    HU1 = "Horse Unit 1",
-    HU2 = "Horse Unit 2",
-    IMS = "Gant North Building",
-    ITE = "Information Technology Engineering",
-    JONS = "RE. Jones",
-    JRB = "J. Ray Ryan Building",
-    KEL = "Kellogg Dairy Center",
-    KLIN = "M.S. Klinck",
-    KNS = "Koons Hall",
-    LAFA = "Lafayette",
-    LH = "McHugh Hall",
-    LSA = "Life Science Annex",
-    LOR = "Lorentzon Stables",
-    LU1 = "Livestock Unit 1",
-    LU2 = "Livestock Unit 2",
-    MAN = "Manchester Hall",
-    MARN = "Avery Point Marine Science",
-    MCHU = "McHugh Hall",
-    MONT = "Monteith",
-    MSB = "Gant South Building",
-    MUSB = "Music Building",
-    MLIB = "Music Library",
-    OAK = "Oak Hall",
-    PB = "Gant West Building",
-    PBB = "Pharmacy/Biology Building",
-    PCSB = "D.C. Phillips",
-    PR = "Putnam Refectory",
-    PU1 = "Poultry Farm Unit 1",
-    RHBA = "Ratcliffe Hicks",
-    ROWE = "John W. Rowe Center",
-    SCHN = "Andre Schenker",
-    SHA = "Storrs Hall Annex",
-    SPRH = "Shipee Hall",
-    SRH = "Sprague Hall",
-    SSW = "Hartford Social Work",
-    STRS = "Storrs Hall",
-    TLS = "Torrey Life Sciences",
-    TSK = "Tasker Building",
-    USRH = "Stamford Residence Hall",
-    UTEB = "United Technologies Building",
-    VARC = "Visual Arts Resource Center",
-    VDM = "J. Louis von der Mehden Recital Hall",
-    WCB = "Wilbur Cross Building",
-    WGC = "Graduate Center",
-    WIDM = "Widmer Wing",
-    WITE = "George C. White Building",
-    WOOD = "Wood Hall",
-    WSH = "Williams Student Health",
-    WSRH = "Wilson South Residence Hall",
-    WTBY = "Waterbury Downtown",
-    YNG = "W.B. Young"
-}
-
 export enum BuildingAddresses {
     ABL = '1376 Storrs Road, U-4163, Storrs, CT 06269',
+    ACD = 'Avery Point Campus, 1084 Shennecossett Rd, Groton, CT 06340',
     ACS = '2021 Hillside Road, Storrs CT 06269',
     ADC = '830 Bolton Rd, Storrs, CT 06269',
     AES = '830 Bolton Rd, Storrs, CT 06269',
@@ -430,6 +344,7 @@ export enum BuildingAddresses {
     CRU = 'Horsebarn Hill Road, Storrs CT 06269',
     DODD = '405 Babbidge Road, Unit 1205, Storrs CT 06269',
     DRMU = '802 Bolton Road, Unit 1127, Storrs CT 06269',
+    DWTN = '1 University Pl, Stamford, CT 06901',
     E2 = '191 Auditorium Road, Storrs CT 06269',
     FG = '1395 Storrs Road, Unit 4067, Storrs CT 06269',
     FSB = '348 Mansfield Road, Unit 2058, Storrs CT 06269',
@@ -447,6 +362,8 @@ export enum BuildingAddresses {
     HDC = '6 Alethia Drive, Unit 1117, Storrs CT 06269',
     HEW = '69 N. Eagleville Road, Unit 3092, Storrs CT 06269',
     HJT = '2132 Hillside Road, Unit 3014, Storrs CT 06269',
+    HPL = '500 Main St, Hartford, CT 06103',
+    HTB = '10 S Prospect St, Hartford, CT 06103',
     HU1 = 'Horsebarn Hill Road, Storrs CT 06269',
     HU2 = 'Horsebarn Hill Road, Storrs CT 06269',
     IMS = '97 N Eagleville Rd Unit 3137, Storrs, CT 06269',
@@ -463,6 +380,7 @@ export enum BuildingAddresses {
     LU1 = 'Horsebarn Hill Road, Storrs CT 06269',
     LU2 = 'Horsebarn Hill Road, Storrs CT 06269',
     MAN = '344 Mansfield Road, Unit 2054, Storrs CT 06269',
+    MARN = '1080 Shennecossett Rd, Groton, CT 06340',
     MCHU = 'Hillside Rd, Storrs, CT 06269',
     MONT = '341 Mansfield Road, Unit 1009, Storrs CT 06269',
     MSB = 'Auditorium Rd, Storrs, CT 06269',
@@ -480,19 +398,22 @@ export enum BuildingAddresses {
     SHA = '231 Glenbrook Rd, Storrs, CT 06269',
     SPRH = '1288 Storrs Road, Storrs CT 06269',
     SRH = '1346 Storrs Road, Storrs CT 06269',
+    SSW = '38 Prospect St, Hartford, CT 06103',
     STRS = '231 Glenbrook Road, Unit 4026, Storrs CT 06269',
+    STRSWW = '231 Glenbrook Road, Storrs CT 06269',
     TLS = '75 N. Eagleville Road, Unit 3043, Storrs CT 06269',
     TSK = '2131 Hillside Road, Unit 3088, Storrs CT 06269',
+    USRH = '900 Washington Blvd, Stamford, CT 06901',
     UTEB = '191 Auditorium Road, Storrs CT 06269',
     VARC = '1295 Storrs Rd, Storrs, CT 06269',
     VDM = '875 Coventry Road, Unit 1128, Storrs CT 06269',
     WCB = '233 Glenbrook Road, Unit 4239, Storrs CT 06269',
     WGC = '438 Whitney Road Ext., Unit 1006, Storrs CT 06269',
-    WIDM = '231 Glenbrook Road, Storrs CT 06269',
     WITE = '17 Manter Road, Storrs CT 06269',
-    WOOD = '241 Glenbrook Road, Unit 2103 Storrs CT 06269',
+    WH = '241 Glenbrook Road, Unit 2103 Storrs CT 06269',
     WSH = '234 Glenbrook Road, Unit 2011, Storrs CT 06269',
     WSRH = '626 Gilbert Road Ext., Storrs CT 06269',
+    WTBY = '99 E Main St, Waterbury, CT 06702',
     YNG = '1376 Storrs Road, Unit 4066, Storrs CT 06269'
 }
 
@@ -572,6 +493,7 @@ export enum BuildingDescriptions {
     SPRH = 'Shippee Hall (SPRH) houses members of the Fine Arts Learning Community and Connecting With the Arts Learning Community.',
     SRH = 'There is no description for this building.',
     STRS = 'Home to the School of Nursing, Storrs Hall (STRS) includes teaching labs and classrooms, a mock hospital, and faculty offices. It is the oldest brick building on campus and the only facility named in honor of the University’s principal benefactors, Charles and Augustus Storrs.',
+    STRSWW = 'There is no description for this building.',
     TLS = 'The Torrey Life Sciences Building (TLS) houses offices for the Department of Ecology and Evolutionary Biology, the Department of Physiology and Neurobiology, the Department of Molecular and Cell Biology, and Biology Central Services.',
     TSK = 'All undergraduate applications are reviewed by the Admissions staff working in the Tasker Building (TSK). admissions.uconn.edu',
     UTEB = 'The United Technologies Engineering Building (UTEB) hosts engineering classes and faculty offices.',
@@ -579,9 +501,8 @@ export enum BuildingDescriptions {
     VDM = 'A 500-seat performance space, von der Mehden Hall (VDM) is used for student, staff, and guest musical recitals as well as classroom space.',
     WCB = 'UConn’s one-stop shop for student services, the Wilbur Cross Building (WCB) is easily identifiable by its golden-domed cupola. It is home to Wilbur’s Café as well as numerous student service offices, including the Registrar, Residential Life, the Center for Students with Disabilities, the Center for Career Development, and Financial Aid, to name a few. studentservices.uconn.edu',
     WGC = 'The headquarters for UConn’s 80+ graduate programs, the Whetten Graduate Center (WGC) houses offices for graduate admissions, research, and grants. grad.uconn.edu',
-    WIDM = 'There is no description for this building.',
     WITE = 'The George C. White building houses the Animal Science Department’s main office, faculty offices, classrooms, student library with computer lab, creamery and laboratories. The building is open to the public weekdays from 8 a.m. - 5 p.m. The UConn Department of Animal Science Creamery is located in the George White Building.  All of the ice cream sold in the UConn Dairy Bar is produced in the Creamery using fresh milk produced at the Kellogg Dairy Center.  The Creamery is used for dairy food research, cheese making, outreach, and teaching activities.  Creamery operations can be viewed from the public observation area in the Dairy Bar during its normal hours of operation.',
-    WOOD = 'Home to the history department, Wood Hall (WOOD) has faculty offices and meeting rooms. The Office of Institutional Equity (OIE) and the Title IX Coordinator are also located on the main floor of Wood Hall.',
+    WH = 'Home to the history department, Wood Hall (WH) has faculty offices and meeting rooms. The Office of Institutional Equity (OIE) and the Title IX Coordinator are also located on the main floor of Wood Hall.',
     WSH = 'Better known as the infirmary, Student Health Services (WSH) offers a wide range of services for students, including primary health care, mental health counseling, a laboratory, and a pharmacy. Specialized services include a women’s clinic, allergy clinic, nutritional counseling, health and wellness education, and substance abuse prevention education. shs.uconn.edu',
     WSRH = 'There is no description for this building.',
     YNG = 'The Young Building (YNG) houses many classrooms and offices of the College of Agriculture, Health and Natural Resources.'
@@ -589,6 +510,7 @@ export enum BuildingDescriptions {
 
 export enum BuildingMaps {
     ABL = 'https://www.google.com/maps/place/Agricultural+Biotechnology+Laboratory,+Storrs,+CT+06269/@41.8136066,-72.2526353,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a305b61b13d:0xd250dbc6e9687677!8m2!3d41.8136026!4d-72.2504413',
+    ACD = 'https://www.google.com/maps/place/Avery+Point/@41.3173344,-72.0653948,18.25z/data=!4m12!1m6!3m5!1s0x89e60f3c915c0f5d:0xd34b8da4f2bcebb!2sUniversity+of+Connecticut+-+Avery+Point+Campus!8m2!3d41.3179294!4d-72.0647414!3m4!1s0x0:0xfff2105761d49289!8m2!3d41.3167795!4d-72.0647967',
     ACS = 'https://www.google.com/maps/place/Art+Ceramic+Studio,+Storrs,+CT+06269/@41.8136066,-72.2526353,17z/data=!4m5!3m4!1s0x89e68a3dc3d4f165:0x78adeaddda2160fe!8m2!3d41.8041681!4d-72.2531154',
     ADC = 'https://www.google.com/maps/place/Art+Bldg,+Storrs,+CT+06269/@41.8038469,-72.2478938,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a22fe861231:0xeca72d78310d1250!8m2!3d41.8038429!4d-72.2456998',
     AES = 'https://www.google.com/maps/place/Architectural+and+Engineering+Services,+Storrs,+CT+06268/@41.8038469,-72.2478938,17z/data=!4m5!3m4!1s0x89e68a4703c71513:0x72ca14a6e9f08179!8m2!3d41.811133!4d-72.2628289',
@@ -612,6 +534,7 @@ export enum BuildingMaps {
     CRU = 'https://www.google.com/maps/place/UConn+Department+of+Animal+Science/@41.8104467,-72.2579589,16z/data=!4m5!3m4!1s0x89e68a303e39996f:0xac62350d7b134e59!8m2!3d41.8131362!4d-72.2494796',
     DODD = 'https://www.google.com/maps/place/Thomas+J.+Dodd+Research+Center/@41.810831,-72.2560705,17z/data=!4m5!3m4!1s0x89e68a3cf5955555:0x1a614c48cca2a911!8m2!3d41.8056123!4d-72.250863',
     DRMU = 'https://www.google.com/maps/place/Music+Bldg,+Storrs,+CT+06269/@41.805312,-72.2472171,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a239f1ffe33:0xa751c1186677e15c!8m2!3d41.805308!4d-72.2450231',
+    DWTN = 'https://www.google.com/maps/place/University+of+Connecticut-Stamford+Campus/@41.0561562,-73.5427755,19.25z/data=!4m5!3m4!1s0x89c2a1ef5f83166d:0x7e4404cb78e16c12!8m2!3d41.0560153!4d-73.5424155',
     E2 = 'https://www.google.com/maps/place/Engineering+II,+Storrs,+CT+06269/@41.805312,-72.2472171,17z/data=!4m5!3m4!1s0x89e68a3941f9b713:0xf6f87433e0db9567!8m2!3d41.8091427!4d-72.2554',
     FG = 'https://www.google.com/maps/place/UConn+Floriculture+Greenhouses/@41.8129595,-72.2539741,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a308e9765dd:0x7b70456863391eb1!8m2!3d41.8129502!4d-72.2517885',
     FSB = 'https://www.google.com/maps/place/Family+Studies+Bldg,+Storrs,+CT+06269/@41.8129595,-72.2539741,17z/data=!4m5!3m4!1s0x89e68a3b306cbf5b:0x93786f983a15ca8b!8m2!3d41.8086503!4d-72.248935',
@@ -629,6 +552,8 @@ export enum BuildingMaps {
     HDC = 'https://www.google.com/maps/place/Center+On+Aging+%26+Human+Dev/@41.8021551,-72.2840224,13z/data=!4m9!1m2!2m1!1shuman+development+center!3m5!1s0x0:0xccda0fbdb6d341ed!8m2!3d41.8086044!4d-72.2489164!15sChhodW1hbiBkZXZlbG9wbWVudCBjZW50ZXIiA4gBAZIBB2NvbGxlZ2U',
     HEW = 'https://www.google.com/maps/place/69+N+Eagleville+Rd,+Storrs,+CT+06269/@41.810168,-72.257375,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a39768a0eed:0x56dcd8ffdce13b30!8m2!3d41.810164!4d-72.255181?hl=en-US',
     HJT = 'https://www.google.com/maps/place/2132+Hillside+Rd,+Storrs,+CT+06268/@41.8082861,-72.2567909,119m/data=!3m1!1e3!4m12!1m6!3m5!1s0x89e68a397a05e30b:0xb26c6f4b296c85ea!2sUniversity+of+Connecticut!8m2!3d41.8077414!4d-72.2539805!3m4!1s0x89e68a3930f45b51:0x1a67cd071f7db6fd!8m2!3d41.8085776!4d-72.2561641',
+    HPL = 'https://www.google.com/maps/place/Hartford+Public+Library/@41.7620926,-72.6827569,15z/data=!3m1!5s0x89e653701b29f4c9:0xf1e0422794cfcd53!4m9!1m2!2m1!1sPublic+library!3m5!1s0x89e65370033d57cd:0x223c085241e549ba!8m2!3d41.762069!4d-72.67397!15sCg5QdWJsaWMgbGlicmFyeVoQIg5wdWJsaWMgbGlicmFyeZIBDnB1YmxpY19saWJyYXJ5mgEjQ2haRFNVaE5NRzluUzBWSlEwRm5TVVJaZDFsUFExcDNFQUU',
+    HTB = 'https://www.google.com/maps/place/Hartford+Times+Building,+10+S+Prospect+St,+Hartford,+CT+06103/@41.7626111,-72.6746381,17z/data=!3m1!4b1!4m5!3m4!1s0x89e6537a9e815e09:0x66ad0669f9741c95!8m2!3d41.7626071!4d-72.6724441',
     HU1 = 'https://www.google.com/maps/place/Department+of+Animal+Science+Horse+Barn-+Riding+Lessons+and+Horse+Sales/@41.814194,-72.2446937,19z/data=!3m1!4b1!4m5!3m4!1s0x89e68a2ea7c454b5:0x47a0785e4c4d510f!8m2!3d41.814193!4d-72.2441452',
     HU2 = 'https://www.google.com/maps/place/Department+of+Animal+Science+Horse+Barn-+Riding+Lessons+and+Horse+Sales/@41.814194,-72.2446937,19z/data=!3m1!4b1!4m5!3m4!1s0x89e68a2ea7c454b5:0x47a0785e4c4d510f!8m2!3d41.814193!4d-72.2441452',
     IMS = 'https://www.google.com/maps/place/The+Institute+of+Materials+Science/@41.8093224,-72.2572762,290m/data=!3m1!1e3!4m5!3m4!1s0x89e68a38fd33675b:0x1638f8b81122e0f1!8m2!3d41.8097948!4d-72.2576801',
@@ -645,6 +570,7 @@ export enum BuildingMaps {
     LU1 = 'https://www.google.com/maps/place/Livestock+Unit+I,+Storrs,+CT+06268/@41.8139062,-72.2463474,17z/data=!4m5!3m4!1s0x89e68a2b8a247eeb:0x8503d4792c41b83e!8m2!3d41.8169634!4d-72.2423117',
     LU2 = 'https://www.google.com/maps/place/Livestock+Unit+II,+Storrs,+CT+06269/@41.8169465,-72.2443276,17z/data=!4m5!3m4!1s0x89e68a2ce9b34093:0xab5390e36c056310!8m2!3d41.8196121!4d-72.2443569',
     MAN = 'https://www.google.com/maps/place/Harry+Grant+Manchester+Hall,+Storrs,+CT+06269/@41.8194081,-72.2465035,17z/data=!4m5!3m4!1s0x89e68a24cab8c059:0x1694b22ad150de15!8m2!3d41.8080343!4d-72.2482919',
+    MARN = 'https://www.google.com/maps/place/UConn+Marine+Sciences/@41.3162736,-72.0649063,17z/data=!3m1!4b1!4m5!3m4!1s0x89e60f3b3993c1f3:0xc3e910aaf23cb3ba!8m2!3d41.3162696!4d-72.0627123',
     MCHU = 'https://www.google.com/maps/place/Lawrence+D.+McHugh+Hall/@41.8080383,-72.2504859,17z/data=!4m5!3m4!1s0x89e68bc5b2ebdaa7:0x9d34c4b50eaae714!8m2!3d41.8070872!4d-72.2534118',
     MONT = 'https://www.google.com/maps/place/Henry+Ruthven+Monteith+Building/@41.8070912,-72.2556058,17z/data=!4m5!3m4!1s0x89e68a3ca766fdf3:0xa8737f5cfdb726d6!8m2!3d41.8070941!4d-72.2492085',
     MSB = 'https://www.google.com/maps/place/Math-Science+Bldg,+Storrs,+CT+06269/@41.8093328,-72.2575019,18.75z/data=!4m5!3m4!1s0x89e68a3922793eb5:0xa00b2a6a7518ef04!8m2!3d41.8092558!4d-72.256732',
@@ -662,19 +588,22 @@ export enum BuildingMaps {
     SHA = 'https://www.google.com/maps/place/Augustus+Storrs+Hall,+Storrs,+CT+06269/@41.8072534,-72.2519791,17z/data=!4m5!3m4!1s0x89e68a3bb4ca6313:0xb5ce34968b84002e!8m2!3d41.8099413!4d-72.252389',
     SPRH = 'https://www.google.com/maps/place/Lester+E.+Shippee+Residence+Hall,+Storrs,+CT+06269/@41.8099453,-72.254583,17z/data=!4m5!3m4!1s0x89e68a247bd51665:0x15148a8f1f852461!8m2!3d41.8064797!4d-72.2446908',
     SRH = 'https://www.google.com/maps/place/Uconn+East+Campus/@41.8072914,-72.2478397,17z/data=!4m5!3m4!1s0x89e68a252daed6cb:0xbffafe1166c8314d!8m2!3d41.8096551!4d-72.2480125',
+    SSW = 'https://www.google.com/maps/place/UConn+School+of+Social+Work/@41.7638168,-72.6742314,17z/data=!3m1!4b1!4m5!3m4!1s0x89e6537aedf667c9:0x726d18943a10a1c2!8m2!3d41.7638341!4d-72.672151',
     STRS = 'https://www.google.com/maps/place/Augustus+Storrs+Hall,+Storrs,+CT+06269/@41.8072534,-72.2519791,17z/data=!4m5!3m4!1s0x89e68a3bb4ca6313:0xb5ce34968b84002e!8m2!3d41.8099413!4d-72.252389',
+    STRSWW = 'https://www.google.com/maps/place/Carolyn+Ladd+Widmer+Wing,+Storrs,+CT+06269/@41.810013,-72.2543968,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3a4c60a437:0x56ee377b5b441b6f!8m2!3d41.810009!4d-72.2522028',
     TLS = 'https://www.google.com/maps/place/George+Safford+Torrey+Life+Science+Building/@41.8096591,-72.2502065,17z/data=!4m5!3m4!1s0x89e68a3909f43617:0x5975f222fa2ff1fc!8m2!3d41.8104616!4d-72.2565604',
     TSK = 'https://www.google.com/maps/place/Gordon+W.Tasker+Admissions+Bldg,+Storrs,+CT+06269/@41.8076894,-72.2592462,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3ed7b9b22b:0xbb9f22d24192325f!8m2!3d41.8076854!4d-72.2570522',
+    USRH = 'https://www.google.com/maps/place/University+of+Connecticut-Stamford+Apartments/@41.0522373,-73.5447968,17z/data=!3m1!4b1!4m5!3m4!1s0x89c2a1e417c43b41:0x29d8fe276d4991f2!8m2!3d41.0522352!4d-73.5424559',
     UTEB = 'https://www.google.com/maps/place/United+TECHNOLOGIES+Engineering+Bldg,+Storrs,+CT+06269/@41.8076894,-72.2592462,17z/data=!4m5!3m4!1s0x89e68a396b87162b:0xc5255f24da8f2f9e!8m2!3d41.8094215!4d-72.2555362',
     VARC = 'https://www.google.com/maps/place/Music+%26+Dramatic+Arts+Library/@41.8046179,-72.2468528,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a23a4efc00f:0xb5ffc3143af73e22!8m2!3d41.8047011!4d-72.2444671',
     VDM = 'https://www.google.com/maps/place/J.Louis+Von+Der+Mehden+Recital+Hall,+Storrs,+CT+06269/@41.8046179,-72.2468528,17z/data=!4m5!3m4!1s0x89e68a230a5776df:0x6663578dcc7d7f64!8m2!3d41.8049756!4d-72.2454514',
     WCB = 'https://www.google.com/maps/place/Wilbur+Cross+Bldg,+Storrs,+CT+06269/@41.8049796,-72.2476454,17z/data=!4m5!3m4!1s0x89e68a3baf6e52e1:0x3fa2618773a6b93f!8m2!3d41.8091716!4d-72.2518197',
     WGC = 'https://www.google.com/maps/place/Nathan+L.+Whetten+Graduate+Center,+Storrs,+CT+06269/@41.8091756,-72.2540137,17z/data=!4m5!3m4!1s0x89e68a3c4358f36d:0x198abac0879ffd32!8m2!3d41.8058983!4d-72.251975',
-    WIDM = 'https://www.google.com/maps/place/Carolyn+Ladd+Widmer+Wing,+Storrs,+CT+06269/@41.810013,-72.2543968,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3a4c60a437:0x56ee377b5b441b6f!8m2!3d41.810009!4d-72.2522028',
     WITE = 'https://www.google.com/maps/place/George+C.+White+Building,+3636+Manter+Rd,+Storrs,+CT+06269/@41.810013,-72.2543968,17z/data=!4m5!3m4!1s0x89e68a303e5f8743:0xcd887ffbf226afa!8m2!3d41.8131386!4d-72.2495071',
-    WOOD = 'https://www.google.com/maps/place/Walter+Childs+Wood+Hall,+241+Glenbrook+Rd,+Storrs,+CT+06269/@41.8131426,-72.2517011,17z/data=!4m5!3m4!1s0x89e68a3bc5d54603:0xa830c81157fcd6a6!8m2!3d41.8092117!4d-72.2531329',
+    WH = 'https://www.google.com/maps/place/Walter+Childs+Wood+Hall,+241+Glenbrook+Rd,+Storrs,+CT+06269/@41.8131426,-72.2517011,17z/data=!4m5!3m4!1s0x89e68a3bc5d54603:0xa830c81157fcd6a6!8m2!3d41.8092117!4d-72.2531329',
     WSH = 'https://www.google.com/maps/place/UConn+Student+Health+and+Wellness/@41.8100773,-72.2556757,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3a6214bc31:0xe6efd2d9ea89c383!8m2!3d41.8100725!4d-72.2534795',
     WSRH = 'https://www.google.com/maps/place/Nellie+Louise+Wilson+Residence+Hall,+Storrs,+CT+06269/@41.8048368,-72.2494434,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a232519ae45:0x9b4d4d877e73787c!8m2!3d41.8048328!4d-72.2472494',
+    WTBY = 'https://www.google.com/maps/place/UConn+Waterbury/@41.5556878,-73.0407838,17z/data=!3m2!4b1!5s0x89e7c10049574865:0x8fc21328f06903b8!4m5!3m4!1s0x89e7c10036940b05:0x664b6276ac19291c!8m2!3d41.5556838!4d-73.0385898',
     YNG = 'https://www.google.com/maps/place/Wilfred+B.Young+Bldg,+Storrs,+CT+06269/@41.8121557,-72.2504963,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3002f0b9c5:0x86e6604eb51a5236!8m2!3d41.8121517!4d-72.2483023'
 }
 
@@ -687,6 +616,31 @@ export enum Modalities {
     IP = 'These classes will meet in person during all scheduled class times.',
     SL = 'This mode indicates a service learning class, with instruction times and locations to be determined by the instructor.',
     AR = 'These are meant for clinical placements, field placements, independent study, internships, and research hours. They do not require a classroom or meeting time but are considered to be in person.'
+}
+
+export enum ShortenedSeatingType {
+    TABLES = "Tables",
+    TABLES_AND_ARMCHAIRS = "Tables + Armchairs",
+    TABLET_ARMCHAIRS = "Tablet Armchairs",
+    FIXED_AUDITORIUM = "Fixed/Auditorium",
+    FIXED_TABLES = "Fixed Seating Tables",
+    FIXED_LEVELED_TABLES = "Leveled Tables",
+    LAB_TABLES = "Lab Tables + Chairs",
+    ACTIVE = "Active Learning",
+    UNKNOWN = "Unknown"
+}
+
+export enum ServiceUrls {
+    AURORA = 'https://aurora.uconn.edu',
+    CATALOG = 'https://catalog.uconn.edu',
+    EMAIL = '#',
+    HUSKYCT = 'https://huskyct.uconn.edu',
+    KFS = '#',
+    NETID = 'https://netid.uconn.edu',
+    NETWORK = '#',
+    PHONEBOOK = 'https://phonebook.uconn.edu',
+    STUDENT_ADMIN = 'https://studentadmin.uconn.edu',
+    WEBEX = 'https://webex.com'
 }
 
 /**
@@ -781,9 +735,9 @@ export const getIconForBuilding = (building: keyof typeof BuildingCode, classes 
         case "VDM": return <MdiIcon path={mdiMusicNote} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WCB": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WGC": return <MdiIcon path={mdiSchool} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "WIDM": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "STRSWW": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WITE": return <MdiIcon path={mdiCow} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case "WOOD": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case "WH": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WSH": return <MdiIcon path={mdiHeart} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "WSRH": return <MdiIcon path={mdiHome} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "YNG": return <MdiIcon path={mdiSprout} className={`fa-fw ${classes}`} size={`${size}px`} />;
@@ -1079,6 +1033,9 @@ export const numberProvided = (int: number | undefined | null) => {
  * @param int the number to apply a trailing decimal to
  */
 export const addTrailingDecimal = (int: number) => {
+    if (!int)
+        return null;
+
     if (!int.toString().includes('.'))
         return int.toString() + '.0';
 
@@ -1163,7 +1120,11 @@ export const getMeetingRoom = (room: string) =>
  * @param buildingCode the building code for the room
  */
 export const getRoomNumber = (room: string, buildingCode: string) => {
-    return room.split(getRealRoomCode(room, buildingCode))[1].trim();
+    let roomCode = getRealRoomCode(room, buildingCode);
+    if (room.startsWith('Waterbury'))
+        roomCode = 'Waterbury';
+
+    return room.split(roomCode)[1].trim();
 }
 
 /**
@@ -1186,6 +1147,9 @@ export const getRealRoomCode = (room: string, buildingCode: string) => {
 
     if (room.startsWith('WH'))
         code = 'WH';
+
+    if (room.startsWith('Waterbury'))
+        code = 'WTBY';
 
     return code;
 }
