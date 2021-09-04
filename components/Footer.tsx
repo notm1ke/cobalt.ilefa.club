@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import styles from './styling/footer.module.css';
 
-import { DevElement } from '.';
 import { capitalizeFirst } from '../util';
+import { DevElement, PreviewElement } from '.';
 
 import {
     Container,
@@ -28,12 +28,19 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }
                             <b>ILEFA Labs</b>
                         </a>
                         {" "} © 2020-{new Date().getFullYear()}{" "}
-                        <DevElement allowStaging>
+                        <DevElement>
                             <br />
                             <Link href="/internal">
                                 <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt {capitalizeFirst(process.env.NEXT_PUBLIC_VERCEL_ENV || '')} {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} - internal use only.</a>
                             </Link>
                         </DevElement>
+                        
+                        <PreviewElement>
+                            <br />
+                            <Link href="/preview">
+                                <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt Preview {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} <i className="fa fa-hands-helping fa-fw"></i></a>
+                            </Link>
+                        </PreviewElement>
                     </div>
                 </div>
                 <div className="col-6">

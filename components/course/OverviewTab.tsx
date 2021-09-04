@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styling/inspection.module.css';
 
-import { DevElement } from '../DevElement';
+import { DevElement } from '../';
 import { decode as decodeEntities } from 'html-entities';
 import { CompleteCoursePayload, ContentAreaNames } from '../../util';
 
