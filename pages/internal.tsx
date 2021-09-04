@@ -6,7 +6,7 @@ import styles from '../components/styling/internal.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
 import { useStatus } from '../hooks';
-import { DevPage } from '../components/DevPage';
+import { DevPage } from '../components';
 import { UncontrolledTooltip } from 'reactstrap';
 import { UConnServiceStatus } from '@ilefa/husky';
 import { CustomUConnServiceReport, getLatestTimeValue } from '../util';

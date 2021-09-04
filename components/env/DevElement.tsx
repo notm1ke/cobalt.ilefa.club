@@ -1,4 +1,4 @@
-import { isDevelopment, isPreview } from '../util'
+import { isDevelopment, isPreview } from '../../util'
 
 export interface DevElementProps {
     allowStaging?: boolean;

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import styles from './styling/nav.module.css';
 
 import { useState } from 'react';
-import { isDevelopment } from '../util';
+import { isDevelopment, isPreview } from '../util';
 
 import {
     BrowserView,
@@ -40,6 +40,7 @@ type NavElement = {
     href: string;
     key: string;
     devOnly?: boolean;
+    stagingOnly?: boolean;
     dropdown?: {
         mode: DropdownMode;
         items: NavDropdown[];
@@ -99,6 +100,20 @@ const ELEMENTS: NavElement[] = [
         href: '/snapshots',
         key: 'snapshots',
         devOnly: true,
+    },
+    {
+        name: 'preview',
+        icon: 'fa fa-hands-helping',
+        href: '/preview',
+        key: 'preview',
+        stagingOnly: true
+    },
+    {
+        name: 'changelog',
+        icon: 'fa fa-stream',
+        href: '/changelog',
+        key: 'changelog',
+        stagingOnly: true
     },
     {
         name: 'internal',
@@ -192,6 +207,9 @@ export const Nav = () => {
                             {
                                 ELEMENTS.map(element => {
                                     if (element.devOnly && !isDevelopment())
+                                        return;
+
+                                    if (element.stagingOnly && !isPreview())
                                         return;
 
                                     if (element.dropdown && element.dropdown.mode === 'icons') {

@@ -1,9 +1,8 @@
-import { ErrorView } from '.';
+import { ErrorView } from '..';
+import { isPreview } from '../../util'
 import { useRouter } from 'next/router';
-import { isDevelopment, isPreview } from '../util'
 
-export interface DevPageProps {
-    allowStaging?: boolean;
+export interface PreviewPageProps {
     redirect?: string;
     error?: {
         title: string;
@@ -11,9 +10,9 @@ export interface DevPageProps {
     }
 }
 
-export const DevPage: React.FC<DevPageProps> = ({ allowStaging, redirect, error, children }) => {
+export const PreviewPage: React.FC<PreviewPageProps> = ({ redirect, error, children }) => {
     let router = useRouter();
-    if (isDevelopment() || allowStaging && isPreview())
+    if (isPreview())
         return <>{children}</>;
 
     if (redirect)

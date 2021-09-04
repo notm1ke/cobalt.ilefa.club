@@ -29,7 +29,7 @@ const DormsPage = () => {
         <main>
             <Head>
                 <title>Cobalt » Residence Halls</title>
-                <meta name="description" content={`Explore buildings around all UConn campuses.`} />
+                <meta name="description" content={`Explore residence halls and room pictures all throughout the Storrs campus.`} />
             </Head>
             <Nav/>
             <div className="position-relative background-gradient">
