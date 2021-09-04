@@ -9,8 +9,9 @@ import attributionStyles from '../../components/styling/attribution.module.css';
 
 import { useDorm } from '../../hooks';
 import { useRouter } from 'next/router';
+import { isMobile } from 'react-device-detect';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
-import { ContributorButton, ErrorView, Footer, Loader, Nav } from '../../components';
+import { ContributorButton, ErrorView, Footer, InlineLink, Loader, Nav } from '../../components';
 
 import {
     mdiAccountSupervisorCircle,
@@ -34,24 +35,6 @@ import {
     getIconForResHall,
     intToWords
 } from '../../util';
-import { isMobile } from 'react-device-detect';
-
-interface InfoLinkProps {
-    display: string | JSX.Element;
-    href: string;
-    classes?: string;
-    newTab?: boolean;
-}
-
-const InfoLink: React.FC<InfoLinkProps> = ({ display, href, classes, newTab }) =>
-    <a
-        href={href}
-        className={`text-light ${styles.infoLink} shine ${classes}`}
-        target={newTab ? '_blank' : undefined}
-        rel={newTab ? 'noopener noreferrer' : undefined}>
-        {display}
-    </a>;
-
 
 interface ResidentCompositionProps {
     percent: number;
@@ -191,7 +174,7 @@ const DormInspectionPage = () => {
                         <h4 className={`text-white ${styles.infoSectionTitle} mb-5`}>
                             <i className="fa fa-people-carry fa-fw"></i> Contributors
                             <br /><span className={`text-white ${styles.infoSectionBody}`}>
-                                Thank you to the following users of the <InfoLink display="r/UConnDorms" href="https://reddit.com/r/UConnDorms" newTab /> subreddit for contributing images of their own.
+                                Thank you to the following users of the <InlineLink display="r/UConnDorms" href="https://reddit.com/r/UConnDorms" newTab /> subreddit for contributing images of their own.
                                 {
                                     data!
                                         .sources
