@@ -105,6 +105,14 @@ const InternalHome = () => {
                     <section className={`section ${styles.internalSection} background-circuits`}>
                         <div className="container" id="body">
                             <h4 className={`text-white ${styles.internalSectionTitle} mb-6`}>
+                                <i className="fa fa-balance-scale-left fa-fw"></i> Preamble
+                                <br/><span className={`text-white ${styles.internalSectionBody}`}>
+                                    This is an internal distribution of Cobalt, and as such, is not intended for external consumption.<br/>
+                                    Any unauthorized attempt to transmit or duplicate internal concepts or unreleased features is strictly prohibited, and punishable by the full extent of United States Copyright Law.
+                                </span>
+                            </h4>
+
+                            <h4 className={`text-white ${styles.internalSectionTitle} mb-6`}>
                                 <i className="fa fa-laptop-code fa-fw"></i> Instance Overview
                                 <br/><span className={`text-white ${styles.internalSectionBody}`}>
                                     This instance of Cobalt is running version <b>{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} ({process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : process.env.NEXT_PUBLIC_DEVICE ?? 'unknown'}</b>.

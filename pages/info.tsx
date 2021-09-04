@@ -12,6 +12,7 @@ import {
     Footer,
     GitButton,
     IconCardXl,
+    InlineLink,
     Nav,
     StatisticSection
 } from '../components';
@@ -122,22 +123,6 @@ const statMarkers = [
     },
 ];
 
-interface InfoLinkProps {
-    display: string | JSX.Element;
-    href: string;
-    classes?: string;
-    newTab?: boolean;
-}
-
-const InfoLink: React.FC<InfoLinkProps> = ({ display, href, classes, newTab }) =>
-    <a
-        href={href}
-        className={`text-light ${styles.infoLink} shine ${classes}`}
-        target={newTab ? '_blank' : undefined}
-        rel={newTab ? 'noopener noreferrer' : undefined}>
-            {display}
-    </a>;
-
 const InfoPage = () => {
     const [stats, loading, error] = useStatistics('full');
 
@@ -171,7 +156,7 @@ const InfoPage = () => {
                             <i className="fa fa-file-import fa-fw"></i> Where our data comes from
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 Since UConn does not publicly expose an API of any sorts to retrieve course data, we built an npm package called Husky that allows anyone to query this information.
-                                Husky works by scraping the <InfoLink display="course catalog" href="https://catalog.uconn.edu" newTab /> to compile the relevant information about courses.
+                                Husky works by scraping the <InlineLink display="course catalog" href="https://catalog.uconn.edu" newTab /> to compile the relevant information about courses.
                                 For more information, see the linked GitHub repository below.
                                 <br/>
                                 <GitButton owner="ilefa" repo="husky" />
@@ -202,7 +187,7 @@ const InfoPage = () => {
                         <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
                             <i className="fa fa-chart-bar fa-fw"></i> The Numbers
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
-                                It's no secret that Cobalt handles a lot of data while serving requests - so we thought it would be cool to pair this data with our <InfoLink display="snapshot dataset" href="https://github.com/ilefa/snapshots" newTab /> in order to visualize this data semester-by-semester.
+                                It's no secret that Cobalt handles a lot of data while serving requests - so we thought it would be cool to pair this data with our <InlineLink display="snapshot dataset" href="https://github.com/ilefa/snapshots" newTab /> in order to visualize this data semester-by-semester.
                                 {
                                     error && (
                                         <IconCardXl headerText="Whoops" headerColor="text-danger" iconColor="bg-danger">
