@@ -24,6 +24,14 @@
     letter-spacing: -0.01rem;
 }
 
+.cardSectionText {
+    font-family: "Open Sans", sans-serif !important;
+}
+
+.cardTitleIcon {
+    vertical-align: sub !important;
+}
+
 .iconDpositionSpecialized {
     margin-right: -27px;
     margin-top: -2px;

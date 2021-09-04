@@ -60,3 +60,7 @@
 .technicalFacts {
     margin-left: -24px !important;
 }
+
+.titleLineHeight {
+    line-height: 3.5rem !important;
+}

@@ -47,7 +47,7 @@ const RibbonMessages: RibbonOpts[] = [
         message: (names: string[]) =>
             <>
                 <b>Cobalt's</b> performance may be degraded due to service issues affecting the {concatNames(names)}{" "}
-                — see more on the <RibbonLink display="IT Status" href="https://itstatus.uconn.edu" newTab /> page.
+                — see more on the <RibbonLink display="ITS Status" href="https://itstatus.uconn.edu" newTab /> page.
             </>
     },
     {
@@ -57,7 +57,7 @@ const RibbonMessages: RibbonOpts[] = [
         message: (names: string[]) =>
             <>
                 <b>Cobalt's</b> functionality has been impacted due to outages affecting the {concatNames(names)}{" "}
-                — see more on the <RibbonLink display="IT Status" href="https://itstatus.uconn.edu" newTab /> page.
+                — see more on the <RibbonLink display="ITS Status" href="https://itstatus.uconn.edu" newTab /> page.
             </>
     },
     {
@@ -67,7 +67,7 @@ const RibbonMessages: RibbonOpts[] = [
         message: (names: string[]) =>
             <>
                 {concatNames(names, true)} are currently monitoring their status after an incident
-                — see more on the <RibbonLink display="IT Status" href="https://itstatus.uconn.edu" newTab /> page.
+                — see more on the <RibbonLink display="ITS Status" href="https://itstatus.uconn.edu" newTab /> page.
             </>
     }
 ]

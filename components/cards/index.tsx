@@ -1,4 +1,5 @@
 export * from './BuildingRoomCard';
+export * from './DormHallCard';
 export * from './IconCard';
 export * from './IconCardContainer';
 export * from './IconCardGlyph';

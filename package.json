@@ -7,11 +7,11 @@
     "url": "git@github.com:notm1ke/cobalt.ilefa.club"
   },
   "scripts": {
-    "dev": "REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=development NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
+    "dev": "DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=development NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
     "build": "next build",
     "start": "next start",
-    "start:prod": "REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=production next",
-    "start:staging": "REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=preview NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
+    "start:prod": "DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=production next",
+    "start:staging": "DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=preview NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
     "type-check": "tsc"
   },
   "dependencies": {
@@ -35,7 +35,9 @@
     "react-autosuggest": "^10.1.0",
     "react-countup": "^4.4.0",
     "react-data-table-component": "^6.11.7",
+    "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.1",
+    "react-grid-gallery": "^0.5.5",
     "react-isolated-scroll": "^0.1.1",
     "react-loader-spinner": "^4.0.0",
     "react-photosphere": "^1.0.2",
@@ -46,6 +48,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/fslightbox-react": "^1.4.1",
     "@types/node": "^12.12.21",
     "@types/qs": "^6.9.6",
     "@types/react": "^17.0.15",

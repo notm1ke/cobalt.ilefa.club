@@ -9,13 +9,14 @@ import { ErrorTab } from '.';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { mdiChevronDown } from '@mdi/js';
-import { BuildingCode, SectionData } from '@ilefa/husky';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
+import { BuildingCode, Classroom, SectionData } from '@ilefa/husky';
 
 import {
     CompleteCoursePayload,
     getCampusIndicator,
+    getIconForRoom,
     getInstructorName,
     getMeetingRoom,
     getMeetingTime,
@@ -65,6 +66,7 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                             <p>
                                 <span onClick={collapseInfo}>Click to {info ? 'hide' : 'reveal'} section information.</span>
                                 <Collapse isOpen={info} className={styles.statisticCollapse}>
+                                    <p><b>Section:</b> {data.section}</p>
                                     <p><b>Term:</b> {data.term}</p>
                                     <p><b>Campus:</b> {data.campus}</p>
                                     <p><b>Modality:</b> {data.mode}</p>
@@ -79,14 +81,15 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                                     let room = Classrooms.find(room => room.name === ent);
                                                     let end = i === rooms.length - 1 ? '' : ', ';
                                                     if (!room) return <span>{ent + end}</span>
+                                                    
                                                     return <Link href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
-                                                               <a className="text-primary shine">{ent}</a>{end}
+                                                               <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{ent}</a>{end}</>
                                                            </Link>
                                                 })
                                                 : !!managedRoom
                                                     ? <Link href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
-                                                            <a className="text-primary shine">{data.location.name}</a>
-                                                    </Link>
+                                                           <>{getIconForRoom(managedRoom as Classroom, 'text-primary')} <a className="text-primary shine">{data.location.name}</a></>
+                                                      </Link>
                                                     : getMeetingRoom(data.location.name).join(', ')
                                     }</p>
                                     <br/>

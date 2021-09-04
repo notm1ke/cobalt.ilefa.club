@@ -31,3 +31,28 @@
 .internalInfo {
     margin-left: -2.6rem !important;
 }
+
+.resHallInfoTitle {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+}
+
+.composition {
+    list-style: none !important;
+    margin-left: 0.5rem !important;
+}
+
+.compositionIcon {
+    vertical-align: sub !important;
+}
+
+.compositionPercent {
+    font-variant: sub !important;
+    vertical-align: 19% !important;
+}
+
+.amenityKey {
+    margin-left: 5px;
+    vertical-align: middle !important;
+}

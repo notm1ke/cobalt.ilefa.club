@@ -34,8 +34,11 @@
     width: 350px !important;
 }
 
+.mobileDropdownPosition {
+    margin-top: unset !important;
+}
+
 .normalDropdownPosition {
     margin-top: 52px !important;
     left: -8px !important;
-    /* width: 350px !important; */
 }
