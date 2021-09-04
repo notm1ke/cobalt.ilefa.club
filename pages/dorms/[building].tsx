@@ -34,6 +34,7 @@ import {
     getIconForResHall,
     intToWords
 } from '../../util';
+import { isMobile } from 'react-device-detect';
 
 interface InfoLinkProps {
     display: string | JSX.Element;
@@ -187,18 +188,26 @@ const DormInspectionPage = () => {
                             </a>
                         </h4>
 
-                        <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
+                        <h4 className={`text-white ${styles.infoSectionTitle} mb-5`}>
                             <i className="fa fa-people-carry fa-fw"></i> Contributors
                             <br /><span className={`text-white ${styles.infoSectionBody}`}>
                                 Thank you to the following users of the <InfoLink display="r/UConnDorms" href="https://reddit.com/r/UConnDorms" newTab /> subreddit for contributing images of their own.
-                                {data!.sources.filter((val, i, self) => self.map(elem => elem.author.id).indexOf(val.author.id) === i).map(source =>
-                                    <ContributorButton
-                                        name={`u/${source.author.name}`}
-                                        link={`https://reddit.com/u/${source.author.name}`}
-                                        platform={<i className={`fab fa-reddit text-orange ${attributionStyles.platformBadge}`}></i>}
-                                        avatar={<img className={attributionStyles.contributorImage} src={source.author.avatar} />}
-                                    />
-                                )}
+                                {
+                                    data!
+                                        .sources
+                                        .filter((val, i, self) => self
+                                            .map(elem => elem.author.id)
+                                            .indexOf(val.author.id) === i)
+                                        .map(source =>
+                                            <ContributorButton
+                                                name={`u/${source.author.name}`}
+                                                link={`https://reddit.com/u/${source.author.name}`}
+                                                platform={<i className={`fab fa-reddit text-orange ${attributionStyles.platformBadge}`}></i>}
+                                                avatar={<img className={attributionStyles.contributorImage} src={source.author.avatar} />}
+                                                className={isMobile ? 'btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-100' : undefined}
+                                            />
+                                        )
+                                }
                             </span>
                         </h4>
                     </div>
