@@ -7,6 +7,13 @@ import { useState } from 'react';
 import { isDevelopment } from '../util';
 
 import {
+    BrowserView,
+    isDesktop,
+    isMobile,
+    MobileView
+} from 'react-device-detect';
+
+import {
     DropdownItem,
     DropdownMenu,
     DropdownToggle,
@@ -24,6 +31,7 @@ type NavDropdown = {
     icon?: JSX.Element;
     color?: string;
     content?: string;
+    devOnly?: boolean;
 }
 
 type NavElement = {
@@ -50,6 +58,40 @@ const ELEMENTS: NavElement[] = [
         icon: 'fa fa-city',
         href: '/buildings',
         key: 'buildings',
+        dropdown: {
+            mode: 'icons',
+            items: [
+                {
+                    name: 'academic',
+                    href: '/buildings',
+                    icon: <i className="fa fa-chalkboard-teacher fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore academic buildings and rooms.',
+                },
+                {
+                    name: 'residential',
+                    href: '/dorms',
+                    icon: <i className="fa fa-bed fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore res halls and see their rooms.',
+                },
+                {
+                    name: 'dining',
+                    href: '/dining',
+                    icon: <i className="fa fa-utensils fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore dining halls and their menus.',
+                    devOnly: true
+                }
+            ]
+        }
+    },
+    {
+        name: 'routing',
+        icon: 'fa fa-route',
+        href: '/routing',
+        key: 'routing',
+        devOnly: true,
     },
     {
         name: 'snapshots',
@@ -153,29 +195,55 @@ export const Nav = () => {
                                         return;
 
                                     if (element.dropdown && element.dropdown.mode === 'icons') {
-                                        return <UncontrolledDropdown nav>
-                                            <DropdownToggle nav className={styles.navLink}>
-                                                <i className={`${element.icon} fa-fw`}></i>
-                                                <span className="nav-link-inner--text">{element.name}</span>
-                                            </DropdownToggle>
-                                            <DropdownMenu className={`dropdown-menu ${styles.dropdownPosition}`}>
-                                                <div className="dropdown-menu-inner">
-                                                    {
-                                                        element.dropdown.items.map(item => (
-                                                            <Media className="d-flex align-items-center" href={item.href}>
-                                                                <div className={`icon icon-shape ${item.color ?? 'bg-primary'} rounded-circle text-white`}>
-                                                                    {item.icon}
-                                                                </div>
-                                                                <Media body className="ml-3">
-                                                                    <h6 className="heading text-primary mb-md-1 text-lowercase font-weight-600">{item.name}</h6>
-                                                                    { item.content && <p className="description d-none d-md-inline-block mb-0">{item.content}</p> }
-                                                                </Media>
-                                                            </Media>
-                                                        ))
-                                                    }
-                                                </div>
-                                            </DropdownMenu>
-                                        </UncontrolledDropdown>
+                                        return isDesktop
+                                            ? <BrowserView>
+                                                <UncontrolledDropdown nav>
+                                                    <DropdownToggle nav className={styles.navLink}>
+                                                        <i className={`${element.icon} fa-fw`}></i>
+                                                        <span className="nav-link-inner--text">{element.name}</span>
+                                                    </DropdownToggle>
+                                                    <DropdownMenu className={`dropdown-menu ${styles.dropdownPosition}`}>
+                                                        <div className="dropdown-menu-inner">
+                                                            {
+                                                                element.dropdown.items.map(item => {
+                                                                    if (item.devOnly && !isDevelopment())
+                                                                        return;
+
+                                                                    return <Media className="d-flex align-items-center" href={item.href}>
+                                                                        <div className={`icon icon-shape ${item.color ?? 'bg-primary'} rounded-circle text-white`}>
+                                                                            {item.icon}
+                                                                        </div>
+                                                                        <Media body className="ml-3">
+                                                                            <h6 className="heading text-primary mb-md-1 text-lowercase font-weight-600">{item.name}</h6>
+                                                                            { item.content && <p className="description d-none d-md-inline-block mb-0">{item.content}</p> }
+                                                                        </Media>
+                                                                    </Media>;
+                                                                })
+                                                            }
+                                                        </div>
+                                                    </DropdownMenu>
+                                                </UncontrolledDropdown>
+                                            </BrowserView>
+                                            : <MobileView>
+                                                <UncontrolledDropdown nav>
+                                                    <DropdownToggle nav caret className={styles.navLink}>
+                                                        <i className={`${element.icon} fa-fw`}></i>
+                                                        <span className="nav-link-inner--text">{element.name}</span>
+                                                    </DropdownToggle>
+                                                    <DropdownMenu className={`dropdown-menu ${styles.mobileDropdownPosition}`}>
+                                                        {
+                                                            element.dropdown.items.map(item => {
+                                                                if (item.devOnly && !isDevelopment())
+                                                                    return;
+
+                                                                return <DropdownItem href={item.href || '#'}>
+                                                                    {item.name}
+                                                                </DropdownItem>
+                                                            })
+                                                        }
+                                                    </DropdownMenu>
+                                                </UncontrolledDropdown>
+                                            </MobileView>
                                     }
 
                                     if (element.dropdown && element.dropdown.mode === 'normal')
@@ -183,13 +251,16 @@ export const Nav = () => {
                                             <DropdownToggle nav caret className={styles.navLink}>
                                                 <span className="nav-link-inner--text">{element.name}</span>
                                             </DropdownToggle>
-                                            <DropdownMenu className={`dropdown-menu ${styles.normalDropdownPosition}`}>
+                                            <DropdownMenu className={`dropdown-menu ${isMobile ? styles.mobileDropdownPosition : styles.normalDropdownPosition}`}>
                                                 {
-                                                    element.dropdown.items.map(item =>
-                                                        <DropdownItem href={item.href || '#'}>
+                                                    element.dropdown.items.map(item => {
+                                                        if (item.devOnly && !isDevelopment())
+                                                            return;
+
+                                                        return <DropdownItem href={item.href || '#'}>
                                                             {item.name}
                                                         </DropdownItem>
-                                                    )
+                                                    })
                                                 }
                                             </DropdownMenu>
                                         </UncontrolledDropdown>

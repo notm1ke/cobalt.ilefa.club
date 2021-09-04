@@ -1,4 +1,5 @@
 export * from './CobaltSearch';
+export * from './ContributorButton';
 export * from './DevElement';
 export * from './DevPage';
 export * from './ErrorView';

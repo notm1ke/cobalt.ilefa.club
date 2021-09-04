@@ -116,6 +116,12 @@
     line-height: 1em;
 }
 
+.nameTitleIcon {
+    vertical-align: sub;
+    margin-right: 12px;
+    margin-bottom: 3px;
+}
+
 .cardIconPosition {
     padding-left: 5px;
     padding-bottom: 2px;

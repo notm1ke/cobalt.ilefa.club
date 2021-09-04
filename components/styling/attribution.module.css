@@ -1,0 +1,15 @@
+.contributorImage {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+}
+
+.viaPlatform {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 0.65rem !important;
+}
+
+.platformBadge {
+    font-size: 20px;
+    vertical-align: bottom;
+}

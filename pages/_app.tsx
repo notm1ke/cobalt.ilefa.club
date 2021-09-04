@@ -27,7 +27,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
         <>
             <Head>
                 <title>Cobalt</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
                 <meta name="author" content="ILEFA Labs" />
                 <meta name="theme-color" content="#353b48" />
                 <meta name="description" content="An intelligent suite of tools built by UConn students, for UConn students." />

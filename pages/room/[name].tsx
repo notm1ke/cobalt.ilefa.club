@@ -5,19 +5,17 @@ import ThreeSixtyRenderer from 'react-photosphere';
 import styles from '../../components/styling/inspection.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 
-import { RoomInspectionPayload, useRoom } from '../../hooks';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Card, CardBody, Badge } from 'reactstrap';
-import { capitalizeFirst, CompleteRoomPayload, getIconForRoom, RoomImageMode } from '../../util';
+import { RoomInspectionPayload, useRoom } from '../../hooks';
 
 import {
-    BoardType,
-    BuildingCode,
-    LectureCaptureType,
-    SeatingType,
-    TechType
-} from '@ilefa/husky';
+    capitalizeFirst,
+    CompleteRoomPayload,
+    getIconForRoom,
+    RoomImageMode
+} from '../../util';
 
 import {
     DataView,
@@ -26,6 +24,14 @@ import {
     Loader,
     Nav
 } from '../../components';
+
+import {
+    BoardType,
+    BuildingCode,
+    LectureCaptureType,
+    SeatingType,
+    TechType
+} from '@ilefa/husky';
 
 type SidebarEntry = {
     icon: string;
