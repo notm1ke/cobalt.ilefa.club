@@ -1,9 +1,6 @@
-import { GradingTypeNames } from '@ilefa/husky';
-
 import {
     ApiResponseType,
     createRemoteHook,
-    getEnumKeyByEnumValue,
     UnshapedApiResponse
 } from '../util';
 
