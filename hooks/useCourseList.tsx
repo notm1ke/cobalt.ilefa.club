@@ -1,6 +1,9 @@
+import { GradingTypeNames } from '@ilefa/husky';
+
 import {
     ApiResponseType,
     createRemoteHook,
+    getEnumKeyByEnumValue,
     UnshapedApiResponse
 } from '../util';
 
@@ -16,6 +19,7 @@ export type CoursePayloadResponse = UnshapedApiResponse & {
 
 export type CoursePayload = {
     name: string;
+    gradingType: string;
     catalogName: string;
     attributes: {
         lab: boolean;
@@ -44,6 +48,7 @@ export const useCourseList = (): CourseListShapedResponse =>
                                     .courses
                                     .find(course => course.name === name)
                             }))
+                            .filter(course => course !== null)
                             .map(course => course as CoursePayload);
 
                     return [distinct, false, false];

@@ -171,6 +171,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                     ? row.location.name === 'No Room Required - Online'
                     ? 'None'
                     : getMeetingRoom(row.location.name)
+                        .map(token => !token.includes(' ') ? token.split(/\d/).join(' ') : token)
                         .map(name => getRealRoomCode(row.location.name, row.location.name.split(' ')[0]) + ' ' + name.split(' ')[1])
                         .join(', ')
                     : 'Unknown';

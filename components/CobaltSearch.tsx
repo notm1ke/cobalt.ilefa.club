@@ -19,6 +19,7 @@ import {
 
 import {
     mdiAlert,
+    mdiAlphaHBox,
     mdiBackspace,
     mdiBeakerOutline,
     mdiFileDocumentEditOutline,
@@ -206,6 +207,9 @@ export const CobaltSearch = () => {
 
         if (course.attributes.writing)
             symbols.push({ icon: mdiFileDocumentEditOutline });
+
+        if (course.gradingType === 'Honors Credit')
+            symbols.push({ icon: mdiAlphaHBox, color: 'text-danger' });
 
         if (hasContentArea(course, ContentArea.CA1))
             symbols.push({ icon: mdiNumeric1Box });
