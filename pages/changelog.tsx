@@ -12,6 +12,7 @@ const CHANGELOG = [
     "Added section identifier to SectionsTab extra info (since mobile browser likes to cut it off in the table-view)",
     "Added new hooks and API routes for dorms service",
     "Added new standard buttons (i.e. ContributorButton)",
+    "Added honors credit warning to OverviewTab + Search",
     "Added room icons to SectionsTab",
     "Added new preview changelogs",
     "Added new preview utility components, much like dev components",

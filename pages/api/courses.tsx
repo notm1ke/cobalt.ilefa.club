@@ -13,6 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .json({
             courses: CourseMappings.map(ent => ({
                 name: ent.name,
+                gradingType: ent.grading,
                 catalogName: ent.catalogName,
                 attributes: ent.attributes
             }))
