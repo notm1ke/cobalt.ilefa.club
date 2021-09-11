@@ -82,7 +82,6 @@ const ELEMENTS: NavElement[] = [
                     icon: <i className="fa fa-utensils fa-fw"></i>,
                     color: 'bg-primary',
                     content: 'Explore dining halls and their menus.',
-                    devOnly: true
                 }
             ]
         }
@@ -113,6 +112,7 @@ const ELEMENTS: NavElement[] = [
         icon: 'fa fa-stream',
         href: '/changelog',
         key: 'changelog',
+        devOnly: true,
         stagingOnly: true
     },
     {
@@ -209,7 +209,7 @@ export const Nav = () => {
                                     if (element.devOnly && !isDevelopment())
                                         return;
 
-                                    if (element.stagingOnly && !isPreview())
+                                    if (!element.devOnly && element.stagingOnly && !isPreview())
                                         return;
 
                                     if (element.dropdown && element.dropdown.mode === 'icons') {

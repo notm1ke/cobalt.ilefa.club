@@ -9,8 +9,9 @@ import { Footer, InlineLink, Nav, PreviewPage } from '../components';
 
 const CHANGELOG = [
     "Introduced dorms integration (with special thanks to the r/UConnDorms team)",
+    "Introduced dining halls integration", 
     "Added section identifier to SectionsTab extra info (since mobile browser likes to cut it off in the table-view)",
-    "Added new hooks and API routes for dorms service",
+    "Added new hooks and API routes for dorms & dining halls services",
     "Added new standard buttons (i.e. ContributorButton)",
     "Added honors credit warning to OverviewTab + Search",
     "Added room icons to SectionsTab",
@@ -23,7 +24,7 @@ const CHANGELOG = [
 ]
 
 const ChangelogPage = () => (
-    <PreviewPage>
+    <PreviewPage allowDev>
         <main>
             <Head>
                 <title>Cobalt » Preview Changelog</title>
@@ -63,7 +64,7 @@ const ChangelogPage = () => (
                             </span>
                         </h4>
 
-                        <h4 className={`text-white ${styles.infoSectionTitle} mb-7`}>
+                        <h4 className={`text-white ${styles.infoSectionTitle} mb-2`}>
                             <i className="fa fa-laptop-code fa-fw"></i> Preview Information
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 This preview of Cobalt is running version <b>{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'}</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : process.env.NEXT_PUBLIC_DEVICE ?? 'unknown'}</b>.

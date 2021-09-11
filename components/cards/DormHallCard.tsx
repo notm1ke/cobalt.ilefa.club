@@ -47,7 +47,7 @@ export const DormHallCard: React.FC<DormHallCardProps> = ({ dorm }) => {
                         <div className={styles.projectCardLink}>
                             <Link href={`/dorms/${token}`}>
                                 <a className="btn btn-dark btn-sm text-lowercase shine">
-                                    <i className="fa fa-chevron-right fa-fw"></i>
+                                    <i className="fa fa-search fa-fw"></i> info
                                 </a>
                             </Link>
                             <a className="btn btn-dark btn-sm text-lowercase shine">
