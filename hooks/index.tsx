@@ -2,6 +2,8 @@ export * from './useBluepages';
 export * from './useBuildings';
 export * from './useCourse';
 export * from './useCourseList';
+export * from './useDiningHall';
+export * from './useDiningHalls';
 export * from './useDorm';
 export * from './useDorms';
 export * from './useLatestCommit';

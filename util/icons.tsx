@@ -1,6 +1,7 @@
 import React from 'react';
 import MdiIcon from '@mdi/react';
 
+import { DiningHallType } from '@ilefa/blueplate';
 import { CompleteRoomPayload, DormHallType, DormsByType } from '.';
 import { BuildingCode, Classroom, SeatingType } from '@ilefa/husky';
 
@@ -21,6 +22,7 @@ import {
     mdiBarley,
     mdiBasketball,
     mdiBio,
+    mdiBlender,
     mdiBookMusic,
     mdiBookOpenPageVariant,
     mdiBookshelf,
@@ -46,16 +48,20 @@ import {
     mdiDraw,
     mdiEarth,
     mdiEgg,
+    mdiFish,
     mdiFlag,
     mdiFlask,
     mdiFlaskRoundBottom,
     mdiFlower,
     mdiFood,
     mdiFoodApple,
+    mdiFoodForkDrink,
+    mdiFoodSteak,
     mdiFountainPenTip,
     mdiGesture,
     mdiGoogleClassroom,
     mdiGrass,
+    mdiHamburger,
     mdiHammerWrench,
     mdiHandPeace,
     mdiHandshake,
@@ -89,9 +95,11 @@ import {
     mdiMonitor,
     mdiMusicNote,
     mdiNewspaper,
+    mdiPasta,
     mdiPig,
     mdiPineTree,
     mdiPipeWrench,
+    mdiPizza,
     mdiPrescription,
     mdiQuadcopter,
     mdiResistor,
@@ -431,5 +439,26 @@ export const getIconForRoom = (room: CompleteRoomPayload | Classroom, classes = 
             return <MdiIcon path={mdiRun} className={`fa-fw ${classes}`} size={`${size}px`} />;
         default:
             return <MdiIcon path={mdiGoogleClassroom} className={`fa-fw ${classes}`} size={`${size}px`} />
+    }
+}
+
+/**
+ * Returns the specialized icon for a given dining hall type, if it has one.
+ * 
+ * @param hall the dining hall type to get the icon for
+ * @param classes [optional] the classes to add to the icon
+ * @param size    [optional] the size of the icon
+ */
+export const getIconForDiningHall = (hall: keyof typeof DiningHallType, classes = '', size = 16) => {
+    switch (hall) {
+        case 'BUCKLEY': return <MdiIcon path={mdiFish} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'MCMAHON': return <MdiIcon path={mdiPizza} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'NORTH': return <MdiIcon path={mdiPasta} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'NORTHWEST': return <MdiIcon path={mdiHamburger} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'PUTNAM': return <MdiIcon path={mdiBlender} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'SOUTH': return <MdiIcon path={mdiFoodSteak} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'TOWERS': return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'WHITNEY': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        default: return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
     }
 }

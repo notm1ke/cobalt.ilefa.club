@@ -15,6 +15,7 @@ import {
 
 export * from './dorms';
 export * from './icons';
+export * from './dining';
 export * from './buildings';
 
 export type Color = 'blue'
