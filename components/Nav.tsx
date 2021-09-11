@@ -206,9 +206,15 @@ export const Nav = () => {
                         <ul className="navbar-nav align-items-lg-center ml-lg-auto">
                             {
                                 ELEMENTS.map(element => {
-                                    if (element.devOnly && !isDevelopment())
+                                    // both devOnly and stagingOnly and neither are satisfied
+                                    if (element.devOnly && element.stagingOnly && !isDevelopment() && !isPreview())
                                         return;
 
+                                    // only devOnly but not satisfied
+                                    if (element.devOnly && !element.stagingOnly && !isDevelopment())
+                                        return;
+
+                                    // only stagingOny but not satisfied
                                     if (!element.devOnly && element.stagingOnly && !isPreview())
                                         return;
 
