@@ -2,9 +2,9 @@ import React from 'react';
 import Head from 'next/head';
 import MdiIcon from '@mdi/react';
 
-import styles from '../../components/styling/building.module.css';
-import globalStyles from '../../components/styling/home.module.css';
-import ribbonStyles from '../../components/styling/ribbon.module.css';
+import styles from '../components/styling/building.module.css';
+import globalStyles from '../components/styling/home.module.css';
+import ribbonStyles from '../components/styling/ribbon.module.css';
 
 import { mdiCookie } from '@mdi/js';
 import { intToWords } from '../util';
@@ -12,7 +12,7 @@ import { useDiningHalls } from '../hooks';
 import { DiningHallCard, Footer, Nav, Ribbon } from '../components';
 
 const DiningHallsPage = () => {
-    const [data, loading, error] = useDiningHalls({});
+    const [data, loading, error] = useDiningHalls({ poll: 10000 });
     
     const betaNotice = true;
     const enabled = !loading

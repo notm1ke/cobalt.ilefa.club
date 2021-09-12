@@ -11,6 +11,10 @@
     margin-top: 9.2rem !important;
 }
 
+.headerHeightMobile {
+    margin-top: 5rem !important;
+}
+
 .sectionSeparator {
     padding-top: 3.5rem;
 }

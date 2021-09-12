@@ -22,3 +22,7 @@
 .diningOptions {
     margin-bottom: 25px;
 }
+
+.diningDatePickerWrapper {
+    position: absolute !important;
+}

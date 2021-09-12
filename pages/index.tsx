@@ -12,6 +12,7 @@ import {
     Nav,
     StatusRibbon
 } from '../components';
+import { isMobile } from 'react-device-detect';
 
 const HomePage = () => {
     return (
@@ -25,7 +26,7 @@ const HomePage = () => {
                             track={['catalog', 'phonebook']}
                             ignore={[UConnServiceStatus.REPORTING, UConnServiceStatus.UNKNOWN]}
                             dismissible />
-                        <div className={`container shape-container d-flex align-items-center py-lg ${styles.headerHeight}`}>
+                        <div className={`container shape-container d-flex align-items-center py-lg ${isMobile ? styles.headerHeightMobile : styles.headerHeight}`}>
                             <div className="col px-0">
                                 <div className="row align-items-center justify-content-center">
                                     <div className="col-lg-6 text-center">
@@ -43,7 +44,6 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-    
     
                 <FeatureSection
                     title="Courses"
@@ -110,7 +110,7 @@ const HomePage = () => {
                     glyph="/glyphs/dorms.svg"
                     alt="Dorms Glyph"
                     className="background-circuits"
-                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats it has, and more."
+                    description="Moving in? Check out what your dorm might look like by looking at other people's images and videos. Also, check out what amenities exist in your residence hall, and what other people think of living there."
                     tags={[
                         {
                             icon: <i className="fa fa-photo-video fa-fw"></i>,
@@ -136,7 +136,7 @@ const HomePage = () => {
                     glyph="/glyphs/dining.svg"
                     alt="Dining Glyph"
                     className="background-circuits"
-                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats it has, and more."
+                    description="Hungry? Check out what each of the Dining Halls in Storrs are serving, and their current statuses."
                     tags={[
                         {
                             icon: <i className="fa fa-utensils fa-fw"></i>,
