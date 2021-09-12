@@ -586,6 +586,12 @@ export const sum = (arr: number[]) => arr
     .reduce((prev, cur) => cur + prev, 0);
 
 /**
+ * Prepends a zero to integers less than ten.
+ * @param int the integer to format
+ */
+export const prependZero = (int: number) => int < 10 ? `0${int}` : `${int}`;
+
+/**
  * Replaces all occurances of a given
  * search string within another string.
  * 

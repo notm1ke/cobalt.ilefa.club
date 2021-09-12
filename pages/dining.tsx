@@ -7,9 +7,9 @@ import globalStyles from '../../components/styling/home.module.css';
 import ribbonStyles from '../../components/styling/ribbon.module.css';
 
 import { mdiCookie } from '@mdi/js';
-import { intToWords } from '../../util';
-import { useDiningHalls } from '../../hooks';
-import { DiningHallCard, Footer, Nav, Ribbon } from '../../components';
+import { intToWords } from '../util';
+import { useDiningHalls } from '../hooks';
+import { DiningHallCard, Footer, Nav, Ribbon } from '../components';
 
 const DiningHallsPage = () => {
     const [data, loading, error] = useDiningHalls({});

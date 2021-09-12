@@ -5,6 +5,7 @@ export * from './Footer';
 export * from './GitButton';
 export * from './InlineLink';
 export * from './Loader';
+export * from './Modal';
 export * from './Nav';
 export * from './Ribbon';
 export * from './StatusRibbon';

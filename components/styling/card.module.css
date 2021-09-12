@@ -49,3 +49,12 @@
 .rgCardSm {
     padding: 12px;
 }
+
+.cardModalTitleIcon {
+    vertical-align: text-top !important;
+    margin-right: 3px;
+}
+
+.cardModalInlineIcon {
+    vertical-align: bottom !important;
+}

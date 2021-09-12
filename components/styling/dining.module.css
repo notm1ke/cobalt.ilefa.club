@@ -1,0 +1,24 @@
+.diningMeal {
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+.diningMealIcon {
+    vertical-align: sub !important;
+}
+
+.diningStation {
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+.diningOptions li {
+    list-style: none !important;
+    margin-left: -40px;
+}
+
+.diningOptions {
+    margin-bottom: 25px;
+}

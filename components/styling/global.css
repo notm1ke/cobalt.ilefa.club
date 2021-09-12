@@ -191,3 +191,7 @@
     flex-direction: column !important;
     flex-flow: wrap !important;
 }
+
+.rdt {
+    position: absolute !important;
+}

@@ -1,52 +1,199 @@
-import Link from 'next/link';
-import styles from '../styling/building.module.css';
+import moment from 'moment';
+import MdiIcon from '@mdi/react';
+import ReactDateTime from 'react-datetime';
+
+import styles from '../styling/dining.module.css';
 import cardStyles from '../styling/card.module.css';
+
+import { Modal } from '..';
+import { useDiningHall } from '../../hooks';
+import { useEffect, useState } from 'react';
+import { isMobile } from 'react-device-detect';
+
+import {
+    mdiAlert,
+    mdiCalendar,
+    mdiEmoticonSad,
+    mdiLoading
+} from '@mdi/js';
+
+import {
+    generateDdsLink,
+    getDiningHallStatusColor,
+    getEnumKeyByEnumValue,
+    getIconForDiningHall,
+    getIconForDiningStatus
+} from '../../util';
 
 import {
     DiningHall,
+    DiningHallStatus,
     DiningHallType,
     getDiningHallStatus
 } from '@ilefa/blueplate';
-
-import {
-    getDiningHallStatusColor,
-    getEnumKeyByEnumValue,
-    getIconForDiningHall
-} from '../../util';
 
 export interface DiningHallCardProps {
     hall: DiningHall;
 }
 
+export interface DiningHallModalProps {
+    hall: DiningHall;
+    open: boolean;
+    setOpen: (open: boolean) => void;
+}
+
+const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOpen }) => {
+    const [date, setDate] = useState(new Date());
+    const [dpOpen, setDpOpen] = useState(false);
+
+    const hallName = isMobile
+        ? hall.name
+        : hall.location.name.replace(/\+/g, ' ').replace(/\%26/g, '&');
+
+    const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
+    const modalTitle = (
+        <span>
+            <span className="text-primary-light cursor-pointer text-primary-light">
+                <MdiIcon path={mdiCalendar} size={'24px'} className={`fa-fw ${cardStyles.cardModalTitleIcon} mr-2`} /> 
+                <b onClick={() => setDpOpen(!dpOpen)}>{moment(date).format('MMM Do')}</b>
+                <ReactDateTime
+                    open={dpOpen}
+                    value={date}
+                    timeFormat={false}
+                    renderInput={() => <></>}
+                    onChange={d => {
+                        if (!moment.isMoment(d))
+                            return;
+
+                        setDate(d.toDate());
+                    }}
+                />
+            </span> ➜ {hallName} <span className={`text-${getDiningHallStatusColor(hall)}`}>({getDiningHallStatus(DiningHallType[hallKey])})</span>
+        </span>
+    );
+
+    useEffect(() => setDpOpen(false), [date]);
+
+    if (!hallKey) return <></>;
+    const [menu, loading, error] = useDiningHall({ hall: hallKey, date });
+
+    if (loading) return (
+        <Modal
+            open={open}
+            setOpen={() => setOpen(false)}
+            width={'850px'}
+            title={modalTitle}>
+                <span>
+                    <MdiIcon path={mdiLoading} className={`mr-2 ${cardStyles.cardModalInlineIcon} fa-fw`} size={'24px'} spin />
+                    Loading information for <b>{hallName}</b>..
+                </span>
+        </Modal>
+    );
+
+    if (error) return (
+        <Modal
+            open={open}
+            setOpen={() => setOpen(false)}
+            width={'850px'}
+            title={modalTitle}>
+                <span>
+                    <MdiIcon path={mdiAlert} className={`text-danger mr-2 ${cardStyles.cardModalInlineIcon} fa-fw`} size={'24px'} />
+                    Something went wrong while looking up information about <b>{hallName}</b>!
+                </span>
+        </Modal>
+    );
+
+    return (
+        <Modal
+            open={open}
+            setOpen={() => setOpen(false)}
+            width={'850px'}
+            closeIcon
+            footerButtons={
+                <a
+                    className="btn btn-link text-lowercase mr-auto"
+                    href={generateDdsLink(hall, date)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setOpen(false)}>
+                        <i className="fa fa-external-link-alt fa-fw"></i> View Original
+                </a>
+            }
+            title={modalTitle}>
+                {
+                    !menu!.meals.length && (
+                        <span>
+                            <MdiIcon path={mdiEmoticonSad} className={`text-primary-light mr-1 ${cardStyles.cardModalInlineIcon} fa-fw`} size={'24px'} />
+                            <b>{hallName}</b> isn't serving any food today.
+                        </span>
+                    )
+                }
+
+                {
+                    menu!.meals.length > 0 &&
+                        menu!.meals.map((meal, i) => (
+                            <div className="mb-2">
+                                <div className="mb-1">
+                                    <span className={`text-primary-light ${styles.diningMeal}`}>
+                                        {getIconForDiningStatus(getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus, styles.diningMealIcon, 24)} {meal.name}
+                                    </span>
+                                </div>
+                                <br />
+                                {
+                                        meal.stations.map((station: any) => (
+                                            <div>
+                                                <span className={styles.diningStation}>{station.name}</span>
+                                                <ul className={styles.diningOptions}>
+                                                    {
+                                                        station.options.map(option => (
+                                                            <li key={option}>{option}</li>
+                                                        ))
+                                                    }
+                                                </ul>
+                                            </div>
+                                        ))
+                                }
+                                { i !== menu!.meals.length - 1 && <hr /> }
+                            </div>
+                        ))
+                }
+        </Modal>
+    )
+}
+
 export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
+    const [open, setOpen] = useState(false);
+
     let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType, cardStyles.cardTitleIcon, 24);
+    let statusType = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(hall.name as DiningHallType)) as keyof typeof DiningHallStatus;
+    let statusPrefix = statusType === 'CLOSED' || statusType === 'BETWEEN_MEALS'
+        ? 'currently'
+        : 'serving';
+    
     return (
         <div className={`card shadow shadow-lg--hover mt-5 ${cardStyles.rgCardSm}`}>
             <div className="card-body">
                 <div className="d-flex">
                     <div>
                         <h5>
-                            <Link href={`/dining/${hall.name.toLowerCase()}`}>
-                                <a className={`${cardStyles.cardSectionTitle} text-primary-light`}>
-                                    {icon ?? ''} {hall.name}
-                                </a>
-                            </Link>
+                            <a className={`${cardStyles.cardSectionTitle} text-primary-light`} onClick={() => setOpen(true)}>
+                                {icon ?? ''} {hall.name}
+                            </a>
                         </h5>
     
                         <p className={`text-dark ${cardStyles.cardSectionText}`}>
-                            <b>{hall.name}</b> is currently <span className={`text-${getDiningHallStatusColor(hall)}`}>{getDiningHallStatus(hall.name as DiningHallType).toLowerCase()}</span>.
+                            <b>{hall.name}</b> is {statusPrefix} <span className={`text-${getDiningHallStatusColor(hall)} font-weight-500`}>{getDiningHallStatus(hall.name as DiningHallType).toLowerCase()}</span>.
                         </p>
                         
                         <div className={styles.projectCardLink}>
-                            <Link href={`/dining/${hall.name.toLowerCase()}`}>
-                                <a className="btn btn-dark btn-sm text-lowercase shine">
-                                    <i className="fa fa-stream fa-fw"></i> menu
-                                </a>
-                            </Link>
+                            <a className="btn btn-dark btn-sm text-lowercase shine" onClick={() => setOpen(true)}>
+                                <i className="fa fa-stream fa-fw"></i> menu
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
+            <DiningHallMenuModal hall={hall} open={open} setOpen={setOpen} />
         </div>
     );
 }
