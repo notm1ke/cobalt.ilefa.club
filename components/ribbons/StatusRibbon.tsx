@@ -1,13 +1,13 @@
 import React from 'react';
 import MdiIcon from '@mdi/react';
 
-import styles from './styling/ribbon.module.css';
+import styles from '../styling/ribbon.module.css';
 
-import { Ribbon } from '.';
-import { useStatus } from '../hooks';
+import { Ribbon } from '..';
+import { useStatus } from '../../hooks';
 import { UConnServiceStatus } from '@ilefa/husky';
 import { mdiAlert, mdiEyeCheck, mdiReloadAlert } from '@mdi/js';
-import { capitalizeFirst, Color, CustomUConnServiceString } from '../util';
+import { capitalizeFirst, Color, CustomUConnServiceString } from '../../util';
 
 type RibbonGenerator = {
     level: UConnServiceStatus;

@@ -1,6 +1,6 @@
 {
-    "name": "ILEFA Labs",
-    "short_name": "ILEFA Labs",
+    "name": "Cobalt",
+    "short_name": "Cobalt",
     "icons": [
         {
             "src": "/favicon.ico",
@@ -19,7 +19,7 @@
         }
     ],
     "start_url": ".",
-    "theme_color": "#353b48",
-    "background_color": "#353b48",
+    "theme_color": "#487eb0",
+    "background_color": "#487eb0",
     "display": "standalone"
 }

@@ -4,12 +4,11 @@ import MdiIcon from '@mdi/react';
 
 import styles from '../components/styling/building.module.css';
 import globalStyles from '../components/styling/home.module.css';
-import ribbonStyles from '../components/styling/ribbon.module.css';
 
-import { mdiCookie } from '@mdi/js';
 import { intToWords } from '../util';
 import { useDiningHalls } from '../hooks';
-import { DiningHallCard, Footer, Nav, Ribbon } from '../components';
+import { mdiCookie, mdiLoading } from '@mdi/js';
+import { DiningHallCard, Footer, Nav, PreviewRibbon } from '../components';
 
 const DiningHallsPage = () => {
     const [data, loading, error] = useDiningHalls({ poll: 10000 });
@@ -32,14 +31,15 @@ const DiningHallsPage = () => {
                     <div className={globalStyles.pageHeader}>
                         {
                             betaNotice && (
-                                <Ribbon
-                                    color="primary"
-                                    className="mt-5 mb--4 ml-md-5 mr-md-5"
-                                    icon={<MdiIcon path={mdiCookie} size="25px" className={ribbonStyles.mdiIcon} />}
-                                    dismissible
-                                >
-                                    The dining halls integration is currently in <b>beta</b> — please report any bugs you may find.
-                                </Ribbon>
+                                <PreviewRibbon
+                                    mdiIcon
+                                    icon={mdiCookie}
+                                    content={
+                                        <>
+                                            The dining halls integration is currently in <b>beta</b> — please report any bugs you may find.
+                                        </>
+                                    }
+                                />
                             )
                         }
                         <div className="container shape-container d-flex align-items-center py-lg">
@@ -48,7 +48,8 @@ const DiningHallsPage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1 ${styles.titleLineHeight}`}>Dining Halls</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-3`}>
-                                            Explore {data?.length ? intToWords(data.length) + ' different' : ''} dining halls at Storrs.
+                                            { !enabled && <span><MdiIcon path={mdiLoading} size="24px" spin /> Loading..</span> }
+                                            { enabled && <span>Explore {data?.length ? intToWords(data.length) + ' different' : ''} dining halls at Storrs.</span> }
                                         </h2>
                                     </div>
                                 </div>

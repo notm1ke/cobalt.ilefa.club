@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Color, inferIcon } from '../util';
+import { Color, inferIcon } from '../../util';
 import { UncontrolledAlert } from 'reactstrap';
 
 export interface RibbonProps {
