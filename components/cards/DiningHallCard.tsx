@@ -9,6 +9,7 @@ import { useDiningHall } from '../../hooks';
 import { isMobile } from 'react-device-detect';
 import { useEffect, useRef, useState } from 'react';
 import { Modal, useBoundedClickDetector } from '..';
+import { DiningHallStatus, DiningHallType } from '@ilefa/blueplate';
 
 import {
     mdiAlert,
@@ -16,13 +17,6 @@ import {
     mdiEmoticonSad,
     mdiLoading
 } from '@mdi/js';
-
-import {
-    DiningHall,
-    DiningHallStatus,
-    DiningHallType,
-    getDiningHallStatus
-} from '@ilefa/blueplate';
 
 import {
     DiningHallPayload,
