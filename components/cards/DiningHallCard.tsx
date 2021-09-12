@@ -65,7 +65,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                         value={date}
                         timeFormat={false}
                         isValidDate={(current: Date, selected: Date) => 
-                            moment(current).diff(moment(selected), 'days') < 23}
+                            Math.abs(moment(current).diff(moment(selected), 'days')) < 23}
                         renderInput={() => <></>}
                         onChange={input => moment.isMoment(input) && setDate(input.toDate())}
                     />
