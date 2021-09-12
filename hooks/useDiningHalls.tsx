@@ -1,11 +1,7 @@
 import {
-    DiningHall,
-    DiningHallStatus,
-} from '@ilefa/blueplate';
-
-import {
     ApiResponseType,
     createRemoteHook,
+    DiningHallPayload,
     UnshapedApiResponse,
 } from '../util';
 
@@ -13,16 +9,12 @@ type BlueplateProps = {
     poll?: number;
 }
 
-type CustomDiningHall = DiningHall & {
-    status: DiningHallStatus;
-}
-
 type BlueplateResponse = UnshapedApiResponse & {
-    halls: CustomDiningHall[];
+    halls: DiningHallPayload[];
 };
 
 type BlueplateShapedResponse = [
-    CustomDiningHall[] | null,
+    DiningHallPayload[] | null,
     boolean,
     boolean
 ];

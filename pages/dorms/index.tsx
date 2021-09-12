@@ -1,14 +1,12 @@
 import React from 'react';
 import Head from 'next/head';
-import MdiIcon from '@mdi/react';
 
 import styles from '../../components/styling/building.module.css';
 import globalStyles from '../../components/styling/home.module.css';
-import ribbonStyles from '../../components/styling/ribbon.module.css';
 
 import { mdiFlask } from '@mdi/js';
 import { useDorms } from '../../hooks';
-import { DormHallCard, Footer, Nav, Ribbon } from '../../components';
+import { DormHallCard, Footer, Nav, PreviewRibbon } from '../../components';
 
 import {
     DormHallCategory,
@@ -38,15 +36,16 @@ const DormsPage = () => {
                     <div className={globalStyles.pageHeader}>
                         {
                             betaNotice && (
-                                <Ribbon
-                                    color="primary"
-                                    className="mt-5 mb--4 ml-md-5 mr-md-5"
-                                    icon={<MdiIcon path={mdiFlask} size="25px" className={ribbonStyles.mdiIcon} />}
-                                    dismissible
-                                >
-                                    The residential halls integration is currently in <b>beta</b> — please report any bugs you may find — and a special thanks to the{" "}
-                                    <a className="text-white font-weight-700 shine" href="https://reddit.com/r/UConnDorms" target="_blank" rel="noopener noreferrer">r/UConnDorms</a> team!
-                                </Ribbon>
+                                <PreviewRibbon
+                                    mdiIcon
+                                    icon={mdiFlask}
+                                    content={
+                                        <>
+                                            The residential halls integration is currently in <b>beta</b> — please report any bugs you may find — and a special thanks to the{" "}
+                                            <a className="text-white font-weight-700 shine" href="https://reddit.com/r/UConnDorms" target="_blank" rel="noopener noreferrer">r/UConnDorms</a> team!
+                                        </>
+                                    }
+                                />
                             )
                         }
                         <div className="container shape-container d-flex align-items-center py-lg">

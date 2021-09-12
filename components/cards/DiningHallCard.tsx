@@ -18,6 +18,14 @@ import {
 } from '@mdi/js';
 
 import {
+    DiningHall,
+    DiningHallStatus,
+    DiningHallType,
+    getDiningHallStatus
+} from '@ilefa/blueplate';
+
+import {
+    DiningHallPayload,
     generateDdsLink,
     getDiningHallStatusColor,
     getEnumKeyByEnumValue,
@@ -25,19 +33,12 @@ import {
     getIconForDiningStatus
 } from '../../util';
 
-import {
-    DiningHall,
-    DiningHallStatus,
-    DiningHallType,
-    getDiningHallStatus
-} from '@ilefa/blueplate';
-
 export interface DiningHallCardProps {
-    hall: DiningHall;
+    hall: DiningHallPayload;
 }
 
 export interface DiningHallModalProps {
-    hall: DiningHall;
+    hall: DiningHallPayload;
     open: boolean;
     setOpen: (open: boolean) => void;
 }
@@ -65,12 +66,13 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                         value={date}
                         timeFormat={false}
                         isValidDate={(current: Date, selected: Date) => 
+                            // Make sure selected date is at max 23 days in the future or past.
                             Math.abs(moment(current).diff(moment(selected), 'days')) < 23}
                         renderInput={() => <></>}
                         onChange={input => moment.isMoment(input) && setDate(input.toDate())}
                     />
                 </div>
-            </span> ➜ {hallName} <span className={`text-${getDiningHallStatusColor(hall)}`}>({getDiningHallStatus(DiningHallType[hallKey])})</span>
+            </span> ➜ {hallName} <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span>
         </span>
     );
 
@@ -167,8 +169,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
     const [open, setOpen] = useState(false);
 
     let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType, cardStyles.cardTitleIcon, 24);
-    let statusType = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(hall.name as DiningHallType)) as keyof typeof DiningHallStatus;
-    let statusPrefix = statusType === 'CLOSED' || statusType === 'BETWEEN_MEALS'
+    let statusPrefix = hall.status === 'CLOSED' || hall.status === 'BETWEEN_MEALS'
         ? ''
         : 'serving';
     
@@ -184,7 +185,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
                         </h5>
     
                         <p className={`text-dark ${cardStyles.cardSectionText}`}>
-                            <b>{hall.name}</b> is {statusPrefix} <span className={`text-${getDiningHallStatusColor(hall)} font-weight-500`}>{getDiningHallStatus(hall.name as DiningHallType).toLowerCase()}</span>.
+                            <b>{hall.name}</b> is {statusPrefix} <span className={`text-${getDiningHallStatusColor(hall)} font-weight-500`}>{DiningHallStatus[hall.status].toLowerCase()}</span>.
                         </p>
                         
                         <div className={styles.projectCardLink}>

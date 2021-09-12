@@ -4,28 +4,36 @@ import { Color } from '.';
 
 import {
     DiningHall,
+    DiningHallStatus,
     DiningHallType,
     getDiningHallStatus
 } from '@ilefa/blueplate';
+
+export type DiningHallPayload = DiningHall & {
+    status: keyof typeof DiningHallStatus;
+}
 
 /**
  * Returns a color to represent the status of a dining hall.
  * @param hall the dining hall to get the status of
  */
-export const getDiningHallStatusColor = (hall: DiningHall): Color => {
+export const getDiningHallStatusColor = (hall: DiningHall | DiningHallPayload): Color => {
     let status = getDiningHallStatus(hall.name as DiningHallType);
     if (!status) return 'purple';
+
+    if ('status' in hall)
+        status = DiningHallStatus[hall.status];
 
     switch (status) {
         case 'Breakfast':
         case 'Brunch':
         case 'Lunch':
         case 'Dinner':
-            return 'warp';
+            return 'success';
         case 'Late Night':
             return 'primary';
         case 'Between Meals':
-            return 'warning';
+            return 'orange';
         case 'Closed':
             return 'danger';
         default: 
