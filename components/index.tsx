@@ -1,3 +1,4 @@
+export * from './BoundedClickDetector';
 export * from './CobaltSearch';
 export * from './ContributorButton';
 export * from './ErrorView';

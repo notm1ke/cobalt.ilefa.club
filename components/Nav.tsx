@@ -160,6 +160,9 @@ export const Nav = () => {
     const [classes, setClasses] = useState('');
     const onExiting = () => setClasses('collapsing-out');
     const onExited = () => setClasses('');
+    const iconMode = isMobile
+        ? false
+        : ELEMENTS.length > 8;
 
     return (
         <header className="header-global">
@@ -224,7 +227,7 @@ export const Nav = () => {
                                                 <UncontrolledDropdown nav>
                                                     <DropdownToggle nav className={styles.navLink}>
                                                         <i className={`${element.icon} fa-fw`}></i>
-                                                        <span className="nav-link-inner--text">{element.name}</span>
+                                                        <span className="nav-link-inner--text">{iconMode ? '' : element.name}</span>
                                                     </DropdownToggle>
                                                     <DropdownMenu className={`dropdown-menu ${styles.dropdownPosition}`}>
                                                         <div className="dropdown-menu-inner">
@@ -273,7 +276,7 @@ export const Nav = () => {
                                     if (element.dropdown && element.dropdown.mode === 'normal')
                                         return <UncontrolledDropdown nav>
                                             <DropdownToggle nav caret className={styles.navLink}>
-                                                <span className="nav-link-inner--text">{element.name}</span>
+                                                <span className="nav-link-inner--text">{iconMode ? '' : element.name}</span>
                                             </DropdownToggle>
                                             <DropdownMenu className={`dropdown-menu ${isMobile ? styles.mobileDropdownPosition : styles.normalDropdownPosition}`}>
                                                 {
@@ -292,7 +295,7 @@ export const Nav = () => {
                                     return <li className="nav-item" key={element.key}>
                                         <Link href={element.href}>
                                             <a className={`nav-link ${styles.navLink}`}>
-                                                <i className={`${element.icon} fa-fw`}></i> {element.name ?? ''}
+                                                <i className={`${element.icon} fa-fw`}></i> {iconMode ? '' : element.name ?? ''}
                                             </a>
                                         </Link>
                                     </li>;

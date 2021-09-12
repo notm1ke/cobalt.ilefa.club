@@ -5,10 +5,10 @@ import ReactDateTime from 'react-datetime';
 import styles from '../styling/dining.module.css';
 import cardStyles from '../styling/card.module.css';
 
-import { Modal } from '..';
 import { useDiningHall } from '../../hooks';
-import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
+import { useEffect, useRef, useState } from 'react';
+import { Modal, useBoundedClickDetector } from '..';
 
 import {
     mdiAlert,
@@ -45,6 +45,9 @@ export interface DiningHallModalProps {
 const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOpen }) => {
     const [date, setDate] = useState(new Date());
     const [dpOpen, setDpOpen] = useState(false);
+    const dpWrapper = useRef(null);
+
+    useBoundedClickDetector(dpWrapper, () => setDpOpen(false));
 
     const hallName = isMobile
         ? hall.name
@@ -56,18 +59,17 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
             <span className="text-primary-light cursor-pointer text-primary-light">
                 <MdiIcon path={mdiCalendar} size={'24px'} className={`fa-fw ${cardStyles.cardModalTitleIcon} mr-2`} /> 
                 <b onClick={() => setDpOpen(!dpOpen)}>{moment(date).format('MMM Do')}</b>
-                <ReactDateTime
-                    open={dpOpen}
-                    value={date}
-                    timeFormat={false}
-                    renderInput={() => <></>}
-                    onChange={d => {
-                        if (!moment.isMoment(d))
-                            return;
-
-                        setDate(d.toDate());
-                    }}
-                />
+                <div ref={dpWrapper} className={styles.diningDatePickerWrapper}>
+                    <ReactDateTime
+                        open={dpOpen}
+                        value={date}
+                        timeFormat={false}
+                        isValidDate={(current: Date, selected: Date) => 
+                            moment(current).diff(moment(selected), 'days') < 23}
+                        renderInput={() => <></>}
+                        onChange={input => moment.isMoment(input) && setDate(input.toDate())}
+                    />
+                </div>
             </span> ➜ {hallName} <span className={`text-${getDiningHallStatusColor(hall)}`}>({getDiningHallStatus(DiningHallType[hallKey])})</span>
         </span>
     );
@@ -167,7 +169,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
     let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType, cardStyles.cardTitleIcon, 24);
     let statusType = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(hall.name as DiningHallType)) as keyof typeof DiningHallStatus;
     let statusPrefix = statusType === 'CLOSED' || statusType === 'BETWEEN_MEALS'
-        ? 'currently'
+        ? ''
         : 'serving';
     
     return (
@@ -176,7 +178,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
                 <div className="d-flex">
                     <div>
                         <h5>
-                            <a className={`${cardStyles.cardSectionTitle} text-primary-light`} onClick={() => setOpen(true)}>
+                            <a className={`${cardStyles.cardSectionTitle} text-primary-light cursor-pointer shine`} onClick={() => setOpen(true)}>
                                 {icon ?? ''} {hall.name}
                             </a>
                         </h5>
