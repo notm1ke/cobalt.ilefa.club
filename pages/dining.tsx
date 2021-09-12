@@ -7,7 +7,7 @@ import globalStyles from '../components/styling/home.module.css';
 
 import { intToWords } from '../util';
 import { useDiningHalls } from '../hooks';
-import { mdiCookie, mdiLoading } from '@mdi/js';
+import { mdiAlert, mdiCookie, mdiLoading } from '@mdi/js';
 import { DiningHallCard, Footer, Nav, PreviewRibbon } from '../components';
 
 const DiningHallsPage = () => {
@@ -48,7 +48,8 @@ const DiningHallsPage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1 ${styles.titleLineHeight}`}>Dining Halls</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-3`}>
-                                            { !enabled && <span><MdiIcon path={mdiLoading} size="24px" spin /> Loading..</span> }
+                                            { !enabled && error && <span><MdiIcon path={mdiAlert} size="24px" /> Something went wrong</span> }
+                                            { !enabled && !error && <span><MdiIcon path={mdiLoading} size="24px" spin /> Loading..</span> }
                                             { enabled && <span>Explore {data?.length ? intToWords(data.length) + ' different' : ''} dining halls at Storrs.</span> }
                                         </h2>
                                     </div>
