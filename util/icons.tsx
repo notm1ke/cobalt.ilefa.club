@@ -1,7 +1,7 @@
 import React from 'react';
 import MdiIcon from '@mdi/react';
 
-import { DiningHallType } from '@ilefa/blueplate';
+import { DiningHallStatus, DiningHallType } from '@ilefa/blueplate';
 import { CompleteRoomPayload, DormHallType, DormsByType } from '.';
 import { BuildingCode, Classroom, SeatingType } from '@ilefa/husky';
 
@@ -36,8 +36,10 @@ import {
     mdiChessRook,
     mdiCityVariant,
     mdiClipboardPulse,
+    mdiCoffee,
     mdiCogs,
     mdiCommaCircleOutline,
+    mdiCookie,
     mdiCow,
     mdiCurrencyUsd,
     mdiDiamondStone,
@@ -56,6 +58,7 @@ import {
     mdiFood,
     mdiFoodApple,
     mdiFoodForkDrink,
+    mdiFoodOff,
     mdiFoodSteak,
     mdiFountainPenTip,
     mdiGesture,
@@ -460,5 +463,26 @@ export const getIconForDiningHall = (hall: keyof typeof DiningHallType, classes 
         case 'TOWERS': return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'WHITNEY': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;
         default: return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
+    }
+}
+
+/**
+ * Returns the specialized icon for a given dining hall status type, if it has one.
+ * 
+ * @param hall the dining hall type to get the icon for
+ * @param classes [optional] the classes to add to the icon
+ * @param size    [optional] the size of the icon
+ */
+export const getIconForDiningStatus = (status: keyof typeof DiningHallStatus, classes = '', size = 16) => {
+    switch (status) {
+        case 'BETWEEN_MEALS':
+        case 'CLOSED':
+            return <MdiIcon path={mdiFoodOff} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'BREAKFAST': return <MdiIcon path={mdiCoffee} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'BRUNCH': return <MdiIcon path={mdiEgg} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'DINNER': return <MdiIcon path={mdiFoodSteak} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'LATE_NIGHT': return <MdiIcon path={mdiCookie} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'LUNCH': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        default: <MdiIcon path={mdiFoodOff} className={`fa-fw ${classes}`} size={`${size}px`} />;
     }
 }

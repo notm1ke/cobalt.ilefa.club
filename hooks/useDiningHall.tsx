@@ -1,4 +1,5 @@
 import { DiningHallResponse, DiningHallType } from '@ilefa/blueplate';
+import moment from 'moment';
 
 import {
     ApiResponseType,
@@ -8,7 +9,7 @@ import {
 
 export interface DiningHallLookupProps {
     hall: keyof typeof DiningHallType | null;
-    date: Date | null;
+    date?: Date;
 }
 
 export type DiningHallPayload = DiningHallResponse & UnshapedApiResponse;
@@ -20,7 +21,7 @@ type DiningHallShapedResponse = [
 ];
 
 export const useDiningHall = ({ hall, date }: DiningHallLookupProps): DiningHallShapedResponse => { 
-    let url = `/api/blueplate?hall=${hall}${date ? `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}` : ''}`;
+    let url = `/api/blueplate?hall=${hall}${date ? `&date=${moment(date).format('MM-DD-YYYY')}` : ''}`;
     if (!hall) url = '/api/noop';
 
     return createRemoteHook<DiningHallPayload, DiningHallShapedResponse>('DiningHall', url,

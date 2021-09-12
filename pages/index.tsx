@@ -83,7 +83,7 @@ const HomePage = () => {
                     flip
                     title="Buildings"
                     glyph="/glyphs/building.svg"
-                    alt="Courses Glyph"
+                    alt="Buildings Glyph"
                     className="background-circuits"
                     description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats it has, and more."
                     tags={[
@@ -104,7 +104,58 @@ const HomePage = () => {
                         }
                     ]}
                 />
+
+                <FeatureSection
+                    title="Dorms"
+                    glyph="/glyphs/dorms.svg"
+                    alt="Dorms Glyph"
+                    className="background-circuits"
+                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats it has, and more."
+                    tags={[
+                        {
+                            icon: <i className="fa fa-photo-video fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Real Dorm Images'
+                        },
+                        {
+                            icon: <i className="fa fa-star fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Residence Hall Ratings'
+                        },
+                        {
+                            icon: <i className="fa fa-check-circle fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Amenities & Information'
+                        }
+                    ]}
+                />
     
+                <FeatureSection
+                    flip
+                    title="Dining Halls"
+                    glyph="/glyphs/dining.svg"
+                    alt="Dining Glyph"
+                    className="background-circuits"
+                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats it has, and more."
+                    tags={[
+                        {
+                            icon: <i className="fa fa-utensils fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Dining Hall Menus'
+                        },
+                        {
+                            icon: <i className="fa fa-business-time fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Realtime Status'
+                        },
+                        {
+                            icon: <i className="fa fa-clone fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Detailed Information'
+                        }
+                    ]}
+                />
+
                 <DevElement>
                     <FeatureSection
                         title="Snapshots"
