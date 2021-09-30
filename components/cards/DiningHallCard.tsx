@@ -129,17 +129,20 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
 
                 {
                     menu!.meals.length > 0 &&
-                        menu!.meals.map((meal, i) => (
-                            <div className="mb-2">
-                                <div className="mb-1">
-                                    <span className={`text-primary-light ${styles.diningMeal}`}>
-                                        {getIconForDiningStatus(getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus, styles.diningMealIcon, 24)} {meal.name}
-                                    </span>
-                                </div>
-                                <br />
-                                {
-                                        meal.stations.map((station: any) => (
-                                            <div>
+                        menu!
+                            .meals
+                            .filter(meal => meal.stations.length)
+                            .map((meal, i) => (
+                                <div className="mb-2" key={`${hall.name}-${meal.name}`}>
+                                    <div className="mb-1">
+                                        <span className={`text-primary-light ${styles.diningMeal}`}>
+                                            {getIconForDiningStatus(getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus, styles.diningMealIcon, 24)} {meal.name}
+                                        </span>
+                                    </div>
+                                    <br />
+                                    {
+                                        meal.stations.length && meal.stations.map((station: any) => (
+                                            <div key={`${hall.name}-${meal.name}-${station}`}>
                                                 <span className={styles.diningStation}>{station.name}</span>
                                                 <ul className={styles.diningOptions}>
                                                     {
@@ -150,10 +153,10 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                                                 </ul>
                                             </div>
                                         ))
-                                }
-                                { i !== menu!.meals.length - 1 && <hr /> }
-                            </div>
-                        ))
+                                    }
+                                    { i !== menu!.meals.length - 1 && <hr /> }
+                                </div>
+                            ))
                 }
         </Modal>
     )
