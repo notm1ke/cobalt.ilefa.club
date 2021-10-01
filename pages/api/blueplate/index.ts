@@ -1,4 +1,4 @@
-import { getEnumKeyByEnumValue } from '../../../util';
+import { getEnumKeyByEnumValue, getRealDiningHallStatus } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import {
@@ -47,7 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 .keys(DiningHallType)
                 .map(type => ({
                     ...DiningHalls[type.toUpperCase()],
-                    status: getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate))
+                    status: getRealDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate)
                 }))
         });
 
@@ -59,5 +59,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res
         .status(200)
-        .json(data);
+        .json({
+            ...data,
+            status: getRealDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate)
+        });
 }
