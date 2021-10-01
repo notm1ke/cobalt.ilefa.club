@@ -5,6 +5,7 @@ import ReactDateTime from 'react-datetime';
 import styles from '../styling/dining.module.css';
 import cardStyles from '../styling/card.module.css';
 
+import { Collapse } from 'reactstrap';
 import { useDiningHall } from '../../hooks';
 import { isMobile } from 'react-device-detect';
 import { useEffect, useRef, useState } from 'react';
@@ -37,8 +38,16 @@ export interface DiningHallModalProps {
     setOpen: (open: boolean) => void;
 }
 
+type MealCollapsible = {
+    type: string;
+    state: boolean;
+}
+
 const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOpen }) => {
+    const [now, setNow] = useState(true);
     const [date, setDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [meals, setMeals] = useState<MealCollapsible[]>([]);
     const [dpOpen, setDpOpen] = useState(false);
     const dpWrapper = useRef(null);
 
@@ -48,16 +57,30 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         ? hall.name
         : hall.location.name.replace(/\+/g, ' ').replace(/\%26/g, '&');
 
+    const updateCollapsible = (type: string) => {
+        let target = meals.find(meal => meal.type === type);
+        if (!target) {
+            let updated = [...meals];
+            updated.push({ type, state: false });
+            setMeals(updated);
+            return;
+        }
+
+        let updated = [...meals.filter(meal => meal.type !== type)];
+        updated.push({ type, state: !target.state });
+        setMeals(updated);
+    }
+
     const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
     const modalTitle = (
         <span>
             <span className="text-primary-light cursor-pointer text-primary-light">
                 <MdiIcon path={mdiCalendar} size={'24px'} className={`fa-fw ${cardStyles.cardModalTitleIcon} mr-2`} /> 
-                <b onClick={() => setDpOpen(!dpOpen)}>{moment(date).format('MMM Do')}</b>
+                <b onClick={() => setDpOpen(!dpOpen)}>{moment(selectedDate).format('MMM Do')}</b>
                 <div ref={dpWrapper} className={styles.diningDatePickerWrapper}>
                     <ReactDateTime
                         open={dpOpen}
-                        value={date}
+                        value={selectedDate}
                         timeFormat={false}
                         isValidDate={(current: Date, selected: Date) => 
                             // Make sure selected date is at max 23 days in the future or past.
@@ -69,11 +92,43 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
             </span> ➜ {hallName} <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span>
         </span>
     );
-
-    useEffect(() => setDpOpen(false), [date]);
-
+    
     if (!hallKey) return <></>;
-    const [menu, loading, error] = useDiningHall({ hall: hallKey, date });
+    const [menu, loading, error] = useDiningHall({
+        hall: hallKey,
+        date: selectedDate,
+        now,
+        pollTime: 30000
+    });
+
+    useEffect(() => {
+        let newDate = date;
+        if (date.getDate() === new Date().getDate())
+            newDate = new Date();
+
+        setDpOpen(false);
+        setNow(newDate.getDate() === date.getDate());
+        setSelectedDate(newDate);
+    }, [date]);
+
+    useEffect(() => {
+        if (!menu)
+            return;
+
+        let mealCollapses: MealCollapsible[] = menu!
+            .meals
+            .map(ent => {
+                console.log(`[${menu.type}] ${menu.status} - ${ent.name}`, menu)
+                return {
+                    type: ent.name,
+                    state: menu.status === 'BETWEEN_MEALS'
+                        ? (ent.name === 'Lunch' || ent.name === 'Dinner')
+                        : menu.status === ent.name.toUpperCase().replace(/\s/g, '_')
+                }
+            });
+            
+        setMeals(mealCollapses);
+    }, [menu]);
 
     if (loading) return (
         <Modal
@@ -110,7 +165,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
             footerButtons={
                 <a
                     className="btn btn-link text-lowercase mr-auto"
-                    href={generateDdsLink(hall, date)}
+                    href={generateDdsLink(hall, selectedDate)}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setOpen(false)}>
@@ -134,27 +189,29 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                             .filter(meal => meal.stations.length)
                             .map((meal, i) => (
                                 <div className="mb-2" key={`${hall.name}-${meal.name}`}>
-                                    <div className="mb-1">
-                                        <span className={`text-primary-light ${styles.diningMeal}`}>
+                                    <div className="mb-1" onClick={() => updateCollapsible(meal.name)}>
+                                        <span className={`text-primary-light ${styles.diningMeal} cursor-pointer shine`}>
                                             {getIconForDiningStatus(getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus, styles.diningMealIcon, 24)} {meal.name}
                                         </span>
                                     </div>
                                     <br />
-                                    {
-                                        meal.stations.length && meal.stations.map((station: any) => (
-                                            <div key={`${hall.name}-${meal.name}-${station}`}>
-                                                <span className={styles.diningStation}>{station.name}</span>
-                                                <ul className={styles.diningOptions}>
-                                                    {
-                                                        station.options.map(option => (
-                                                            <li key={option}>{option}</li>
-                                                        ))
-                                                    }
-                                                </ul>
-                                            </div>
-                                        ))
-                                    }
-                                    { i !== menu!.meals.length - 1 && <hr /> }
+                                    <Collapse isOpen={meals.find(ent => ent.type === meal.name)?.state}>
+                                        {
+                                            meal.stations.length && meal.stations.map((station: any) => (
+                                                <div key={`${hall.name}-${meal.name}-${station}`}>
+                                                    <span className={styles.diningStation}>{station.name}</span>
+                                                    <ul className={styles.diningOptions}>
+                                                        {
+                                                            station.options.map(option => (
+                                                                <li key={option}>{option}</li>
+                                                            ))
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            ))
+                                        }
+                                        { i !== menu!.meals.length - 1 && <hr /> }
+                                    </Collapse>
                                 </div>
                             ))
                 }

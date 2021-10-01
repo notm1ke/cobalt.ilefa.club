@@ -6,6 +6,7 @@ import globalStyles from '../components/styling/home.module.css';
 import previewStyles from '../components/styling/preview.module.css';
 
 import { Footer, InlineLink, Nav, PreviewPage } from '../components';
+import { isPreview } from '../util';
 
 const CHANGELOG = [
     "Introduced dorms integration (with special thanks to the r/UConnDorms team)",
@@ -40,7 +41,7 @@ const ChangelogPage = () => (
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>Changelog</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            Cobalt Preview {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'}
+                                            Cobalt {isPreview() ? 'Preview' : 'Development'} {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'}
                                         </h2>
                                     </div>
                                 </div>
