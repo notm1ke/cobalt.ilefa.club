@@ -40,8 +40,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         ? new Date(date)
         : new Date();
 
-    console.log('-'.repeat(50));
-    console.log('validatedDate =', validatedDate.getTime(), '| time = ' + validatedDate.getHours() + ':' + validatedDate.getMinutes(), '| offset =', validatedDate.getTimezoneOffset() / 60);
+    if (validatedDate.getTimezoneOffset() === 0)
+        validatedDate.setHours(validatedDate.getHours() - 4);
+
     if (!hall) return res
         .status(200)
         .json({
@@ -60,7 +61,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({ message: 'Bad Gateway' });
 
     let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate))
-    console.log('hall =', hall.toUpperCase(), '| status =', status);
     return res
         .status(200)
         .json({
