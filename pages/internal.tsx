@@ -124,7 +124,7 @@ const InternalHome = () => {
                                     </ul>
                                     <GitButton owner="ilefa" repo="husky" />
                                     <GitButton owner="ilefa" repo="bluepages" />
-                                    <GitButton owner="vercel" repo="next.js" />
+                                    <GitButton owner="ilefa" repo="blueplate" />
                                 </span>
                             </h4>
                             

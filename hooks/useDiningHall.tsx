@@ -10,6 +10,8 @@ import {
 export interface DiningHallLookupProps {
     hall: keyof typeof DiningHallType | null;
     date?: Date;
+    now?: boolean;
+    pollTime?: number;
 }
 
 export type DiningHallPayload = DiningHallResponse & UnshapedApiResponse;
@@ -20,8 +22,8 @@ type DiningHallShapedResponse = [
     boolean
 ];
 
-export const useDiningHall = ({ hall, date }: DiningHallLookupProps): DiningHallShapedResponse => { 
-    let url = `/api/blueplate?hall=${hall}${date ? `&date=${moment(date).format('MM-DD-YYYY')}` : ''}`;
+export const useDiningHall = ({ hall, date, now, pollTime }: DiningHallLookupProps): DiningHallShapedResponse => { 
+    let url = `/api/blueplate?hall=${hall}${!now && date ? `&date=${moment(date).format('MM-DD-YYYY')}` : ''}`;
     if (!hall) url = '/api/noop';
 
     return createRemoteHook<DiningHallPayload, DiningHallShapedResponse>('DiningHall', url,
@@ -38,5 +40,5 @@ export const useDiningHall = ({ hall, date }: DiningHallLookupProps): DiningHall
                 case ApiResponseType.SUCCESS:
                     return [data!, false, false];
             }
-        });
+        }, pollTime);
 }
