@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { Color, getEnumKeyByEnumValue, isDevelopment } from '.';
+import { Color } from '.';
 
 import {
     DiningHall,
@@ -65,13 +65,4 @@ export const generateDdsLink = (hall: DiningHall, date = new Date()) => {
             url += `&WeeksMenus=This+Week%27s+Menus&myaction=read&dtdate=${moment(date).format('MM')}%2f${date.getDate()}%2f${date.getFullYear()}`;
 
     return url;
-}
-
-export const getRealDiningHallStatus = (hall: DiningHallType, time: Date) => {
-    let type = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], time));
-    if (!type) return null;
-    if (isDevelopment()) return type;
-
-    let index = DiningHallStatusOrdinal[type] - 1;
-    return DiningHallStatus[index < 0 ? 0 : index];
 }

@@ -1,9 +1,11 @@
+import { getEnumKeyByEnumValue } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getRealDiningHallStatus } from '../../../util';
 
 import {
     DiningHalls,
+    DiningHallStatus,
     DiningHallType,
+    getDiningHallStatus,
     getMenu
 } from '@ilefa/blueplate';
 
@@ -38,6 +40,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         ? new Date(date)
         : new Date();
 
+    console.log('-'.repeat(50));
+    console.log('validatedDate =', validatedDate.getTime(), '| time = ' + validatedDate.getHours() + ':' + validatedDate.getMinutes(), '| offset =', validatedDate.getTimezoneOffset() / 60);
     if (!hall) return res
         .status(200)
         .json({
@@ -45,7 +49,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 .keys(DiningHallType)
                 .map(type => ({
                     ...DiningHalls[type.toUpperCase()],
-                    status: getRealDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate)
+                    status: getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate))
                 }))
         });
 
@@ -55,10 +59,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(502)
             .json({ message: 'Bad Gateway' });
 
+    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate))
+    console.log('hall =', hall.toUpperCase(), '| status =', status);
     return res
         .status(200)
         .json({
             ...data,
-            status: getRealDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate)
+            status,
         });
 }
