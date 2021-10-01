@@ -1,11 +1,9 @@
-import { getEnumKeyByEnumValue, getRealDiningHallStatus } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getRealDiningHallStatus } from '../../../util';
 
 import {
     DiningHalls,
-    DiningHallStatus,
     DiningHallType,
-    getDiningHallStatus,
     getMenu
 } from '@ilefa/blueplate';
 
