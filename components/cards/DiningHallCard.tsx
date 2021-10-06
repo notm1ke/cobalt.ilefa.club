@@ -259,7 +259,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
                                 <i className="fa fa-stream fa-fw"></i> menu
                             </a>
 
-                            <a className="btn btn-dark btn-sm text-lowercase shine" rel="noopener noreferrer" target="_blank" href={`https://www.google.com/maps?q=${hall.location.latitude},${hall.location.longitude}`}>
+                            <a className="btn btn-dark btn-sm text-lowercase shine" rel="noopener noreferrer" target="_blank" href={hall.location.maps}>
                                 <i className="fa fa-map-marked-alt fa-fw"></i> maps
                             </a>
 
