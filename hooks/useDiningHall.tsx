@@ -1,6 +1,9 @@
 import moment from 'moment';
 
-import { DiningHallResponse, DiningHallType } from '@ilefa/blueplate';
+import {
+    DiningHallResponse,
+    DiningHallType
+} from '@ilefa/blueplate';
 
 import {
     ApiResponseType,
