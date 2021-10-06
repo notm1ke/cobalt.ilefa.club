@@ -44,7 +44,6 @@ type MealCollapsible = {
 }
 
 const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOpen }) => {
-    const [now, setNow] = useState(true);
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [meals, setMeals] = useState<MealCollapsible[]>([]);
@@ -71,6 +70,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         setMeals(updated);
     }
 
+    const now = selectedDate.getDate() === new Date().getDate() && selectedDate.getHours() === new Date().getHours();
     const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
     const modalTitle = (
         <span>
@@ -89,7 +89,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                         onChange={input => moment.isMoment(input) && setDate(input.toDate())}
                     />
                 </div>
-            </span> ➜ {hallName} <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span>
+            </span> ➜ {hallName} { now && <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span> }
         </span>
     );
     
@@ -97,7 +97,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
     const [menu, loading, error] = useDiningHall({
         hall: hallKey,
         date: selectedDate,
-        now,
+        now: selectedDate.getDate() === new Date().getDate() && selectedDate.getHours() === new Date().getHours(),
         pollTime: 30000
     });
 
@@ -107,7 +107,6 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
             newDate = new Date();
 
         setDpOpen(false);
-        setNow(newDate.getDate() === date.getDate());
         setSelectedDate(newDate);
     }, [date]);
 
@@ -115,17 +114,23 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         if (!menu)
             return;
 
+        if (!now) {
+            setMeals(meals
+                ? meals.map(ent => ({ ...ent, state: true }))
+                : menu.meals.map(ent => ({ type: ent.name, state: true })));
+            return;
+        }
+
         let mealCollapses: MealCollapsible[] = menu!
             .meals
-            .map(ent => {
-                console.log(`[${menu.type}] ${menu.status} - ${ent.name}`, menu)
-                return {
-                    type: ent.name,
-                    state: menu.status === 'BETWEEN_MEALS'
-                        ? (ent.name === 'Lunch' || ent.name === 'Dinner')
-                        : menu.status === ent.name.toUpperCase().replace(/\s/g, '_')
-                }
-            });
+            .map(ent => ({
+                type: ent.name,
+                state: menu.status === 'BETWEEN_MEALS'
+                    ? (ent.name === 'Lunch' || ent.name === 'Dinner')
+                        : menu.status === 'BRUNCH'
+                            ? ent.name === 'Lunch'
+                            : menu.status === ent.name.toUpperCase().replace(/\s/g, '_')
+            }));
             
         setMeals(mealCollapses);
     }, [menu]);
@@ -198,7 +203,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                                     <Collapse isOpen={meals.find(ent => ent.type === meal.name)?.state}>
                                         {
                                             meal.stations.length && meal.stations.map((station: any) => (
-                                                <div key={`${hall.name}-${meal.name}-${station}`}>
+                                                <div key={`${hall.name}-${meal.name}-${station.name}`}>
                                                     <span className={styles.diningStation}>{station.name}</span>
                                                     <ul className={styles.diningOptions}>
                                                         {

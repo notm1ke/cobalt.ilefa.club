@@ -55,10 +55,10 @@ const ELEMENTS: NavElement[] = [
         key: 'home',
     },
     {
-        name: 'buildings',
+        name: 'campus',
         icon: 'fa fa-city',
-        href: '/buildings',
-        key: 'buildings',
+        href: '/campus',
+        key: 'campus',
         dropdown: {
             mode: 'icons',
             items: [
