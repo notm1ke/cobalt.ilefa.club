@@ -10,7 +10,7 @@ import { useDiningHall } from '../../hooks';
 import { isMobile } from 'react-device-detect';
 import { useEffect, useRef, useState } from 'react';
 import { Modal, useBoundedClickDetector } from '..';
-import { DiningHallStatus, DiningHallType } from '@ilefa/blueplate';
+import { DiningHallStatus, DiningHallType, Meal } from '@ilefa/blueplate';
 
 import {
     mdiAlert,
@@ -42,6 +42,8 @@ type MealCollapsible = {
     type: string;
     state: boolean;
 }
+
+type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
 
 const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOpen }) => {
     const [date, setDate] = useState(new Date());
@@ -101,6 +103,15 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         pollTime: 30000
     });
 
+    const mealCollapseRules: MealCollapsePredicate[] = [
+        (menu, meal) => menu.status === 'BETWEEN_MEALS' && (meal.name === 'Lunch' || meal.name === 'Dinner'),
+        (menu, meal) => menu.status === 'BRUNCH' && meal.name === 'Lunch',
+        (menu, meal) => menu.status === meal.name.toUpperCase().replace(/\s/g, '_'),
+        
+        // Northwest + Whitney's late night menus are based on their dinner menus - thus display the dinner menu for each.
+        (menu, meal) => menu.status === 'LATE_NIGHT' && (menu.location.id === '15' || menu.location.id === '01') && meal.name === 'Dinner'
+    ]
+
     useEffect(() => {
         let newDate = date;
         if (date.getDate() === new Date().getDate())
@@ -125,11 +136,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
             .meals
             .map(ent => ({
                 type: ent.name,
-                state: menu.status === 'BETWEEN_MEALS'
-                    ? (ent.name === 'Lunch' || ent.name === 'Dinner')
-                        : menu.status === 'BRUNCH'
-                            ? ent.name === 'Lunch'
-                            : menu.status === ent.name.toUpperCase().replace(/\s/g, '_')
+                state: mealCollapseRules.some(func => func(menu as any, ent))
             }));
             
         setMeals(mealCollapses);
@@ -251,6 +258,14 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
                             <a className="btn btn-dark btn-sm text-lowercase shine" onClick={() => setOpen(true)}>
                                 <i className="fa fa-stream fa-fw"></i> menu
                             </a>
+
+                            <a className="btn btn-dark btn-sm text-lowercase shine" rel="noopener noreferrer" target="_blank" href={`https://www.google.com/maps?q=${hall.location.latitude},${hall.location.longitude}`}>
+                                <i className="fa fa-map-marked-alt fa-fw"></i> maps
+                            </a>
+
+                            {/* <a className="btn btn-dark btn-sm text-lowercase shine" rel="noopener noreferrer" target="_blank" href={`https://www.google.com/maps?q=${hall.location.latitude},${hall.location.longitude}`}>
+                                <i className="fa fa-clock fa-fw"></i> hours
+                            </a> */}
                         </div>
                     </div>
                 </div>
