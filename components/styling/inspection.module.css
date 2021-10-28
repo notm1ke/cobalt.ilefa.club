@@ -365,3 +365,20 @@
     margin-left: -40px !important;
     list-style: none;
 }
+
+.honorsWarning {
+    margin-top: -5px !important;
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: 600 !important;
+}
+
+.honorsDescription {
+    margin-top: -15px !important;
+    padding-bottom: 20px;
+    font-weight: 300;
+}
+
+.identifierNumber {
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: 500;
+}

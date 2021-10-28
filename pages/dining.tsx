@@ -13,7 +13,7 @@ import { DiningHallCard, Footer, Nav, PreviewRibbon } from '../components';
 const DiningHallsPage = () => {
     const [data, loading, error] = useDiningHalls({ poll: 10000 });
     
-    const betaNotice = true;
+    const betaNotice = false;
     const enabled = !loading
         && !error
         && data;

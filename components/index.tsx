@@ -1,5 +1,6 @@
 export * from './BoundedClickDetector';
 export * from './CobaltSearch';
+export * from './CopyButton';
 export * from './ContributorButton';
 export * from './ErrorView';
 export * from './Footer';

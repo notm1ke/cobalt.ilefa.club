@@ -6,6 +6,7 @@ import styles from '../styling/inspection.module.css';
 import Classrooms from '@ilefa/husky/classrooms.json';
 
 import { ErrorTab } from '.';
+import { CopyButton } from '..';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { mdiChevronDown } from '@mdi/js';
@@ -45,12 +46,17 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
 
     const [info, setInfo] = useState(true);
     const [raw, setRaw] = useState(false);
+    const [classNumCopied, setClassNumCopied] = useState(false);
+    const [classTermCopied, setTermCopied] = useState(false);
+    const [classSessionCopied, setSessionCopied] = useState(false);
+
     const collapseInfo = () => setInfo(!info);
     const collapseRaw = () => setRaw(!raw);
     
     let rooms = getMeetingRoom(data.location.name).sort((a, b) => a.localeCompare(b));
     let multipleRooms = rooms.length > 1;
 
+    let honors = data.notes && data.notes.toLowerCase().includes('honors');
     let managedRoom = Classrooms.find(room => room.name === data.location.name.replace(' ', ''));
 
     return (
@@ -73,29 +79,40 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                     <p><b>Instructor:</b> {data.instructor.trim().length ? getInstructorName(data.instructor) : 'Unknown'}</p>
                                     <p><b>Schedule:</b> {getMeetingTime(data.schedule, data.location)}</p>
                                     <p><b>Location:</b> {
-                                        data.location.name === 'No Room Required - Online'
-                                            ? 'Virtual'
-                                            : multipleRooms
-                                                ? rooms.map((ent, i) => {
-                                                    ent = ent.replace(' ', '');
-                                                    let room = Classrooms.find(room => room.name === ent);
-                                                    let end = i === rooms.length - 1 ? '' : ', ';
-                                                    if (!room) return <span>{ent + end}</span>
-                                                    
-                                                    return <Link href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
-                                                               <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{ent}</a>{end}</>
-                                                           </Link>
-                                                })
-                                                : !!managedRoom
-                                                    ? <Link href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
-                                                           <>{getIconForRoom(managedRoom as Classroom, 'text-primary')} <a className="text-primary shine">{data.location.name}</a></>
-                                                      </Link>
-                                                    : getMeetingRoom(data.location.name).join(', ')
+                                        !data.location.name.trim().length
+                                            ? 'Unknown'
+                                            : data.location.name === 'No Room Required - Online'
+                                                ? 'Virtual'
+                                                : multipleRooms
+                                                    ? rooms.map((ent, i) => {
+                                                        ent = ent.replace(' ', '');
+                                                        let room = Classrooms.find(room => room.name === ent);
+                                                        let end = i === rooms.length - 1 ? '' : ', ';
+                                                        if (!room) return <span>{ent + end}</span>
+                                                        
+                                                        return <Link href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
+                                                                <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{ent}</a>{end}</>
+                                                            </Link>
+                                                    })
+                                                    : !!managedRoom
+                                                        ? <Link href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
+                                                            <>{getIconForRoom(managedRoom as Classroom, 'text-primary')} <a className="text-primary shine">{data.location.name}</a></>
+                                                        </Link>
+                                                        : getMeetingRoom(data.location.name).join(', ')
                                     }</p>
                                     <br/>
                                     
                                     {
-                                        !!data.notes && (
+                                        honors && (
+                                            <>
+                                                <pre className={`${styles.honorsWarning} text-danger mt-3`}><i className="fa fa-medal fa-fw"></i> Enrollment Notification</pre>
+                                                <p className={styles.honorsDescription}>This section is marked as an honors section.</p>
+                                            </>
+                                        )
+                                    }
+
+                                    {
+                                        !honors && !!data.notes && (
                                             <>
                                                 <p><b>Notes:</b> {data.notes}</p>
                                                 <br/>
@@ -111,9 +128,9 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
 
                                     <p><b>Internal Information</b></p>
                                     <ul>
-                                        <li><b>Class Number:</b> {data.internal.classNumber}</li>
-                                        <li><b>Term Code:</b> {data.internal.termCode}</li>
-                                        <li><b>Session Code:</b> {data.internal.sessionCode}</li>
+                                        <li><b>Class Number:</b> <CopyButton className={(classNumCopied ? 'text-success' : 'text-primary') + ` ${styles.identifierNumber}`} shine contentToCopy={data.internal.classNumber} onCopied={() => setClassNumCopied(true)} onCopyRecharged={() => setClassNumCopied(false)}>{data.internal.classNumber}</CopyButton></li>
+                                        <li><b>Term Code:</b> <CopyButton className={(classTermCopied ? 'text-success' : 'text-primary') + ` ${styles.identifierNumber}`} shine contentToCopy={data.internal.termCode} onCopied={() => setTermCopied(true)} onCopyRecharged={() => setTermCopied(false)}>{data.internal.termCode}</CopyButton></li>
+                                        <li><b>Session Code:</b> <CopyButton className={(classSessionCopied ? 'text-success' : 'text-primary') + ` ${styles.identifierNumber}`} shine contentToCopy={data.internal.sessionCode} onCopied={() => setSessionCopied(true)} onCopyRecharged={() => setSessionCopied(false)}>{data.internal.sessionCode}</CopyButton></li>
                                     </ul>
                                 </Collapse>
                             </p>
