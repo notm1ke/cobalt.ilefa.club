@@ -104,7 +104,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
     });
 
     const mealCollapseRules: MealCollapsePredicate[] = [
-        (menu, meal) => menu.status === 'BETWEEN_MEALS' && (meal.name === 'Lunch' || meal.name === 'Dinner'),
+        (menu, meal) => menu.status === 'BETWEEN_MEALS' && (meal.name === 'Breakfast' || meal.name === 'Brunch' || meal.name === 'Lunch' || meal.name === 'Dinner'),
         (menu, meal) => menu.status === 'BRUNCH' && meal.name === 'Lunch',
         (menu, meal) => menu.status === meal.name.toUpperCase().replace(/\s/g, '_'),
         
