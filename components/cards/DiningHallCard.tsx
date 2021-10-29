@@ -25,7 +25,8 @@ import {
     getDiningHallStatusColor,
     getEnumKeyByEnumValue,
     getIconForDiningHall,
-    getIconForDiningStatus
+    getIconForDiningStatus,
+    getMealHours
 } from '../../util';
 
 export interface DiningHallCardProps {
@@ -48,6 +49,7 @@ type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
 const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOpen }) => {
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [now, setNow] = useState(selectedDate.getDate() === new Date().getDate());
     const [meals, setMeals] = useState<MealCollapsible[]>([]);
     const [dpOpen, setDpOpen] = useState(false);
     const dpWrapper = useRef(null);
@@ -72,7 +74,9 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         setMeals(updated);
     }
 
-    const now = selectedDate.getDate() === new Date().getDate() && selectedDate.getHours() === new Date().getHours();
+    const allCollapsed = () => meals.every(meal => meal.state);
+    const toggleAll = () => setMeals(meals.map(meal => ({ ...meal, state: !meal.state })));
+
     const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
     const modalTitle = (
         <span>
@@ -117,7 +121,9 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         if (date.getDate() === new Date().getDate())
             newDate = new Date();
 
+        setNow(date.getDate() === new Date().getDate());
         setDpOpen(false);
+        
         setSelectedDate(newDate);
     }, [date]);
 
@@ -175,14 +181,23 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
             width={'850px'}
             closeIcon
             footerButtons={
-                <a
-                    className="btn btn-link text-lowercase mr-auto"
-                    href={generateDdsLink(hall, selectedDate)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setOpen(false)}>
-                        <i className="fa fa-external-link-alt fa-fw"></i> View Original
-                </a>
+                <>
+                    <a
+                        className="btn btn-link text-lowercase mr-auto"
+                        href={generateDdsLink(hall, selectedDate)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => setOpen(false)}>
+                            <i className="fa fa-external-link-alt fa-fw"></i> View Original
+                    </a>
+                    <a
+                        className="btn btn-link text-lowercase ml--28"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => toggleAll()}>
+                            <i className={`fa ${allCollapsed() ? 'fas fa-compress' : 'fa-expand'} fa-fw`}></i> {allCollapsed() ? 'Collapse All' : 'Expand All'}
+                    </a>
+                </>
             }
             title={modalTitle}>
                 {
@@ -199,33 +214,38 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                         menu!
                             .meals
                             .filter(meal => meal.stations.length)
-                            .map((meal, i) => (
-                                <div className="mb-2" key={`${hall.name}-${meal.name}`}>
-                                    <div className="mb-1" onClick={() => updateCollapsible(meal.name)}>
-                                        <span className={`text-primary-light ${styles.diningMeal} cursor-pointer shine`}>
-                                            {getIconForDiningStatus(getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus, styles.diningMealIcon, 24)} {meal.name}
-                                        </span>
+                            .map((meal, i) => {
+                                let collapsed = meals.find(ent => ent.type === meal.name)?.state;
+                                let mealKey = getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus;
+
+                                return (
+                                    <div className="mb-2" key={`${hall.name}-${meal.name}`}>
+                                        <div className="mb-1" onClick={() => updateCollapsible(meal.name)}>
+                                            <span className={`text-primary-light ${styles.diningMeal} cursor-pointer shine`}>
+                                                {getIconForDiningStatus(mealKey, styles.diningMealIcon, 24)} {meal.name} <span className={styles.diningHours}>({getMealHours(hallKey, selectedDate, mealKey)})</span>
+                                            </span>
+                                        </div>
+                                        <br />
+                                        <Collapse isOpen={collapsed}>
+                                            {
+                                                meal.stations.length && meal.stations.map((station: any) => (
+                                                    <div key={`${hall.name}-${meal.name}-${station.name}`}>
+                                                        <span className={styles.diningStation}>{station.name}</span>
+                                                        <ul className={styles.diningOptions}>
+                                                            {
+                                                                station.options.map(option => (
+                                                                    <li key={option}>{option}</li>
+                                                                ))
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                ))
+                                            }
+                                            { i !== menu!.meals.length - 1 && <hr /> }
+                                        </Collapse>
                                     </div>
-                                    <br />
-                                    <Collapse isOpen={meals.find(ent => ent.type === meal.name)?.state}>
-                                        {
-                                            meal.stations.length && meal.stations.map((station: any) => (
-                                                <div key={`${hall.name}-${meal.name}-${station.name}`}>
-                                                    <span className={styles.diningStation}>{station.name}</span>
-                                                    <ul className={styles.diningOptions}>
-                                                        {
-                                                            station.options.map(option => (
-                                                                <li key={option}>{option}</li>
-                                                            ))
-                                                        }
-                                                    </ul>
-                                                </div>
-                                            ))
-                                        }
-                                        { i !== menu!.meals.length - 1 && <hr /> }
-                                    </Collapse>
-                                </div>
-                            ))
+                                )
+                            })
                 }
         </Modal>
     )
@@ -262,7 +282,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
                             <a className="btn btn-dark btn-sm text-lowercase shine" rel="noopener noreferrer" target="_blank" href={hall.location.maps}>
                                 <i className="fa fa-map-marked-alt fa-fw"></i> maps
                             </a>
-
+                            
                             {/* <a className="btn btn-dark btn-sm text-lowercase shine" rel="noopener noreferrer" target="_blank" href={`https://www.google.com/maps?q=${hall.location.latitude},${hall.location.longitude}`}>
                                 <i className="fa fa-clock fa-fw"></i> hours
                             </a> */}

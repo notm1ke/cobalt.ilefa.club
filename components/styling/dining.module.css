@@ -26,3 +26,8 @@
 .diningDatePickerWrapper {
     position: absolute !important;
 }
+
+.diningHours {
+    font-size: 1.05rem !important;
+    vertical-align: text-bottom !important;
+}

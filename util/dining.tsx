@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { Color } from '.';
+import { Color, getEnumKeyByEnumValue } from '.';
 
 import {
     DiningHall,
@@ -21,6 +21,17 @@ export enum DiningHallStatusOrdinal {
     LATE_NIGHT,
     BETWEEN_MEALS,
     CLOSED
+}
+
+export enum DiningHallMealHours {
+    BREAKFAST = '7:30am - 11:00am',
+    BREAKFAST_SOUTH_SAT = '7:00am - 9:30am',
+    BREAKFAST_SOUTH_SUN = '8:00am - 9:30am',
+    LUNCH = '11:00am - 2:15pm',
+    BRUNCH = '10:30 - 2:15pm',
+    DINNER = '4:15pm - 7:45pm',
+    LATE_NIGHT = '7:45pm - 10:00pm',
+    BETWEEN_MEALS = '2:15pm - 4:15pm',
 }
 
 /**
@@ -65,4 +76,26 @@ export const generateDdsLink = (hall: DiningHall, date = new Date()) => {
             url += `&WeeksMenus=This+Week%27s+Menus&myaction=read&dtdate=${moment(date).format('MM')}%2f${date.getDate()}%2f${date.getFullYear()}`;
 
     return url;
+}
+
+/**
+ * Returns the dining hours for a specified dining hall,
+ * and with an optional custom date.
+ * 
+ * Note: If providing a custom date, you must provide
+ * the dining hall status you want to lookup. This is
+ * because simply providing the dining hall/date will
+ * try to fetch the status at that datetime.
+ * 
+ * @param hall the dining hall to get meal hours for
+ * @param date the date/time to retrieve meal hours for
+ */
+export const getMealHours = (hall: keyof typeof DiningHallType, date = new Date(), status?: keyof typeof DiningHallStatus) => {
+    let mealStatus = status ?? getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall])) as keyof typeof DiningHallStatus;
+    if (!status) return null;
+
+    if (hall === 'SOUTH' && mealStatus === 'BREAKFAST' && (date.getDay() === 0 || date.getDay() === 6))
+        return date.getDay() === 0 ? DiningHallMealHours.BREAKFAST_SOUTH_SUN : DiningHallMealHours.BREAKFAST_SOUTH_SAT;
+
+    return DiningHallMealHours[status];
 }
