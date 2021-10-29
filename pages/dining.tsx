@@ -42,7 +42,7 @@ const DiningHallsPage = () => {
                                 />
                             )
                         }
-                        <div className="container shape-container d-flex align-items-center py-lg">
+                        <div className="container shape-container d-flex align-items-center py-lg mt-2 mb--2">
                             <div className="col px-0">
                                 <div className="row align-items-center justify-content-center">
                                     <div className="col-lg-6 text-center">
@@ -58,8 +58,8 @@ const DiningHallsPage = () => {
                         </div>
                     </div>
                 </div>
-                <section className={`section ${styles.buildingSection} background-circuits`}>
-                    <div className="container" id="body">
+                <section className={`section ${styles.buildingSection} background-circuits mt--3`}>
+                    <div className="container mt--3" id="body">
                         <div className="row">
                             {
                                 enabled &&
