@@ -55,6 +55,13 @@ const ELEMENTS: NavElement[] = [
         key: 'home',
     },
     {
+        name: 'courses',
+        icon: 'fa fa-shapes',
+        href: '/course',
+        key: 'courses',
+        devOnly: true,
+    },
+    {
         name: 'campus',
         icon: 'fa fa-city',
         href: '/campus',
@@ -86,13 +93,13 @@ const ELEMENTS: NavElement[] = [
             ]
         }
     },
-    {
-        name: 'routing',
-        icon: 'fa fa-route',
-        href: '/routing',
-        key: 'routing',
-        devOnly: true,
-    },
+    // {
+    //     name: 'routing',
+    //     icon: 'fa fa-route',
+    //     href: '/routing',
+    //     key: 'routing',
+    //     devOnly: true,
+    // },
     {
         name: 'snapshots',
         icon: 'fa fa-history',

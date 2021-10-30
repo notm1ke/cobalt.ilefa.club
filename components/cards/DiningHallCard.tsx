@@ -75,7 +75,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
     }
 
     const allCollapsed = () => meals.every(meal => meal.state);
-    const toggleAll = () => setMeals(meals.map(meal => ({ ...meal, state: !meal.state })));
+    const toggleAll = (state = !allCollapsed()) => setMeals(meals.map(meal => ({ ...meal, state })));
 
     const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
     const modalTitle = (
@@ -174,6 +174,8 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         </Modal>
     );
 
+    let auxButtons = !isMobile
+
     return (
         <Modal
             open={open}
@@ -188,14 +190,14 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => setOpen(false)}>
-                            <i className="fa fa-external-link-alt fa-fw"></i> View Original
+                            <i className="fa fa-external-link-alt fa-fw"></i> {auxButtons ? 'View Original' : ''}
                     </a>
                     <a
-                        className="btn btn-link text-lowercase ml--28"
+                        className={`btn btn-link text-lowercase ${auxButtons ? 'ml--28' : 'ml--9'}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() => toggleAll()}>
-                            <i className={`fa ${allCollapsed() ? 'fas fa-compress' : 'fa-expand'} fa-fw`}></i> {allCollapsed() ? 'Collapse All' : 'Expand All'}
+                            <i className={`fa ${allCollapsed() ? 'fas fa-compress' : 'fa-expand'} fa-fw`}></i> {auxButtons ? allCollapsed() ? 'Collapse All' : 'Expand All' : ''}
                     </a>
                 </>
             }

@@ -27,6 +27,7 @@ import {
     mdiBookOpenPageVariant,
     mdiBookshelf,
     mdiBottleTonicPlus,
+    mdiBowlMix,
     mdiBrain,
     mdiBunkBed,
     mdiCalculatorVariant,
@@ -479,7 +480,7 @@ export const getIconForDiningStatus = (status: keyof typeof DiningHallStatus, cl
         case 'CLOSED':
             return <MdiIcon path={mdiFoodOff} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'BREAKFAST': return <MdiIcon path={mdiCoffee} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case 'BRUNCH': return <MdiIcon path={mdiEgg} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'BRUNCH': return <MdiIcon path={mdiBowlMix} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'DINNER': return <MdiIcon path={mdiFoodSteak} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'LATE_NIGHT': return <MdiIcon path={mdiCookie} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'LUNCH': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;

@@ -28,7 +28,7 @@ export enum DiningHallMealHours {
     BREAKFAST_SOUTH_SAT = '7:00am - 9:30am',
     BREAKFAST_SOUTH_SUN = '8:00am - 9:30am',
     LUNCH = '11:00am - 2:15pm',
-    BRUNCH = '10:30 - 2:15pm',
+    BRUNCH = '10:30am - 2:15pm',
     DINNER = '4:15pm - 7:45pm',
     LATE_NIGHT = '7:45pm - 10:00pm',
     BETWEEN_MEALS = '2:15pm - 4:15pm',

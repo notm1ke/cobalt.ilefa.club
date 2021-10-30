@@ -59,6 +59,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res
             .status(502)
             .json({ message: 'Bad Gateway' });
+    
+    // if weekend, merge breakfast + brunch menus, since they are the same - and will be able to display brunch tab
+    if (validatedDate.getDay() === 0 || validatedDate.getDay() === 6) {
+        let merged = data.meals.map(meal => {
+            if (meal.name === 'Lunch')
+                meal.name = 'Brunch'
+
+            return meal;
+        });
+
+        data.meals = merged
+    }
 
     let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate))
     return res
