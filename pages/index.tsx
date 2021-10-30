@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
+import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
 
 import {
@@ -12,7 +13,6 @@ import {
     Nav,
     StatusRibbon
 } from '../components';
-import { isMobile } from 'react-device-detect';
 
 const HomePage = () => {
     return (
@@ -51,12 +51,7 @@ const HomePage = () => {
                     alt="Courses Glyph"
                     description={
                         <>
-                            Easily search for your courses and find detailed information about what <b>content areas</b> and <b>competencies</b> they fulfill, which <b>sections</b> are running, and how good the <b>professors</b> are all in one place.<br/><br/>
-                            <Link href="/info#search-modifiers">
-                                <a className="btn btn-sm btn-primary-light text-lowercase font-weight-500 shine">
-                                    <i className="fa fa-chevron-right fa-fw"></i> Check out how to use search modifiers
-                                </a>
-                            </Link>
+                            Easily search for your courses and find detailed information about what <b>content areas</b> and <b>competencies</b> they fulfill, which <b>sections</b> are running, and how good the <b>professors</b> are all in one place.
                         </>
                     }
                     className="background-circuits"
