@@ -7,12 +7,13 @@
     "url": "git@github.com:notm1ke/cobalt.ilefa.club"
   },
   "scripts": {
-    "dev": "DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=development NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
+    "dev": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=development next",
     "dev:windows": "next",
-    "build": "next build",
+    "build": "next build && npm run artifacts",
     "start": "next start",
-    "start:prod": "DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=production next",
-    "start:staging": "DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=preview NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}') NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}') NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL=$(git rev-parse --abbrev-ref HEAD) NEXT_PUBLIC_DEVICE=$(hostname) NEXT_PUBLIC_START=$(date +'%s') next",
+    "start:prod": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=production next",
+    "start:staging": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=preview next",
+    "artifacts": "chmod +x generate_build.sh && ./generate_build.sh",
     "type-check": "tsc"
   },
   "dependencies": {

@@ -33,3 +33,6 @@ yarn-error.log*
 # vercel
 .vercel
 .vscode
+
+# build infi
+build_info.json

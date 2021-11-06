@@ -6,11 +6,21 @@ import styles from '../components/styling/internal.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
 import { useStatus } from '../hooks';
-import { DevPage } from '../components';
+import { DevPage, InlineLink } from '../components';
 import { UncontrolledTooltip } from 'reactstrap';
 import { UConnServiceStatus } from '@ilefa/husky';
 import { CustomUConnServiceReport, getLatestTimeValue } from '../util';
 import { Footer, GitButton, Nav, StatusCard, StatusRibbon } from '../components';
+
+import {
+    BUILT_AT,
+    COMMIT_AUTHOR,
+    COMMIT_HASH,
+    COMMIT_MESSAGE,
+    DISPLAY_VERSION,
+    INSTANCE_HOST,
+    RELEASE_CHANNEL
+} from '../util/build';
 
 interface LinkProps {
     display: string | JSX.Element;
@@ -115,14 +125,17 @@ const InternalHome = () => {
                             <h4 className={`text-white ${styles.internalSectionTitle} mb-6`}>
                                 <i className="fa fa-laptop-code fa-fw"></i> Instance Overview
                                 <br/><span className={`text-white ${styles.internalSectionBody}`}>
-                                    This instance of Cobalt is running version <b>{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} ({process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : process.env.NEXT_PUBLIC_DEVICE ?? 'unknown'}</b>.
+                                    This instance of Cobalt is running version <b><InlineLink display={(COMMIT_HASH || 'no_git_id') + ` (${process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})`} href={`https://github.com/notm1ke/cobalt.ilefa.club/commit/${COMMIT_HASH}`} newTab /></b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : INSTANCE_HOST ?? 'unknown'}</b>.
                                     <ul className={`mt-3 no-li-decoration ${styles.internalInfo}`}>
+                                        <li><i className="fa fa-dice fa-fw"></i> <b>Version Info:</b> {DISPLAY_VERSION || 'unknown'}</li>
+                                        <li><i className="fa fa-clock fa-fw"></i> <b>Uptime:</b> {BUILT_AT ? getLatestTimeValue((Date.now() - parseInt(BUILT_AT || '0') * 1000)) : 'unknown'}</li>
+                                        <li><i className="fa fa-code-branch fa-fw"></i> <b>Release Channel:</b> {RELEASE_CHANNEL || 'unknown'}</li>
                                         <li><i className="fab fa-github fa-fw"></i> <b>Repository:</b> <UnderlinedLink display="@ilefa/websites ➔ cobalt" href="https://github.com/notm1ke/cobalt.ilefa.club" newTab /></li>
-                                        <li><i className="fa fa-clock fa-fw"></i> <b>Uptime:</b> {process.env.NEXT_PUBLIC_START ? getLatestTimeValue((Date.now() - parseInt(process.env.NEXT_PUBLIC_START || '0') * 1000)) : 'unknown'}</li>
-                                        <li><i className="fa fa-code-branch fa-fw"></i> <b>Release Channel:</b> {process.env.NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL || 'unknown'}</li>
-                                        <li><i className="fa fa-comment-alt fa-fw"></i> <b>Commit Message:</b> {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_MESSAGE || 'unknown'}</li>
+                                        <li><i className="fa fa-comment-alt fa-fw"></i> <b>Commit Message:</b> {COMMIT_MESSAGE || 'unknown'}</li>
+                                        <li><i className="fa fa-user-astronaut fa-fw"></i> <b>Commit Author:</b> {COMMIT_AUTHOR || 'unknown'}</li>
                                     </ul>
                                     <GitButton owner="ilefa" repo="husky" />
+                                    <GitButton owner="ilefa" repo="snapshots" />
                                     <GitButton owner="ilefa" repo="bluepages" />
                                     <GitButton owner="ilefa" repo="blueplate" />
                                 </span>

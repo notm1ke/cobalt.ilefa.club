@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from './styling/footer.module.css';
 
 import { capitalizeFirst } from '../util';
+import { COMMIT_HASH } from '../util/build';
 import { DevElement, PreviewElement } from '.';
 
 import {
@@ -31,14 +32,14 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }
                         <DevElement>
                             <br />
                             <Link href="/internal">
-                                <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt {capitalizeFirst(process.env.NEXT_PUBLIC_VERCEL_ENV || '')} {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} - internal use only.</a>
+                                <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt {capitalizeFirst(process.env.NEXT_PUBLIC_VERCEL_ENV || '')} {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} - internal use only.</a>
                             </Link>
                         </DevElement>
                         
                         <PreviewElement>
                             <br />
                             <Link href="/preview">
-                                <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt Preview {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'} <i className="fa fa-hands-helping fa-fw"></i></a>
+                                <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt Preview {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} <i className="fa fa-hands-helping fa-fw"></i></a>
                             </Link>
                         </PreviewElement>
                     </div>
