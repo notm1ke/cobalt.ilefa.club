@@ -1,8 +1,16 @@
+import moment from 'moment';
 import Head from 'next/head';
 import * as Logger from '../util/logger';
 
+import { isDevelopment } from '../util';
 import { LogLevel } from '../util/logger';
 import type { AppProps } from 'next/app';
+
+import {
+    BUILT_AT,
+    COMMIT_AUTHOR,
+    COMMIT_HASH
+} from '../util/build';
 
 import '../components/styling/global.css';
 import '../assets/icons/font-awesome/css/all.min.css';
@@ -21,7 +29,10 @@ const WATERMARK = `%c
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     Logger.clear();
     Logger.raw(WATERMARK, 'color: #487eb0; font-weight: 600;');
-    Logger.log(LogLevel.INFO, null, `This instance of Cobalt is running version %c${process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0,7) || 'no_git_id'} (${process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})%c`, 'color: #888;', 'color: inherit;');
+    Logger.log(LogLevel.INFO, null, `This instance of Cobalt is running version %c${COMMIT_HASH?.substring(0,7) || 'no_git_id'} (${process.env.NEXT_PUBLIC_VERCEL_ENV || 'development'})%c`, 'color: #888;', 'color: inherit;');
+    
+    if (isDevelopment())
+        Logger.log(LogLevel.INFO, 'Build', `Signed by: %c${COMMIT_AUTHOR}%con ${moment(parseInt(BUILT_AT) * 1000).format('MMM Do, [at] h:mm:ss A')}`, 'color: #999;', 'color: inherit;');
 
     return (
         <>

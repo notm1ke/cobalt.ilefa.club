@@ -5,8 +5,9 @@ import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 import previewStyles from '../components/styling/preview.module.css';
 
-import { Footer, InlineLink, Nav, PreviewPage } from '../components';
 import { isPreview } from '../util';
+import { Footer, InlineLink, Nav, PreviewPage } from '../components';
+import { COMMIT_HASH, INSTANCE_HOST, RELEASE_CHANNEL } from '../util/build';
 
 const CHANGELOG = [
     "Introduced dorms integration (with special thanks to the r/UConnDorms team)",
@@ -42,7 +43,7 @@ const ChangelogPage = () => (
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1`}>Changelog</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            Cobalt {isPreview() ? 'Preview' : 'Development'} {process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'}
+                                            Cobalt {isPreview() ? 'Preview' : 'Development'} {COMMIT_HASH?.substring(0, 7) || 'no_git_id'}
                                         </h2>
                                     </div>
                                 </div>
@@ -69,10 +70,10 @@ const ChangelogPage = () => (
                         <h4 className={`text-white ${styles.infoSectionTitle} mb-2`}>
                             <i className="fa fa-laptop-code fa-fw"></i> Preview Information
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
-                                This preview of Cobalt is running version <b>{process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.substring(0, 7) || 'no_git_id'}</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : process.env.NEXT_PUBLIC_DEVICE ?? 'unknown'}</b>.
+                                This preview of Cobalt is running version <b>{COMMIT_HASH?.substring(0, 7) || 'no_git_id'}</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : INSTANCE_HOST ?? 'unknown'}</b>.
                                 <ul className={`mt-3 no-li-decoration ${styles.internalInfo}`}>
                                     <li><i className="fab fa-github fa-fw"></i> <b>Source:</b> <InlineLink display="@ilefa/websites ➔ cobalt" href="https://github.com/notm1ke/cobalt.ilefa.club" newTab /></li>
-                                    <li><i className="fa fa-code-branch fa-fw"></i> <b>Release Channel:</b> {process.env.NEXT_PUBLIC_VERCEL_RELEASE_CHANNEL || 'unknown'}</li>
+                                    <li><i className="fa fa-code-branch fa-fw"></i> <b>Release Channel:</b> {RELEASE_CHANNEL || 'unknown'}</li>
                                 </ul>                               
                                 <br/>
                             </span>

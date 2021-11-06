@@ -1,7 +1,9 @@
 import React from 'react';
+import moment from 'moment';
 import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
+import { intToWords } from '../util';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
 
@@ -15,6 +17,8 @@ import {
 } from '../components';
 
 const HomePage = () => {
+    let weeks = moment('2021-12-15').diff(moment(), 'weeks');
+    let days = (weeks * 7) - (weeks * 2);
     return (
         <main>
             <Nav />
@@ -36,7 +40,7 @@ const HomePage = () => {
                                         </h2>
                                         <CobaltSearch />
                                         <small className="text-secondary">
-                                            <b>Protip:</b> Click on the search icon to toggle advanced filtering options, or try out <Link href="/info#search-modifiers"><a className="text-white font-weight-600 shine">search modifiers</a></Link> for quicker filtering.
+                                            <i>There are {intToWords(days)} school day{days === 1 ? '' : 's'} left in this semester.</i>
                                         </small>
                                     </div>
                                 </div>
@@ -52,6 +56,11 @@ const HomePage = () => {
                     description={
                         <>
                             Easily search for your courses and find detailed information about what <b>content areas</b> and <b>competencies</b> they fulfill, which <b>sections</b> are running, and how good the <b>professors</b> are all in one place.
+                            <br /><br /><Link href="/info#search-modifiers">
+                                <a className="btn btn-sm btn-primary-light text-lowercase font-weight-500 shine">
+                                    <i className="fa fa-chevron-right fa-fw"></i> Check out how to use search modifiers
+                                </a>
+                            </Link>
                         </>
                     }
                     className="background-circuits"
