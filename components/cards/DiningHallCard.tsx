@@ -174,7 +174,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         </Modal>
     );
 
-    let auxButtons = !isMobile
+    let auxButtons = !isMobile;
 
     return (
         <Modal

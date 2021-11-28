@@ -366,6 +366,19 @@ export const getLastSemester = (): string => {
 }
 
 /**
+ * The name of the current semester (at the given date)
+ * @param date an optional date, or now if not provided
+ */
+export const getCurrentSemester = (date = new Date()) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    if (month >= 0 && month <= 4)
+        return 'spring ' + (year - 1);
+    return 'fall ' + year;
+}
+
+
+/**
  * Ensures a number exists, since simply doing ``!!int`` or ``int``
  * will not always work (namely with ``0``, since ``!!0`` is false).
  * 
@@ -456,7 +469,7 @@ export const getMeetingTime = (schedule: string, location: { name: string }, sho
  */
 export const getMeetingRoom = (room: string) =>
     room
-        .split(/([A-Z]{2,4}\s\d{1,4})/)
+        .split(/([A-Z]{2,4}\s\d{1,4}[a-zA-Z]{0,1})/)
         .filter(str => !!str);
 
 /**
@@ -696,6 +709,29 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
         if (end < 100) return ones[numString[0]] + ' thousand and ' + intToWords(end);
         return ones[numString[0]] + ' thousand ' + intToWords(end);
     }
+}
+
+/**
+ * Given a time like "9:00 PM", returns
+ * a date object containing the time,
+ * and optionally from a given initial
+ * date.
+ * 
+ * @param time the time to convert
+ * @param date the initial date (or now)
+ */
+export const getDateFromTime = (time: string, date = new Date()) => {
+    let offset = time.split(':')[0].length;
+    let hours = parseInt(time.substring(0, offset));
+    if (hours !== 12 && time.includes('PM'))
+        hours += 12;
+
+    return new Date(date.getFullYear(),
+                    date.getMonth(),
+                    date.getDate(),
+                    hours,
+                    parseInt(time.substring(offset + 1, offset + 3)),
+                    0, 0);
 }
 
 /**

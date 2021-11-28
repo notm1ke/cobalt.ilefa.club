@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from '../styling/inspection.module.css';
+import styles from '../../styling/inspection.module.css';
 
-import { MetricsEvent } from '../../util';
+import { MetricsEvent } from '../../../util';
 import { Badge, UncontrolledCollapse } from 'reactstrap';
 
 export interface MetricsTabProps {

@@ -9,6 +9,8 @@ import {
     getDiningHallStatus
 } from '@ilefa/blueplate';
 
+export const DAYLIGHT_SAVINGS = true;
+
 export type DiningHallPayload = DiningHall & {
     status: keyof typeof DiningHallStatus;
 }

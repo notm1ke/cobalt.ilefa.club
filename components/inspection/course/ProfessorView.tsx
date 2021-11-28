@@ -1,6 +1,6 @@
 import React from 'react';
 import MdiIcon from '@mdi/react';
-import styles from '../styling/inspection.module.css';
+import styles from '../../styling/inspection.module.css';
 
 import * as Icons from '@mdi/js';
 
@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Badge, Collapse } from 'reactstrap';
 import { ProfessorData } from '@ilefa/husky';
 import { BluepagesRecord } from '@ilefa/bluepages';
-import { useBluepages, useProfessor } from '../../hooks';
+import { useBluepages, useProfessor } from '../../../hooks';
 
 import {
     addTrailingDecimal,
@@ -17,7 +17,7 @@ import {
     IMetricsComponent,
     RMP_TAG_CONS,
     RMP_TAG_PROS
-} from '../../util';
+} from '../../../util';
 
 export interface ProfessorViewProps extends IMetricsComponent {
     professor: ProfessorData;
@@ -118,7 +118,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
     
-    const [data, request, loading, error] = useProfessor({ rmpIds: professor.rmpIds });
+    const [data, request, loading, error] = useProfessor({ rmpIds: professor.rmpIds, recordMetric });
     const [bluepages, _request, bLoading, bError] = useBluepages({ name: professor.name, recordMetric });
 
     if (error) {

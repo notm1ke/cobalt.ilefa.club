@@ -27,7 +27,7 @@ export const CopyButton: React.FC<CopyButton> = ({ contentToCopy, className, hre
         <a
             href={href}
             className={className ? `${className}${shine ? ' shine' : ''}` : shine ? 'shine' : ''} 
-            onClick={() => copied && copyToClipboard()}
+            onClick={() => !copied && copyToClipboard()}
         >
             {children}
         </a>

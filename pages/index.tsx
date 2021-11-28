@@ -3,9 +3,9 @@ import moment from 'moment';
 import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
-import { intToWords } from '../util';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
+import { getCurrentSemester, intToWords } from '../util';
 
 import {
     CobaltSearch,
@@ -19,6 +19,8 @@ import {
 const HomePage = () => {
     let weeks = moment('2021-12-15').diff(moment(), 'weeks');
     let days = (weeks * 7) - (weeks * 2);
+    let isBreak = days <= 0;
+    
     return (
         <main>
             <Nav />
@@ -40,7 +42,8 @@ const HomePage = () => {
                                         </h2>
                                         <CobaltSearch />
                                         <small className="text-secondary">
-                                            <i>There are {intToWords(days)} school day{days === 1 ? '' : 's'} left in this semester.</i>
+                                            <i className={'fa ' + (isBreak ? 'fa-smile text-success' : 'fa-clock text-orange') + ' fa-fw mr-1'}></i>
+                                            <i>{ isBreak ? 'The semester is over, enjoy your well deserved break!' : `There are ${intToWords(days)} school day${days === 1 ? '' : 's'} left in the ${getCurrentSemester()} semester.` }</i>
                                         </small>
                                     </div>
                                 </div>

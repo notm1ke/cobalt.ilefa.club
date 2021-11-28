@@ -55,11 +55,20 @@
     .inputBoxRadius {
         width: 96%;
     }
+
+    .inputBoxRadiusEgg {
+        width: 90%;
+    }
 }
 
 @media screen and (min-width: 800px) {
     .inputBoxRadius {
         width: 91%;
+    }
+
+
+    .inputBoxRadiusEgg {
+        width: 85%;
     }
 }
 
@@ -67,11 +76,21 @@
     .inputBoxRadius {
         width: 90%;
     }
+
+
+    .inputBoxRadiusEgg {
+        width: 84%;
+    }
 }
 
 @media screen and (min-width: 430px) {
     .inputBoxRadius {
         width: 89%;
+    }
+
+
+    .inputBoxRadiusEgg {
+        width: 83%;
     }
 }
 
@@ -79,11 +98,21 @@
     .inputBoxRadius {
         width: 88%;
     }
+
+
+    .inputBoxRadiusEgg {
+        width: 82%;
+    }
 }
 
 @media screen and (min-width: 350px) {
     .inputBoxRadius {
         width: 87%;
+    }
+
+
+    .inputBoxRadiusEgg {
+        width: 84%;
     }
 }
 
@@ -116,4 +145,18 @@
 
 .advancedInputCardBorder {
     margin-left: -0.4rem !important;
+}
+
+.feelingLuckyButton {
+    border-left: none !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.feelingLuckyButton i {
+    margin-top: 11px;
+}
+
+.noRadiusFormGroup {
+    border-radius: 0 !important;
 }

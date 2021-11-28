@@ -1,37 +1,44 @@
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
-import ThreeSixtyRenderer from 'react-photosphere';
+import classnames from 'classnames';
+
 import styles from '../../components/styling/inspection.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { Card, CardBody, Badge } from 'reactstrap';
+import { BuildingCode } from '@ilefa/husky';
 import { RoomInspectionPayload, useRoom } from '../../hooks';
 
 import {
-    capitalizeFirst,
     CompleteRoomPayload,
     getIconForRoom,
+    isDevelopment,
     RoomImageMode
 } from '../../util';
 
 import {
     DataView,
+    DevElement,
     ErrorView,
     Footer,
     Loader,
-    Nav
+    Nav,
+    RoomBuildingTab,
+    RoomOverviewTab,
+    RoomScheduleTab
 } from '../../components';
 
 import {
-    BoardType,
-    BuildingCode,
-    LectureCaptureType,
-    SeatingType,
-    TechType
-} from '@ilefa/husky';
+    Card,
+    CardBody,
+    Badge,
+    Navbar,
+    NavItem,
+    NavLink,
+    TabContent,
+    TabPane
+} from 'reactstrap';
 
 type SidebarEntry = {
     icon: string;
@@ -113,7 +120,35 @@ const getSidebarInfo = (data: CompleteRoomPayload): SidebarEntry[] => [
             },
         ]
     },
-]
+];
+
+const TABS = [
+    {
+        icon: 'fa fa-file-alt',
+        name: 'Overview',
+        id: 'overview',
+        idInt: 0,
+    },
+    {
+        icon: 'fa fa-calendar-day',
+        name: 'Schedule',
+        id: 'schedule',
+        idInt: 1,
+    },
+    {
+        icon: 'fa fa-building',
+        name: 'Building',
+        id: 'building',
+        idInt: 2,
+    },
+    {
+        icon: 'fa fa-broadcast-tower',
+        name: 'Metrics',
+        id: 'metrics',
+        idInt: 3,
+        devOnly: true
+    }
+];
 
 const generateAmenityBadge = (bool: boolean | undefined) => (
     <Badge color={bool === undefined ? 'dark' : bool ? 'success' : 'danger'} pill>
@@ -146,15 +181,12 @@ const ClassroomInspection = () => {
     if (name) name = name.toUpperCase();
 
     const [room, _request, loading, error] = useRoom({ name });
-    const [rendered, setRendered] = useState(false);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setRendered(true);
-        }
-
-        return () => setRendered(false);
-    }, []);
+    const [activeTab, setActiveTab] = useState('overview');
+    
+    const changeTab = (e, state) => {
+        e.preventDefault();
+        setActiveTab(state);
+    }
 
     if (loading) return <Loader />;
     if (error) return <ErrorView title="Error" message="Something went wrong while retrieving data." />;
@@ -218,40 +250,50 @@ const ClassroomInspection = () => {
                                     <div className="col-lg-9">
                                         <Card className="shadow border-0">
                                             <CardBody className="pt-0">
+                                                <DevElement>
+                                                    <div className="nav-wrapper wrap">
+                                                        <Navbar 
+                                                            className="nav-pills nav-fill flex-column flex-md-row" 
+                                                            id="tabs-icons-text" 
+                                                            role="tablist"
+                                                        >
+                                                            {
+                                                                TABS.map(entry => {
+                                                                    if (entry.devOnly && !isDevelopment()) return <></>;
+                                                                    return <NavItem key={entry.id}>
+                                                                                <NavLink
+                                                                                    aria-selected={activeTab === entry.id}
+                                                                                    className={classnames(`mb-sm-3 mb-md-0 pills-primary cursor-pointer`, {
+                                                                                        active: activeTab === entry.id,
+                                                                                        show: activeTab === entry.id,
+                                                                                    })}
+                                                                                    onClick={e => changeTab(e, entry.id)}
+                                                                                    role="tab"
+                                                                                >
+                                                                                    <i className={entry.icon + " fa-fw mr-1"}></i> {entry.name}
+                                                                                </NavLink>
+                                                                            </NavItem>
+                                                                })
+                                                            }
+                                                        </Navbar>
+                                                    </div>
+                                                </DevElement>
                                                 {/* add `shadow` class to give back shadow to the below node */}
                                                 <div className={styles.tabBody}>
-                                                    <div className={styles.tabBody}>
-                                                        <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-chalkboard-teacher fa-fw"></i> Overview</pre>
-                                                        <p className={`${styles.description}`}>
-                                                            <b>Campus:</b> {capitalizeFirst(room.building.campus.toLowerCase())}<br/>
-                                                            <b>Seating:</b> {SeatingType[room.seatingType || 'UNKNOWN']}<br/>
-                                                            <b>Board:</b> {BoardType[room.boardType || 'UNKNOWN']}<br/>
-                                                            <b>Technology:</b> {TechType[room.techType]}<br/>
-                                                            {room.techDescription && <><b>Installed Tech:</b> {room.techDescription}<br/></>}
-                                                            <b>Lecture Capture:</b> {LectureCaptureType[room.lectureCapture]}<br/><br/>
-                                                            <Link href={`/buildings#${room.building.code}`}>
-                                                                <a className="text-primary-light shine">
-                                                                    <i className="fa fa-link fa-fw"></i> View more information about <b className="">{room.building.name}</b>.
-                                                                </a>
-                                                            </Link>
-                                                        </p>
-                                                        {/* <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-code fa-fw"></i> Raw Data</pre>
-                                                        <pre className={styles.description}>{JSON.stringify(data, null, 3)}</pre><br/> */}
-                                                        <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-camera-retro fa-fw"></i> {imageMode === RoomImageMode.THREE_SIXTY ? <>360&#176; View</> : <>Room Image</>}</pre>
-                                                        { !room.threeSixtyView && <p className={`${styles.description} mb--3`}>No images are available for <b>{styledName}</b>.</p> }
-                                                        { room.threeSixtyView && imageMode === RoomImageMode.STATIC && <img src={room.threeSixtyView} height={500} /> }
-                                                        { room.threeSixtyView && imageMode === RoomImageMode.THREE_SIXTY && rendered && <ThreeSixtyRenderer src={room.threeSixtyView} height={500} timeAnim={false} /> }
-                                                        { room.liveStreamUrl &&
-                                                            (
-                                                                <>
-                                                                    <br/>
-                                                                    <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-broadcast-tower fa-fw"></i> Live Stream</pre>
-                                                                    <iframe src={room.liveStreamUrl} height={500} width={'100%'} ></iframe>
-                                                                </>
-                                                            )
-                                                        }
-                                                        <br/>
-                                                    </div>
+                                                    <TabContent activeTab={activeTab} id="tab">
+                                                        <TabPane tabId="overview">
+                                                            <RoomOverviewTab
+                                                                room={room}
+                                                                imageMode={imageMode}
+                                                                styledName={styledName} />
+                                                        </TabPane>
+                                                        <TabPane tabId="schedule">
+                                                            <RoomScheduleTab room={room} />
+                                                        </TabPane>
+                                                        <TabPane tabId="building">
+                                                            <RoomBuildingTab room={room} />
+                                                        </TabPane>
+                                                    </TabContent>
                                                 </div>
                                             </CardBody>
                                         </Card>

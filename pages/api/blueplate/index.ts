@@ -1,5 +1,5 @@
-import { getEnumKeyByEnumValue } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { DAYLIGHT_SAVINGS, getEnumKeyByEnumValue } from '../../../util';
 
 import {
     DiningHalls,
@@ -40,8 +40,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         ? new Date(date)
         : new Date();
 
-    if (validatedDate.getTimezoneOffset() === 0)
+    if (validatedDate.getTimezoneOffset() === 0) {
         validatedDate.setHours(validatedDate.getHours() - 4);
+        DAYLIGHT_SAVINGS && validatedDate.setHours(validatedDate.getHours() - 1);
+    }
 
     if (!hall) return res
         .status(200)
@@ -72,7 +74,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         data.meals = merged
     }
 
-    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate))
+    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate));
+    if (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0))
+        status = DiningHallStatus.CLOSED;
+
     return res
         .status(200)
         .json({

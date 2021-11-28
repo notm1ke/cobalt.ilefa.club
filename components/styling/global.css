@@ -68,6 +68,10 @@
     cursor: pointer !important;
 }
 
+.pointer-disabled {
+    cursor: not-allowed !important;
+}
+
 .psv-button-svg {
     vertical-align: super !important;
 }
@@ -194,4 +198,16 @@
     display: flex !important;
     flex-direction: column !important;
     flex-flow: wrap !important;
+}
+
+/* arrow button in SectionsTab */
+.gJBzMw {
+    margin-right: -30px !important;
+    padding-left: unset !important;
+    padding-right: unset !important;
+}
+
+.inrgiU {
+    height: 60% !important;
+    width: 60% !important;
 }

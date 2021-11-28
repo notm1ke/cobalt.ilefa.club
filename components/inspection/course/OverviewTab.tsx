@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from '../styling/inspection.module.css';
+import styles from '../../styling/inspection.module.css';
 
-import { DevElement } from '../';
+import { DevElement } from '../..';
 import { decode as decodeEntities } from 'html-entities';
-import { CompleteCoursePayload, ContentAreaNames } from '../../util';
+import { CompleteCoursePayload, ContentAreaNames } from '../../../util';
 
 export interface OverviewTabProps {
     data: CompleteCoursePayload;
