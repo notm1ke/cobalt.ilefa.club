@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import MdiIcon from '@mdi/react';
 
 import styles from '../components/styling/building.module.css';
 import globalStyles from '../components/styling/home.module.css';
