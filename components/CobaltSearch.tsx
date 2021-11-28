@@ -120,7 +120,11 @@ const AdvancedSearchComponent: React.FC<AdvancedSearchComponentProps> = ({ show,
     </div>
 )
 
-export const CobaltSearch = () => {
+export interface CobaltSearchProps {
+    feelingLucky?: boolean;
+}
+
+export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
     const router = useRouter();
 
     const [query, setQuery] = useState('');
@@ -309,6 +313,15 @@ export const CobaltSearch = () => {
         router.push(`/course/${current.toUpperCase()}`);
     }
 
+    const pickSillyCourse = () => {
+        if (!data)
+            return;
+
+        setLoading(true);
+        let lucky = data[Math.floor(Math.random() * data.length)];
+        router.push(`/course/${lucky.name.toUpperCase()}`);
+    }
+
     return (
         <FormGroup>
             <Autosuggest
@@ -337,15 +350,28 @@ export const CobaltSearch = () => {
                                 </span>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <div className={styling.inputBoxRadius}>
+                        <div className={feelingLucky ? styling.inputBoxRadiusEgg : styling.inputBoxRadius}>
                             <input {...inputProps} />
                             <AdvancedSearchComponent
                                 show={showAdvanced}
                                 has={hasAdvanced}
                                 toggle={toggleAdvanced}
                                 clear={clearAdvanced}
-                            />
+                                />
                         </div>
+                        { 
+                            feelingLucky && (
+                                <>
+                                    <span id="feeling-lucky" className={`btn btn-primary btn-link btn-sm ${styling.feelingLuckyButton}`} onClick={() => pickSillyCourse()}>
+                                        <i className="fa fa-egg fa-fw text-white"></i>
+                                    </span>
+                                    <UncontrolledTooltip target="feeling-lucky" placement="bottom">
+                                        <b>I'm feeling lucky!</b>
+                                        <br/>Take me to a random course.
+                                    </UncontrolledTooltip>
+                                </>
+                            )
+                        }
                     </>
                 )}
                 renderSuggestion={suggestion => (
@@ -379,7 +405,7 @@ export const CobaltSearch = () => {
                     disabled: !enabled,
                     type: 'text',
                     placeholder: 'Search for any course..',
-                    className: `form-control-alternative form-control`,
+                    className: `${feelingLucky ? styling.noRadiusFormGroup : 'form-control-alternative'} form-control`,
                     onChange,
                     onKeyUp: e => onKeyUp(e, suggestions),
                 }}

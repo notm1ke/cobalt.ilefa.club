@@ -1,14 +1,14 @@
 import React from 'react';
-import Link from 'next/link';
 import MdiIcon from '@mdi/react';
 import DataTable from 'react-data-table-component';
-import styles from '../styling/inspection.module.css';
 import Classrooms from '@ilefa/husky/classrooms.json';
+import styles from '../../styling/inspection.module.css';
 
 import { ErrorTab } from '.';
-import { CopyButton } from '..';
+import { CopyButton } from '../..';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import { useToggle } from '../../../hooks';
 import { mdiChevronDown } from '@mdi/js';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
@@ -25,7 +25,7 @@ import {
     getRealRoomCode,
     Modalities,
     replaceAll
-} from '../../util';
+} from '../../../util';
 
 export interface SectionsTabProps {
     data: CompleteCoursePayload;
@@ -44,15 +44,12 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
         </div>
     )
 
-    const [info, setInfo] = useState(true);
-    const [raw, setRaw] = useState(false);
+    const [info, toggleInfo] = useToggle(true);
+    const [raw, toggleRaw] = useToggle(false);
     const [classNumCopied, setClassNumCopied] = useState(false);
     const [classTermCopied, setTermCopied] = useState(false);
     const [classSessionCopied, setSessionCopied] = useState(false);
 
-    const collapseInfo = () => setInfo(!info);
-    const collapseRaw = () => setRaw(!raw);
-    
     let rooms = getMeetingRoom(data.location.name).sort((a, b) => a.localeCompare(b));
     let multipleRooms = rooms.length > 1;
 
@@ -63,14 +60,14 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
         <div className={styles.sectionDataExpanded}>
             <div className={styles.statisticList}>
                 <li className={styles.statisticItem} key={uuid()}>
-                    <div className={styles.statisticImage} onClick={collapseInfo}>
+                    <div className={styles.statisticImage} onClick={toggleInfo}>
                         <i className="fa fa-atlas fa-fw text-primary"></i>
                     </div>
                     <div className={styles.details}>
                         <span className="text-dark">
-                            <p onClick={collapseInfo}><b>Section Information</b></p>
+                            <p onClick={toggleInfo}><b>Section Information</b></p>
                             <p>
-                                <span onClick={collapseInfo}>Click to {info ? 'hide' : 'reveal'} section information.</span>
+                                <span onClick={toggleInfo}>Click to {info ? 'hide' : 'reveal'} section information.</span>
                                 <Collapse isOpen={info} className={styles.statisticCollapse}>
                                     <p><b>Section:</b> {data.section}</p>
                                     <p><b>Term:</b> {data.term}</p>
@@ -90,14 +87,14 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                                         let end = i === rooms.length - 1 ? '' : ', ';
                                                         if (!room) return <span>{ent + end}</span>
                                                         
-                                                        return <Link href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
+                                                        return <a href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
                                                                 <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{ent}</a>{end}</>
-                                                            </Link>
+                                                            </a>
                                                     })
                                                     : !!managedRoom
-                                                        ? <Link href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
+                                                        ? <a href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
                                                             <>{getIconForRoom(managedRoom as Classroom, 'text-primary')} <a className="text-primary shine">{data.location.name}</a></>
-                                                        </Link>
+                                                        </a>
                                                         : getMeetingRoom(data.location.name).join(', ')
                                     }</p>
                                     <br/>
@@ -132,20 +129,23 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                         <li><b>Term Code:</b> <CopyButton className={(classTermCopied ? 'text-success' : 'text-primary') + ` ${styles.identifierNumber}`} shine contentToCopy={data.internal.termCode} onCopied={() => setTermCopied(true)} onCopyRecharged={() => setTermCopied(false)}>{data.internal.termCode}</CopyButton></li>
                                         <li><b>Session Code:</b> <CopyButton className={(classSessionCopied ? 'text-success' : 'text-primary') + ` ${styles.identifierNumber}`} shine contentToCopy={data.internal.sessionCode} onCopied={() => setSessionCopied(true)} onCopyRecharged={() => setSessionCopied(false)}>{data.internal.sessionCode}</CopyButton></li>
                                     </ul>
+
+                                    {/* <br />
+                                    <span className="btn btn-link btn-success btn-sm text-white">I'm taking this section</span> */}
                                 </Collapse>
                             </p>
                         </span>
                     </div>
                 </li>
                 <li className={styles.statisticItem} key={data.section}>
-                    <div className={styles.statisticImage} onClick={collapseRaw}>
+                    <div className={styles.statisticImage} onClick={toggleRaw}>
                         <i className="fa fa-file-code fa-fw text-primary"></i>
                     </div>
                     <div className={styles.details}>
                         <span className="text-dark">
-                            <p onClick={collapseRaw}><b>Raw Data</b></p>
+                            <p onClick={toggleRaw}><b>Raw Data</b></p>
                             <p>
-                                <span onClick={collapseRaw}>Click to {raw ? 'hide' : 'reveal'} raw data.</span>
+                                <span onClick={toggleRaw}>Click to {raw ? 'hide' : 'reveal'} raw data.</span>
                                 <Collapse isOpen={raw} className={styles.statisticCollapse}>
                                     <pre className="text-primary">{JSON.stringify(data, null, 3)}</pre>
                                 </Collapse>
@@ -165,20 +165,24 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
         <ErrorTab message="There aren't any sections been taught at the moment." color="text-gray" />
     )
 
+    // if different terms in section data, show semester marker
+    let useTerm = sections.some(section => section.term !== sections[0].term);
     const columns: IDataTableColumn[] = [
         {
             name: 'Section',
             selector: 'section',
             sortable: true,
             format: (row, _i) => <>
-                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}`}>[{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode)}]</b> {row.section}
+                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}`}>
+                                        [{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode) + (useTerm ? `/${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}` : '')}]
+                                    </b> {row.section}
                                     <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}-${row.campus}`}>
-                                        <b>{row.campus}</b>
+                                        <b>{row.campus}{useTerm ? ` - ${row.term}` : ''}</b>
                                         <br/><span className={styles.modalityTooltipType}>{row.mode}</span>
                                         <br/><span className={styles.modalityTooltipDescription}>{Modalities[getModalityIndicator(row.mode)] || ''}</span>
                                     </UncontrolledTooltip>
                                  </>,
-            grow: 0.5
+            grow: useTerm ? 0.75 : 0.5
         },
         {
             name: 'Room',
@@ -219,7 +223,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                         </>
             },
             sortable: true,
-            grow: 0,
+            grow: useTerm ? 0 : 0.5,
         },
         {
             name: 'Professor',

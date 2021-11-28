@@ -1,16 +1,16 @@
 import React from 'react';
 
 import { ErrorTab, LoaderTab } from '.';
-import { useProfessors } from '../../hooks';
+import { useProfessors } from '../../../hooks';
 import { ProfessorView } from './ProfessorView';
-import { CompleteCoursePayload, IMetricsComponent } from '../../util';
+import { CompleteCoursePayload, IMetricsComponent } from '../../../util';
 
 export interface ProfessorsTabProps extends IMetricsComponent {
     course: CompleteCoursePayload;
 }
 
 export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetric }) => {
-    let [data, request, loading, error] = useProfessors({ course: course.name });
+    let [data, request, loading, error] = useProfessors({ course: course.name, recordMetric });
     if (loading) return <LoaderTab />;
     if (error || !data) {
         recordMetric({ request, success: false, time: -1 });

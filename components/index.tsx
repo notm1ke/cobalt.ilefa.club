@@ -11,8 +11,8 @@ export * from './Modal';
 export * from './Nav';
 
 export * from './cards';
-export * from './course';
 export * from './env';
+export * from './inspection';
 export * from './ribbons';
 
 export * from './sections/FeatureSection';
