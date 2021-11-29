@@ -6,7 +6,7 @@ import { useState } from 'react';
  * @param key the key to store under in local storage
  * @param initial the initial value to store for the specified key
  */
-export const useLocalStorage = (key: string, initial: any) => {
+export function useLocalStorage <T>(key: string, initial: T): [T, (value: T) => void] {
     const [stored, setStored] = useState(() => {
         try {
             const item = window.localStorage.getItem(key);

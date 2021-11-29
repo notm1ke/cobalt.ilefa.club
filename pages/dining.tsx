@@ -7,13 +7,12 @@ import globalStyles from '../components/styling/home.module.css';
 
 import { intToWords } from '../util';
 import { useDiningHalls } from '../hooks';
-import { mdiAlert, mdiCookie, mdiLoading } from '@mdi/js';
-import { DiningHallCard, Footer, Nav, PreviewRibbon } from '../components';
+import { mdiAlert, mdiLoading } from '@mdi/js';
+import { DiningHallCard, Footer, Nav } from '../components';
 
 const DiningHallsPage = () => {
     const [data, loading, error] = useDiningHalls({ poll: 10000 });
     
-    const betaNotice = false;
     const enabled = !loading
         && !error
         && data;
@@ -29,19 +28,6 @@ const DiningHallsPage = () => {
                 <div className="section section-hero section-shaped background-circuits">
                     <div className="shape shape-style-3 shape-default"></div>
                     <div className={globalStyles.pageHeader}>
-                        {
-                            betaNotice && (
-                                <PreviewRibbon
-                                    mdiIcon
-                                    icon={mdiCookie}
-                                    content={
-                                        <>
-                                            The dining halls integration is currently in <b>beta</b> — please report any bugs you may find.
-                                        </>
-                                    }
-                                />
-                            )
-                        }
                         <div className="container shape-container d-flex align-items-center py-lg mt-2 mb--2">
                             <div className="col px-0">
                                 <div className="row align-items-center justify-content-center">
