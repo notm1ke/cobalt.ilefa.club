@@ -14,6 +14,4 @@ export * from './cards';
 export * from './env';
 export * from './inspection';
 export * from './ribbons';
-
-export * from './sections/FeatureSection';
-export * from './sections/StatisticSection';
+export * from './sections';

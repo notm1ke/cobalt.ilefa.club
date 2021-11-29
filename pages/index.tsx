@@ -3,6 +3,7 @@ import moment from 'moment';
 import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
+import { mdiFlask } from '@mdi/js';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
 import { getCurrentSemester, intToWords } from '../util';
@@ -13,6 +14,8 @@ import {
     FeatureSection,
     Footer,
     Nav,
+    OneTimeView,
+    PreviewRibbon,
     StatusRibbon
 } from '../components';
 
@@ -32,6 +35,18 @@ const HomePage = () => {
                             track={['catalog', 'phonebook']}
                             ignore={[UConnServiceStatus.REPORTING, UConnServiceStatus.UNKNOWN]}
                             dismissible />
+                        <DevElement allowStaging>
+                            <OneTimeView target="previewRibbon">
+                                <PreviewRibbon 
+                                    mdiIcon
+                                    icon={mdiFlask}
+                                    content={
+                                        <>
+                                            Welcome to the nightly preview version of <b>Cobalt</b>, this version has many unreleased and (mostly) stable features over the current stable version — please report any bugs you may find!
+                                        </>
+                                    } />
+                            </OneTimeView>
+                        </DevElement>
                         <div className={`container shape-container d-flex align-items-center py-lg ${isMobile ? styles.headerHeightMobile : styles.headerHeight}`}>
                             <div className="col px-0">
                                 <div className="row align-items-center justify-content-center">
