@@ -20,8 +20,8 @@ import {
 } from '../components';
 
 const HomePage = () => {
-    let weeks = moment('2021-12-15').diff(moment(), 'weeks');
-    let days = (weeks * 7) - (weeks * 2);
+    let rawDays = moment('2021-12-17').diff(moment(), 'days');
+    let days = rawDays - 7;
     let isBreak = days <= 0;
     
     return (
