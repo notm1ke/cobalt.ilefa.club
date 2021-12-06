@@ -36,11 +36,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: 'Must specify dining hall to use historical lookup' });
 
+    let now = new Date();
     let validatedDate = date
         ? new Date(date)
-        : new Date();
-
-    if (validatedDate.getTimezoneOffset() === 0) {
+        : now;
+    
+    if (validatedDate.getDate() === now.getDate() && validatedDate.getTimezoneOffset() === 0) {
         validatedDate.setHours(validatedDate.getHours() - 4);
         DAYLIGHT_SAVINGS && validatedDate.setHours(validatedDate.getHours() - 1);
     }
