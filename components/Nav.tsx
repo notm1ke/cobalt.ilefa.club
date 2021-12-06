@@ -4,7 +4,7 @@ import Image from 'next/image';
 import styles from './styling/nav.module.css';
 
 import { useState } from 'react';
-import { isDevelopment, isPreview } from '../util';
+import { isDevelopment, isPreview, isProd } from '../util';
 
 import {
     BrowserView,
@@ -41,6 +41,7 @@ type NavElement = {
     key: string;
     devOnly?: boolean;
     stagingOnly?: boolean;
+    prodOnly?: boolean;
     dropdown?: {
         mode: DropdownMode;
         items: NavDropdown[];
@@ -91,7 +92,29 @@ const ELEMENTS: NavElement[] = [
                     content: 'Explore dining halls and their menus.',
                 }
             ]
-        }
+        },
+        stagingOnly: true,
+    },
+    {
+        name: 'buildings',
+        icon: 'fa fa-city',
+        href: '/buildings',
+        key: 'buildings',
+        prodOnly: true,
+    },
+    {
+        name: 'dining',
+        icon: 'fa fa-utensils',
+        href: '/dining',
+        key: 'dining',
+        prodOnly: true,
+    },
+    {
+        name: 'residential',
+        icon: 'fa fa-bed',
+        href: '/dorms',
+        key: 'dorms',
+        prodOnly: true,
     },
     // {
     //     name: 'routing',
@@ -167,9 +190,15 @@ export const Nav = () => {
     const [classes, setClasses] = useState('');
     const onExiting = () => setClasses('collapsing-out');
     const onExited = () => setClasses('');
+
+    const renderableElements = ELEMENTS.filter(element => element.devOnly && isDevelopment()
+        || element.stagingOnly && isPreview()
+        || element.prodOnly && isProd()
+        || !element.devOnly && !element.stagingOnly && !element.prodOnly);
+    
     const iconMode = isMobile
         ? false
-        : ELEMENTS.length > 8;
+        : renderableElements.length > 7;
 
     return (
         <header className="header-global">
@@ -226,6 +255,10 @@ export const Nav = () => {
 
                                     // only stagingOny but not satisfied
                                     if (!element.devOnly && element.stagingOnly && !isPreview())
+                                        return;
+
+                                    // prod only but not satisfied
+                                    if (element.prodOnly && !isProd())
                                         return;
 
                                     if (element.dropdown && element.dropdown.mode === 'icons') {

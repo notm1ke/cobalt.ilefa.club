@@ -23,7 +23,7 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }
     <footer className={`footer ${className ?? ''} ${white ? noBackground ? '' : ' ' : ''}`}>
         <Container className="container-lg">
             <Row className="align-items-center justify-content-md-between">
-                <div className="col-6">
+                <div className="col-8">
                     <div className={`copyright ${styles.footerBrand} ${white ? " text-white" : ""}`}>  
                         <a href="https://www.ilefa.club" className={`${white ? "text-white" : ""} shine`}>
                             <b>ILEFA Labs</b>
@@ -44,7 +44,7 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }
                         </PreviewElement>
                     </div>
                 </div>
-                <div className="col-6">
+                <div className="col-4 ml--2">
                     <Nav className="nav-footer justify-content-end">
                         <NavItem>
                             <NavLink
