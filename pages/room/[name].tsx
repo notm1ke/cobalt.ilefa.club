@@ -25,8 +25,7 @@ import {
     Loader,
     Nav,
     RoomBuildingTab,
-    RoomOverviewTab,
-    RoomScheduleTab
+    RoomOverviewTab
 } from '../../components';
 
 import {
@@ -288,7 +287,8 @@ const ClassroomInspection = () => {
                                                                 styledName={styledName} />
                                                         </TabPane>
                                                         <TabPane tabId="schedule">
-                                                            <RoomScheduleTab room={room} />
+                                                            <h3><b>Room Schedules</b> have been withheld for a future release.</h3>
+                                                            {/* <RoomScheduleTab room={room} /> */}
                                                         </TabPane>
                                                         <TabPane tabId="building">
                                                             <RoomBuildingTab room={room} />
