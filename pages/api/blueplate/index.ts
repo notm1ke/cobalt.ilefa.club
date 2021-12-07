@@ -44,7 +44,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     let customDate = now.getTime() !== validatedDate.getTime();
     if (!customDate && validatedDate.getTimezoneOffset() === 0) {
         validatedDate.setHours(validatedDate.getHours() - 4);
-        DAYLIGHT_SAVINGS && !date && validatedDate.setHours(validatedDate.getHours() - 1);
+        DAYLIGHT_SAVINGS && validatedDate.setHours(validatedDate.getHours() - 1);
     }
 
     if (!hall) return res
