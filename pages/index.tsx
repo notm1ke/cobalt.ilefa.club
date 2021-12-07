@@ -21,7 +21,7 @@ import {
 
 const HomePage = () => {
     let rawDays = moment('2021-12-17').diff(moment(), 'days');
-    let days = rawDays - 7;
+    let days = (rawDays - 7) + 1;
     let isBreak = days <= 0;
     
     return (
