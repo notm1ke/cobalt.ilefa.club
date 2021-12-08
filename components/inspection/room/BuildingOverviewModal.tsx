@@ -56,7 +56,7 @@ export const BuildingOverviewModal: React.FC<BuildingOverviewModalProps> = ({ bu
                                 <pre className={`${styles.sectionTitle} text-primary mt-3 font-weight-bold`}><i className="fa fa-stream fa-fw"></i> Classrooms</pre>
                                 <ul className={styles.roomList}>
                                     {
-                                        buildings
+                                        buildings!
                                             .find(building => building.code === buildingType)
                                             ?.rooms
                                             .map(room => (
