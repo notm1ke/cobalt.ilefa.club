@@ -114,7 +114,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
             name: 'Class Schedule',
             marginTop: '0',
             contents: state === 'loaded'
-                ? schedule
+                ? schedule && schedule.entries.length
                     ? schedule
                         .entries
                         .filter(entry => entry.section)
@@ -134,10 +134,10 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                             key: entry.event,
                             value: `${entry.start} - ${entry.end}`     
                         }))
-                    : [{ name: 'This room has no scheduled events for today.', key: 'noEvents', value: '' }]
-                    : state === 'loading'
-                        ? [{ name: <><i className="fa fa-spinner fa-spin fa-fw font-weight-bold"></i> Loading..</>, key: 'pending', value: '' }]
-                        : [{ name: <><i className="fa fa-times-circle fa-fw text-danger font-weight-bold"></i> Error loading room schedule</>, key: 'errored', value: '' }]
+                    : [{ name: <><b>{data.name}</b> has nothing scheduled.</>, key: 'noEvents', value: '' }]
+                : state === 'loading'
+                    ? [{ name: <><i className="fa fa-spinner fa-spin fa-fw font-weight-bold"></i> Loading..</>, key: 'pending', value: '' }]
+                    : [{ name: <><i className="fa fa-times-circle fa-fw text-danger font-weight-bold"></i> Error loading room schedule</>, key: 'errored', value: '' }]
         },
         {
             icon: 'fa fa-users',
