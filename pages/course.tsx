@@ -27,7 +27,7 @@ const CoursePage = () => {
                                             <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
                                                 Explore NaN courses
                                             </h2>
-                                            <CobaltSearch feelingLucky />
+                                            <CobaltSearch feelingSilly />
                                         </div>
                                     </div>
                                 </div>
