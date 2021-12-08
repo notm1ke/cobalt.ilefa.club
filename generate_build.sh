@@ -1,4 +1,4 @@
-MAJOR_VERSION=3.0.0
+MAJOR_VERSION=4.0.0
 GENERATED_TIME=$(date +'%s')
 COMMIT_SHA=$(git log --oneline | head -1 | awk '{print substr ($0, 0, 7)}')
 COMMIT_MESSAGE=$(git log --oneline | head -1 | awk '{print substr ($0, 9)}')

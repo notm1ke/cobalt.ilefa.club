@@ -64,3 +64,8 @@
 .titleLineHeight {
     line-height: 3.5rem !important;
 }
+
+.roomList {
+    list-style-type: none !important;
+    margin-left: -39px !important;
+}

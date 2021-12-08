@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Badge, Collapse } from 'reactstrap';
 import { ProfessorData } from '@ilefa/husky';
 import { BluepagesRecord } from '@ilefa/bluepages';
+import { decode as decodeEntities } from 'html-entities';
 import { useBluepages, useProfessor } from '../../../hooks';
 
 import {
@@ -141,7 +142,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                 <p><b>Bluepages Report:</b></p>
                                 <ul className={styles.ratingTags}>
                                     { bLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
-                                    { bError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+                                    { bError && <li>Report for <b>{professor.name}</b> is not available.</li> }
 
                                     {
                                         bluepages && !bLoading && (
@@ -150,7 +151,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                                 <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />
                                                 <BluepagesAttribute data={bluepages} attribute="building" display="Building:" />
                                                 <BluepagesAttribute data={bluepages} attribute="department" display="Dept:" />
-                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => capitalizeFirst(title.toLowerCase())} />
+                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => decodeEntities(capitalizeFirst(title.toLowerCase()))} />
                                             </>
                                         )
                                     }
@@ -224,7 +225,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                 <p><b>Bluepages Report:</b></p>
                                 <ul className={styles.ratingTags}>
                                     { bLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
-                                    { bError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+                                    { bError && <li>Report for <b>{professor.name}</b> is not available.</li> }
 
                                     {
                                         bluepages && !bLoading && (
@@ -233,7 +234,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                                 <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />
                                                 <BluepagesAttribute data={bluepages} attribute="building" display="Building:" />
                                                 <BluepagesAttribute data={bluepages} attribute="department" display="Dept:" />
-                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => capitalizeFirst(title.toLowerCase())} />
+                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => decodeEntities(capitalizeFirst(title.toLowerCase()))} />
                                             </>
                                         )
                                     }

@@ -6,7 +6,13 @@ import styles from '../components/styling/home.module.css';
 import { mdiFlask } from '@mdi/js';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
-import { getCurrentSemester, intToWords } from '../util';
+
+import {
+    getCurrentSemester,
+    intToWords,
+    isDevelopment,
+    isPreview
+} from '../util';
 
 import {
     CobaltSearch,
@@ -23,6 +29,7 @@ const HomePage = () => {
     let rawDays = moment('2021-12-17').diff(moment(), 'days');
     let days = (rawDays - 7) + 1;
     let isBreak = days <= 0;
+    let isFinals = rawDays > 0 && isBreak;
     
     return (
         <main>
@@ -55,10 +62,18 @@ const HomePage = () => {
                                         <h2 className={`${styles.tagline} display-4 font-weight-normal text-white mb-5`}>
                                             An intelligent suite of tools built by UConn students, for UConn students.
                                         </h2>
-                                        <CobaltSearch />
+                                        <CobaltSearch feelingSilly={isDevelopment() || isPreview()} />
                                         <small className="text-secondary">
-                                            <i className={'fa ' + (isBreak ? 'fa-smile text-success' : 'fa-clock text-orange') + ' fa-fw mr-1'}></i>
-                                            <i>{ isBreak ? 'The semester is over, enjoy your well deserved break!' : `There are ${intToWords(days)} school day${days === 1 ? '' : 's'} left in the ${getCurrentSemester()} semester.` }</i>
+                                            <i className={'fa ' + (isBreak && !isFinals ? 'fa-smile text-success' : isFinals ? 'fas fa-flushed text-orange' : 'fa-clock text-orange') + ' fa-fw mr-1'}></i>
+                                            <i>
+                                                {
+                                                    isBreak && !isFinals
+                                                        ? 'The semester is over, enjoy your well deserved break!'
+                                                        : isFinals
+                                                            ? 'Good luck on your finals - you\'ll do great!'
+                                                            : `There are ${intToWords(days)} school day${days === 1 ? '' : 's'} left in the ${getCurrentSemester()} semester.`
+                                                }
+                                            </i>
                                         </small>
                                     </div>
                                 </div>

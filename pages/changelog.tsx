@@ -9,27 +9,7 @@ import { isPreview } from '../util';
 import { Footer, InlineLink, Nav, PreviewPage } from '../components';
 import { COMMIT_HASH, INSTANCE_HOST, RELEASE_CHANNEL } from '../util/build';
 
-const CHANGELOG = [
-    "Introduced dorms integration (with special thanks to the r/UConnDorms team)",
-    "Introduced dining halls integration", 
-    "Added section identifier to SectionsTab extra info (since mobile browser likes to cut it off in the table-view)",
-    "Added new hooks and API routes for dorms & dining halls services",
-    "Added new standard buttons (i.e. ContributorButton)",
-    "Added honors warning to OverviewTab + ExpandedSectionsTab + Search",
-    "Added room icons to SectionsTab",
-    "Added new preview changelogs",
-    "Added new preview utility components, much like dev components",
-    "Added more in-depth inline metrics viewer",
-    "Added room schedules to Room Inspection UI",
-    "Added utility hooks such as useToggle and useLocalStorage",
-    "Added semester markers to SectionsTab section view if multiple different semesters are displayed",
-    "Added click-to-copy component & implemented it with Class Number and Term Code in SectionsTab",
-    "Changed the way build info is retrieved, now using a build_info.json file that is generated on build",
-    "Split massive utility file into multiple different files under the util folder",
-    "Fixed mobile browser zooming in when clicking input fields",
-    "Fixed some broken mobile responsiveness / styling",
-    "Fixed navigation dropdowns looking weird on mobile (now forced to switch to non-icon view)"
-]
+const CHANGELOG = []
 
 const ChangelogPage = () => (
     <PreviewPage allowDev>
@@ -62,7 +42,12 @@ const ChangelogPage = () => (
                             <i className="fa fa-stream fa-fw mb-3"></i> Changes in this Preview
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 {
-                                    CHANGELOG.map(ent => (
+                                    !CHANGELOG.length && (
+                                        <>There are no listed changes for this instance.</>
+                                    )
+                                }
+                                {
+                                    CHANGELOG.length && CHANGELOG.map(ent => (
                                         <li key={Math.random()} className={previewStyles.changelogItem}>
                                             - {ent}
                                         </li>

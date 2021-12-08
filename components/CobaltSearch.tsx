@@ -121,10 +121,10 @@ const AdvancedSearchComponent: React.FC<AdvancedSearchComponentProps> = ({ show,
 )
 
 export interface CobaltSearchProps {
-    feelingLucky?: boolean;
+    feelingSilly?: boolean;
 }
 
-export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
+export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
     const router = useRouter();
 
     const [query, setQuery] = useState('');
@@ -318,8 +318,8 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
             return;
 
         setLoading(true);
-        let lucky = data[Math.floor(Math.random() * data.length)];
-        router.push(`/course/${lucky.name.toUpperCase()}`);
+        let silly = data[Math.floor(Math.random() * data.length)];
+        router.push(`/course/${silly.name.toUpperCase()}`);
     }
 
     return (
@@ -350,7 +350,7 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
                                 </span>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <div className={feelingLucky ? styling.inputBoxRadiusEgg : styling.inputBoxRadius}>
+                        <div className={feelingSilly ? styling.inputBoxRadiusEgg : styling.inputBoxRadius}>
                             <input {...inputProps} />
                             <AdvancedSearchComponent
                                 show={showAdvanced}
@@ -360,14 +360,14 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
                                 />
                         </div>
                         { 
-                            feelingLucky && (
+                            feelingSilly && (
                                 <>
-                                    <span id="feeling-lucky" className={`btn btn-primary btn-link btn-sm ${styling.feelingLuckyButton}`} onClick={() => pickSillyCourse()}>
-                                        <i className="fa fa-egg fa-fw text-white"></i>
+                                    <span id="feeling-silly" className={`btn btn-primary btn-link btn-sm ${styling.feelingSillyButton}`} onClick={() => pickSillyCourse()}>
+                                        <i className="fa fa-dice fa-fw text-white"></i>
                                     </span>
-                                    <UncontrolledTooltip target="feeling-lucky" placement="bottom">
-                                        <b>I'm feeling lucky!</b>
-                                        <br/>Take me to a random course.
+                                    <UncontrolledTooltip target="feeling-silly" placement="bottom">
+                                        <b>I'm feeling silly</b>
+                                        <br/>Take me to a completely random extremely silly course.
                                     </UncontrolledTooltip>
                                 </>
                             )
@@ -405,7 +405,7 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
                     disabled: !enabled,
                     type: 'text',
                     placeholder: 'Search for any course..',
-                    className: `${feelingLucky ? styling.noRadiusFormGroup : 'form-control-alternative'} form-control`,
+                    className: `${feelingSilly ? styling.noRadiusFormGroup : 'form-control-alternative'} form-control`,
                     onChange,
                     onKeyUp: e => onKeyUp(e, suggestions),
                 }}

@@ -2,6 +2,7 @@ import React from 'react';
 import MdiIcon from '@mdi/react';
 import DataTable from 'react-data-table-component';
 import Classrooms from '@ilefa/husky/classrooms.json';
+
 import styles from '../../styling/inspection.module.css';
 
 import { ErrorTab } from '.';
@@ -10,6 +11,7 @@ import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useToggle } from '../../../hooks';
 import { mdiChevronDown } from '@mdi/js';
+import { ROOM_REGEX_PATTERN } from '@ilefa/bluesign';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
 import { BuildingCode, Classroom, SectionData } from '@ilefa/husky';
@@ -81,16 +83,18 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                             : data.location.name === 'No Room Required - Online'
                                                 ? 'Virtual'
                                                 : multipleRooms
-                                                    ? rooms.map((ent, i) => {
-                                                        ent = ent.replace(' ', '');
-                                                        let room = Classrooms.find(room => room.name === ent);
-                                                        let end = i === rooms.length - 1 ? '' : ', ';
-                                                        if (!room) return <span>{ent + end}</span>
-                                                        
-                                                        return <a href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
-                                                                <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{ent}</a>{end}</>
-                                                            </a>
-                                                    })
+                                                    ? rooms
+                                                        .filter(room => ROOM_REGEX_PATTERN.test(room))
+                                                        .map((ent, i, arr) => {
+                                                            ent = ent.replace(' ', '');
+                                                            let room = Classrooms.find(room => room.name === ent);
+                                                            let end = i === arr.length - 1 ? '' : ', ';
+                                                            if (!room) return <span>{ent + end}</span>
+                                                            
+                                                            return <a href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
+                                                                    <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{ent}</a>{end}</>
+                                                                </a>
+                                                        })
                                                     : !!managedRoom
                                                         ? <a href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
                                                             <>{getIconForRoom(managedRoom as Classroom, 'text-primary')} <a className="text-primary shine">{data.location.name}</a></>
@@ -161,9 +165,10 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
 export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
     const { sections } = data;
 
-    if (!sections.length) return (
-        <ErrorTab message="There aren't any sections been taught at the moment." color="text-gray" />
-    )
+    if (!sections.length)
+        return <ErrorTab
+            message="There aren't any sections been taught at the moment."
+            color="text-gray" />
 
     // if different terms in section data, show semester marker
     let useTerm = sections.some(section => section.term !== sections[0].term);
@@ -188,18 +193,21 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             name: 'Room',
             selector: 'location.name',
             format: (row, _i) => {
-                let room: string | JSX.Element = row.location.name
+                let room: string | JSX.Element = !!row.location.name
                     ? row.location.name === 'No Room Required - Online'
-                    ? 'None'
-                    : getMeetingRoom(row.location.name)
-                        .map(token => !token.includes(' ') ? token.split(/\d/).join(' ') : token)
-                        .map(name => getRealRoomCode(row.location.name, row.location.name.split(' ')[0]) + ' ' + name.split(' ')[1])
-                        .join(', ')
+                        ? 'None'
+                        : getMeetingRoom(row.location.name)
+                            .filter(room => ROOM_REGEX_PATTERN.test(room))
+                            .map(token => !token.includes(' ') ? token.split(/\d/).join(' ') : token)
+                            .map(name => getRealRoomCode(row.location.name, row.location.name.split(' ')[0]) + ' ' + name.split(' ')[1])
+                            .join(', ')
                     : 'Unknown';
 
                 let tokens = room.split(', ');
                 if (tokens.length > 1) {
-                    let all = getMeetingRoom(row.location.name).sort((a, b) => a.localeCompare(b));
+                    let all = getMeetingRoom(row.location.name)
+                        .filter(room => ROOM_REGEX_PATTERN.test(room))
+                        .sort((a, b) => a.localeCompare(b));
                     room = <>{all[0]} <span className={styles.extraRoomsIndicator}>{'+' + (all.length - 1)}</span></>;
                 }
 

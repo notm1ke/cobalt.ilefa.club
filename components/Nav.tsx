@@ -94,6 +94,7 @@ const ELEMENTS: NavElement[] = [
             ]
         },
         stagingOnly: true,
+        devOnly: true,
     },
     {
         name: 'buildings',

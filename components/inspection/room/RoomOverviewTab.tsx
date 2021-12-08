@@ -1,11 +1,11 @@
-import Link from 'next/link';
 import ThreeSixtyRenderer from 'react-photosphere';
 import styles from '../../styling/inspection.module.css';
 
 import { useEffect, useState } from 'react';
 import { RoomInspectionPayload } from '../../../hooks';
 import { capitalizeFirst, RoomImageMode } from '../../../util';
-import { BoardType, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
+import { BoardType, BuildingCode, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
+import { BuildingOverviewModal } from './BuildingOverviewModal';
 
 export interface RoomOverviewTabProps {
     room: RoomInspectionPayload;
@@ -15,6 +15,7 @@ export interface RoomOverviewTabProps {
 
 export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMode, styledName }) => {
     const [rendered, setRendered] = useState(false);
+    const [buildingModal, setBuildingModal] = useState(false);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -34,11 +35,13 @@ export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMod
                 <b>Technology:</b> {TechType[room.techType]}<br/>
                 {room.techDescription && <><b>Installed Tech:</b> {room.techDescription}<br/></>}
                 <b>Lecture Capture:</b> {LectureCaptureType[room.lectureCapture]}<br/><br/>
-                <Link href={`/buildings#${room.building.code}`}>
-                    <a className="text-primary-light shine">
-                        <i className="fa fa-link fa-fw"></i> View more information about <b className="">{room.building.name}</b>.
-                    </a>
-                </Link>
+                <span className="text-primary-light shine pointer" onClick={() => setBuildingModal(true)}>
+                    <i className="fa fa-link fa-fw"></i> View more information about <b className="">{room.building.name}</b>.
+                </span>
+                <BuildingOverviewModal
+                    buildingType={room.building.code as keyof typeof BuildingCode}
+                    open={buildingModal}
+                    setOpen={setBuildingModal} />
             </p>
             {/* <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-code fa-fw"></i> Raw Data</pre>
             <pre className={styles.description}>{JSON.stringify(data, null, 3)}</pre><br/> */}
