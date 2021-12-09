@@ -2,7 +2,7 @@ import moment from 'moment';
 import styles from '../../styling/inspection.module.css';
 
 import { DataView } from '../../';
-import { ROOM_REGEX_PATTERN, ScheduleEntry } from '@ilefa/bluesign';
+import { ScheduleEntry } from '@ilefa/bluesign';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { BluesignResponsePayload, useBluesign } from '../../../hooks';
 import { capitalizeFirst, CompleteRoomPayload, getDateFromTime, getLatestTimeValue } from '../../../util';
