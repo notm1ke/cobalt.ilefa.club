@@ -2,10 +2,11 @@ import moment from 'moment';
 import styles from '../../styling/inspection.module.css';
 
 import { DataView } from '../../';
-import { ScheduleEntry } from '@ilefa/bluesign';
+import { ROOM_REGEX_PATTERN, ScheduleEntry } from '@ilefa/bluesign';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { BluesignResponsePayload, useBluesign } from '../../../hooks';
-import { CompleteRoomPayload, getDateFromTime, getLatestTimeValue } from '../../../util';
+import { capitalizeFirst, CompleteRoomPayload, getDateFromTime, getLatestTimeValue } from '../../../util';
+import { COURSE_IDENTIFIER } from '@ilefa/husky';
 
 export interface RoomSidebarProps {
     room: CompleteRoomPayload;
@@ -31,6 +32,15 @@ type CustomScheduleEntry = ScheduleEntry & {
 
 type CurrentAndNextEvents = [CustomScheduleEntry | undefined, CustomScheduleEntry[] | undefined, boolean];
 
+const needsEllipses = (event: string, limit: number) => event.length > limit;
+
+const getShortenedName = ({ event }: CustomScheduleEntry, limit: number) => {
+    let capitalized = capitalizeFirst(event);
+    if (needsEllipses(event, limit))
+        return capitalized.substring(0, limit) + '..';
+    return capitalized;
+}
+
 const getRoomStatus = (room: CompleteRoomPayload, schedule: BluesignResponsePayload) => {
     let events = schedule
         .entries
@@ -47,12 +57,12 @@ const getRoomStatus = (room: CompleteRoomPayload, schedule: BluesignResponsePayl
                 <span className="text-dark">
                     <div><span className={styles.pulsatingCircle}></span></div>
                     <div className={styles.pulsatingCircleSeparator}>
-                        <b className={`text-success ${styles.roomScheduleStatus}`}> {current.event}</b> for next <span className="text-purple">{getLatestTimeValue(current.endDate.getTime() - Date.now())}</span>.
+                        <b className={`text-success ${styles.roomScheduleStatus}`}> {getShortenedName(current, 12)}</b> for next <span className="text-purple">{getLatestTimeValue(current.endDate.getTime() - Date.now())}</span>.
                     </div>
                 </span>
             : next.length ?
                 <span className="text-dark">
-                    <b className={`text-warning ${styles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {next[0].event}</b> {moment(next[0].startDate).fromNow()}
+                    <b className={`text-warning ${styles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {getShortenedName(next[0], 20)}</b> {moment(next[0].startDate).fromNow()}
                 </span>
             : <span className="text-dark">
                 <b className={`text-success ${styles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {room.name}</b> is free.
@@ -117,7 +127,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                 ? schedule && schedule.entries.length
                     ? schedule
                         .entries
-                        .filter(entry => entry.section)
+                        .filter(entry => entry.section && COURSE_IDENTIFIER.test(entry.event.replace(/\s/, '')))
                         .map(entry => ({
                             ...entry,
                             startDate: getDateFromTime(entry.start),
@@ -125,8 +135,8 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                         }))
                         .map(entry => ({
                             name: <>
-                                <a href={`/course/${entry.event.replace(/\s/, '')}`} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${entry.event.replace(/\s/, '')}-${entry.section}`}>{entry.event}</a>
-                                <UncontrolledTooltip target={`room-event-${entry.event.replace(/\s/, '')}-${entry.section}`}>
+                                <a href={`/course/${entry.event.replace(/\s/g, '')}`} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>{entry.event}</a>
+                                <UncontrolledTooltip target={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>
                                     <b>{entry.event} ({entry.section})</b>
                                     <br />Click to view information about this course.
                                 </UncontrolledTooltip>
