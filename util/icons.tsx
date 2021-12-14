@@ -107,6 +107,7 @@ import {
     mdiPrescription,
     mdiQuadcopter,
     mdiResistor,
+    mdiRice,
     mdiRun,
     mdiSafetyGoggles,
     mdiSchool,
@@ -462,7 +463,7 @@ export const getIconForDiningHall = (hall: keyof typeof DiningHallType, classes 
         case 'PUTNAM': return <MdiIcon path={mdiBlender} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'SOUTH': return <MdiIcon path={mdiFoodSteak} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'TOWERS': return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case 'WHITNEY': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'WHITNEY': return <MdiIcon path={mdiRice} className={`fa-fw ${classes}`} size={`${size}px`} />;
         default: return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
     }
 }

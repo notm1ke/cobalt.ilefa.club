@@ -116,8 +116,35 @@ const HomePage = () => {
                     ]}
                 />
     
+                <DevElement>
+                    <FeatureSection
+                        title="Maps"
+                        flip
+                        glyph="/glyphs/maps.svg"
+                        alt="Maps Glyph"
+                        description="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo eum reiciendis, alias ullam deserunt accusamus ipsam quo. Sequi modi voluptate molestiae, doloremque dicta assumenda incidunt animi, voluptas, at sunt enim?"
+                        className="background-circuits"
+                        tags={[
+                            {
+                                icon: <i className="fa fa-map-pin fa-fw"></i>,
+                                color: 'primary',
+                                display: 'Points of Interest'
+                            },
+                            {
+                                icon: <i className="fa fa-building fa-fw"></i>,
+                                color: 'primary',
+                                display: 'Building Directories & Room Schedules'
+                            },
+                            {
+                                icon: <i className="fas fa-graduation-cap fa-fw"></i>,
+                                color: 'primary',
+                                display: 'Powerful Course Integration'
+                            }
+                        ]}
+                    />
+                </DevElement>
+    
                 <FeatureSection
-                    flip
                     title="Buildings"
                     glyph="/glyphs/building.svg"
                     alt="Buildings Glyph"
@@ -137,12 +164,13 @@ const HomePage = () => {
                         {
                             icon: <i className="fa fa-clone fa-fw"></i>,
                             color: 'primary-light',
-                            display: 'Detailed Room Previews'
+                            display: 'Room Schedules'
                         }
                     ]}
                 />
 
                 <FeatureSection
+                    flip
                     title="Dorms"
                     glyph="/glyphs/dorms.svg"
                     alt="Dorms Glyph"
@@ -168,7 +196,6 @@ const HomePage = () => {
                 />
     
                 <FeatureSection
-                    flip
                     title="Dining Halls"
                     glyph="/glyphs/dining.svg"
                     alt="Dining Glyph"
@@ -195,6 +222,7 @@ const HomePage = () => {
 
                 <DevElement>
                     <FeatureSection
+                        flip
                         title="Snapshots"
                         glyph="/glyphs/snapshot.svg"
                         alt="Snapshot Glyph"

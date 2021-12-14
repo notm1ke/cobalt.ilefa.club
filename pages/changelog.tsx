@@ -42,12 +42,12 @@ const ChangelogPage = () => (
                             <i className="fa fa-stream fa-fw mb-3"></i> Changes in this Preview
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 {
-                                    !CHANGELOG.length && (
+                                    CHANGELOG.length === 0 && (
                                         <>There are no listed changes for this instance.</>
                                     )
                                 }
                                 {
-                                    CHANGELOG.length && CHANGELOG.map(ent => (
+                                    CHANGELOG.length === 0 && CHANGELOG.map(ent => (
                                         <li key={Math.random()} className={previewStyles.changelogItem}>
                                             - {ent}
                                         </li>

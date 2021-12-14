@@ -3,10 +3,16 @@ import styles from '../../styling/inspection.module.css';
 
 import { DataView } from '../../';
 import { ScheduleEntry } from '@ilefa/bluesign';
+import { COURSE_IDENTIFIER } from '@ilefa/husky';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { BluesignResponsePayload, useBluesign } from '../../../hooks';
-import { capitalizeFirst, CompleteRoomPayload, getDateFromTime, getLatestTimeValue } from '../../../util';
-import { COURSE_IDENTIFIER } from '@ilefa/husky';
+
+import {
+    capitalizeFirst,
+    CompleteRoomPayload,
+    getDateFromTime,
+    getLatestTimeValue
+} from '../../../util';
 
 export interface RoomSidebarProps {
     room: CompleteRoomPayload;

@@ -56,13 +56,6 @@ const ELEMENTS: NavElement[] = [
         key: 'home',
     },
     {
-        name: 'courses',
-        icon: 'fa fa-shapes',
-        href: '/course',
-        key: 'courses',
-        devOnly: true,
-    },
-    {
         name: 'campus',
         icon: 'fa fa-city',
         href: '/campus',
@@ -97,6 +90,13 @@ const ELEMENTS: NavElement[] = [
         devOnly: true,
     },
     {
+        name: 'maps',
+        icon: 'fa fa-map-marked-alt',
+        href: '/maps',
+        key: 'maps',
+        devOnly: true,
+    },
+    {
         name: 'buildings',
         icon: 'fa fa-city',
         href: '/buildings',
@@ -117,13 +117,6 @@ const ELEMENTS: NavElement[] = [
         key: 'dorms',
         prodOnly: true,
     },
-    // {
-    //     name: 'routing',
-    //     icon: 'fa fa-route',
-    //     href: '/routing',
-    //     key: 'routing',
-    //     devOnly: true,
-    // },
     {
         name: 'snapshots',
         icon: 'fa fa-history',
@@ -199,7 +192,7 @@ export const Nav = () => {
     
     const iconMode = isMobile
         ? false
-        : renderableElements.length > 7;
+        : renderableElements.length > 8;
 
     return (
         <header className="header-global">

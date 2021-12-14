@@ -165,7 +165,9 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
         (input, { name, catalogName }) => name.toLowerCase().slice(0, input.length) === input.toLowerCase()
                                        || catalogName.toLowerCase().slice(0, input.length) === input.toLowerCase(),
         (input, { name, catalogName }) => name.toLowerCase().includes(input)
-                                       || catalogName.toLowerCase().includes(input)
+                                       || catalogName.toLowerCase().includes(input),
+        (input, { name, catalogName }) => new RegExp(input).test(name)
+                                       || new RegExp(input).test(catalogName),
     ];
 
     const suggestFor = (input: string) => {
