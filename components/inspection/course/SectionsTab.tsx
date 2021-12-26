@@ -178,10 +178,10 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             selector: 'section',
             sortable: true,
             format: (row, _i) => <>
-                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}`}>
+                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         [{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode) + (useTerm ? `/${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}` : '')}]
                                     </b> {row.section}
-                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}-${row.campus}`}>
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         <b>{row.campus}{useTerm ? ` - ${row.term}` : ''}</b>
                                         <br/><span className={styles.modalityTooltipType}>{row.mode}</span>
                                         <br/><span className={styles.modalityTooltipDescription}>{Modalities[getModalityIndicator(row.mode)] || ''}</span>
@@ -212,10 +212,10 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                 }
 
                 return <>
-                            <span id={`tooltip-room-${row.section}`}>{room}</span>
+                            <span id={`tooltip-room-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>{room}</span>
                             {
                                 room !== 'None' && room !== 'Unknown' && (
-                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-room-${row.section}`}>
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-room-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         {
                                             tokens
                                                 .sort((a, b) => a.localeCompare(b))
@@ -253,10 +253,10 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
 
                 return (
                     <>
-                        <span id={`tooltip-prof-${row.section}`}>{display}</span>
+                        <span id={`tooltip-prof-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>{display}</span>
                         {
                             row.instructor.trim() && (
-                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-prof-${row.section}`}>
+                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-prof-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                     {
                                         cleanName
                                             .split(', ')
@@ -281,8 +281,8 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                     return tokens;
 
                 return <>
-                    <span id={`tooltip-schedule-${row.section}`}><>{tokens[0]} {tokens.length !== 1 ? <span className={styles.extraRoomsIndicator}>{'+' + (tokens.length - 1)}</span> : <></>}</></span>
-                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-schedule-${row.section}`}>
+                    <span id={`tooltip-schedule-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}><>{tokens[0]} {tokens.length !== 1 ? <span className={styles.extraRoomsIndicator}>{'+' + (tokens.length - 1)}</span> : <></>}</></span>
+                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-schedule-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                         {
                             (getMeetingTime(row.schedule.trim(), sections[i].location, false, undefined, false) as string)
                                 .split(' & ')
@@ -301,8 +301,8 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             format: (row, _i) => <span className={row.enrollment.full ? 'text-danger' : 'text-success'}>
                                     {row.enrollment.current + '/' + row.enrollment.max} {row.enrollment.waitlist
                                         ?   <>
-                                                <span className="text-primary" id={`tooltip-${row.section}`}>(+{row.enrollment.waitlist})</span>{" "}
-                                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-${row.section}`}>
+                                                <span className="text-primary" id={`tooltip-waitlist-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>(+{row.enrollment.waitlist})</span>{" "}
+                                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-waitlist-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                                     Waitlist Spaces: <b>{row.enrollment.waitlist}</b>
                                                 </UncontrolledTooltip>
                                             </>
