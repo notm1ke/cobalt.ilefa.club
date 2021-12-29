@@ -41,10 +41,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // some professors are listed as 'Name 1, Name 2', this creates separate objects for each
     let professors = result.professors;
     for (let prof of professors) {
-        if (prof.name.includes(',')) {
+        if (prof.name.includes(' & ')) {
             let names = prof
                 .name
-                .split(',')
+                .split(' & ')
                 .map(name => name.trim());
 
             prof.name = names[0];
@@ -59,6 +59,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             professors.push(...others);
         }
     }
+
+    professors = professors.filter((prof, i) => professors.findIndex(p => p.name === prof.name) === i);
 
     return res
         .status(200)

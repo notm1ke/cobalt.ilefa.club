@@ -22,7 +22,7 @@ export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetr
     const distinct = data
         .professors!
         .map(ent => ({ ...ent, name: ent.name.trim() }))
-        .filter(ent => !ent.name.includes(','))
+        .filter(ent => !ent.name.includes(' & '))
         .filter(ent => !!ent.name);
     
     if (!data.professors!.length) return (
