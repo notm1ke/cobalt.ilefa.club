@@ -1,6 +1,13 @@
 import { isValidCampus } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CampusType, COURSE_IDENTIFIER, searchCourse, SearchParts } from '@ilefa/husky';
+
+import {
+    CampusType,
+    COURSE_IDENTIFIER,
+    ProfessorData,
+    searchCourse,
+    SearchParts
+} from '@ilefa/husky';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method && req.method !== 'GET')
@@ -31,10 +38,34 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(404)
             .json({ message: 'Course not found' });
 
+    // some professors are listed as 'Name 1, Name 2', this creates separate objects for each
+    let professors = result.professors;
+    for (let prof of professors) {
+        if (prof.name.includes(' & ')) {
+            let names = prof
+                .name
+                .split(' & ')
+                .map(name => name.trim());
+
+            prof.name = names[0];
+
+            let others: ProfessorData[] = names
+                .slice(1)
+                .map(name => ({
+                    ...prof,
+                    name
+                }));
+
+            professors.push(...others);
+        }
+    }
+
+    professors = professors.filter((prof, i) => professors.findIndex(p => p.name === prof.name) === i);
+
     return res
         .status(200)
         .json({
-            professors: result.professors,
+            professors,
             timings: Date.now() - start
         });
 }
