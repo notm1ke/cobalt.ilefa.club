@@ -146,6 +146,7 @@ const HomePage = () => {
     
                 <FeatureSection
                     title="Buildings"
+                    flip
                     glyph="/glyphs/building.svg"
                     alt="Buildings Glyph"
                     className="background-circuits"
@@ -170,7 +171,6 @@ const HomePage = () => {
                 />
 
                 <FeatureSection
-                    flip
                     title="Dorms"
                     glyph="/glyphs/dorms.svg"
                     alt="Dorms Glyph"
@@ -197,6 +197,7 @@ const HomePage = () => {
     
                 <FeatureSection
                     title="Dining Halls"
+                    flip
                     glyph="/glyphs/dining.svg"
                     alt="Dining Glyph"
                     className="background-circuits"
