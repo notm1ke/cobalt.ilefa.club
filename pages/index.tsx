@@ -8,6 +8,7 @@ import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
 
 import {
+    capitalizeFirst,
     getCurrentSemester,
     intToWords,
     isDevelopment,
@@ -26,10 +27,8 @@ import {
 } from '../components';
 
 const HomePage = () => {
-    let rawDays = moment('2021-12-17').diff(moment(), 'days');
-    let days = (rawDays - 7) + 1;
-    let isBreak = days <= 0;
-    let isFinals = rawDays > 0 && isBreak;
+    let rawDays = moment('2022-01-19').diff(moment(), 'days');
+    let breakOver = rawDays <= 0;
     
     return (
         <main>
@@ -64,14 +63,12 @@ const HomePage = () => {
                                         </h2>
                                         <CobaltSearch feelingSilly={isDevelopment() || isPreview()} />
                                         <small className="text-secondary">
-                                            <i className={'fa ' + (isBreak && !isFinals ? 'fa-smile text-success' : isFinals ? 'fas fa-flushed text-orange' : 'fa-clock text-orange') + ' fa-fw mr-1'}></i>
+                                            <i className={'fa ' + (breakOver ? 'fas fa-chalkboard-teacher text-warning' : 'fa-clock text-success') + ' fa-fw mr-1'}></i>
                                             <i>
                                                 {
-                                                    isBreak && !isFinals
-                                                        ? 'The semester is over, enjoy your well deserved break!'
-                                                        : isFinals
-                                                            ? 'Good luck on your finals - you\'ll do great!'
-                                                            : `There are ${intToWords(days)} school day${days === 1 ? '' : 's'} left in the ${getCurrentSemester()} semester.`
+                                                    breakOver
+                                                        ? `The ${getCurrentSemester()} semester has started, good luck!`
+                                                        : `There are ${intToWords(rawDays)} day${rawDays === 1 ? '' : 's'} left until the ${capitalizeFirst(getCurrentSemester())} semester starts.`
                                                 }
                                             </i>
                                         </small>
@@ -126,7 +123,7 @@ const HomePage = () => {
                         className="background-circuits"
                         tags={[
                             {
-                                icon: <i className="fa fa-map-pin fa-fw"></i>,
+                                icon: <i className="fa fa-map-marker-alt fa-fw"></i>,
                                 color: 'primary',
                                 display: 'Points of Interest'
                             },
@@ -136,9 +133,9 @@ const HomePage = () => {
                                 display: 'Building Directories & Room Schedules'
                             },
                             {
-                                icon: <i className="fas fa-graduation-cap fa-fw"></i>,
+                                icon: <i className="fa fa-utensils fa-fw"></i>,
                                 color: 'primary',
-                                display: 'Powerful Course Integration'
+                                display: 'Dining Hall Menus'
                             }
                         ]}
                     />

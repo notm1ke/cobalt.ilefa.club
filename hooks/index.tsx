@@ -1,6 +1,7 @@
 export * from './useBluepages';
 export * from './useBluesign';
 export * from './useBuildings';
+export * from './useCartographer';
 export * from './useCourse';
 export * from './useCourseList';
 export * from './useDiningHall';
@@ -14,5 +15,6 @@ export * from './useRoom';
 export * from './useStatistics';
 export * from './useStatus';
 
+export * from './utils/useDynamicRefs';
 export * from './utils/useLocalStorage';
 export * from './utils/useToggle';

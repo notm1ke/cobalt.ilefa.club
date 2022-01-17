@@ -58,3 +58,10 @@
 .cardModalInlineIcon {
     vertical-align: bottom !important;
 }
+
+.popoverCardTitle {
+    font-family: 'Roboto Mono', monospace !important;         
+    font-size: 0.90rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.045em !important;
+}
