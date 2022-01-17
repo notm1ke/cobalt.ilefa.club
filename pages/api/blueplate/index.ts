@@ -50,11 +50,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (!hall) return res
         .status(200)
         .json({
-            halls: Object
+            halls: await Promise.all(Object
                 .keys(DiningHallType)
-                .map(type => ({
-                    ...DiningHalls[type.toUpperCase()],
-                    status: getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate))
+                .map(async type => {
+                    let data = await getMenu(DiningHallType[type.toUpperCase()], validatedDate);
+                    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate));
+                    if (status !== 'CLOSED' && (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0)))
+                        status = 'CLOSED';
+                        
+                    return { ...DiningHalls[type.toUpperCase()], status };
                 }))
         });
 
@@ -77,8 +81,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate));
-    if (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0))
-        status = DiningHallStatus.CLOSED;
+    if (status !== 'CLOSED' && (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0)))
+        status = 'CLOSED';
 
     return res
         .status(200)
