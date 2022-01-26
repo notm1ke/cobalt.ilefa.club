@@ -20,9 +20,8 @@ import {
 } from '../components';
 
 const HomePage = () => {
-    let rawDays = moment('2021-12-17').diff(moment(), 'days');
-    let days = (rawDays - 7) + 1;
-    let isBreak = days <= 0;
+    let rawDays = moment('2022-01-19').diff(moment(), 'days');
+    let breakOver = rawDays <= 0;
     
     return (
         <main>
@@ -57,9 +56,16 @@ const HomePage = () => {
                                         </h2>
                                         <CobaltSearch />
                                         <small className="text-secondary">
-                                            <i className={'fa ' + (isBreak ? 'fa-smile text-success' : 'fa-clock text-orange') + ' fa-fw mr-1'}></i>
-                                            <i>{ isBreak ? 'The semester is over, enjoy your well deserved break!' : `There are ${intToWords(days)} school day${days === 1 ? '' : 's'} left in the ${getCurrentSemester()} semester.` }</i>
+                                            <i className={'fa ' + (breakOver ? 'fas fa-chalkboard-teacher text-warning' : 'fa-clock text-success') + ' fa-fw mr-1'}></i>
+                                            <i>
+                                                {
+                                                    breakOver
+                                                        ? `The ${getCurrentSemester()} semester has started, good luck!`
+                                                        : `There are ${intToWords(rawDays)} day${rawDays === 1 ? '' : 's'} left until the ${capitalizeFirst(getCurrentSemester())} semester starts.`
+                                                }
+                                            </i>
                                         </small>
+
                                     </div>
                                 </div>
                             </div>
