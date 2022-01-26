@@ -6,7 +6,7 @@ import styles from '../components/styling/home.module.css';
 import { mdiFlask } from '@mdi/js';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
-import { getCurrentSemester, intToWords } from '../util';
+import { capitalizeFirst, getCurrentSemester, intToWords } from '../util';
 
 import {
     CobaltSearch,
