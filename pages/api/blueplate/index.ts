@@ -46,7 +46,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             day: parseInt(date.split('-')[1])
         }, { zone: 'America/New_York' });
 
-    console.log(`${date ? date : 'NOW'}`, validatedDate.toMillis())
+    console.log(`${date ? date : 'NOW'}`, validatedDate.toMillis(), validatedDate.toJSDate().getTime(), validatedDate.toJSDate(), validatedDate.toJSDate().getTime() === validatedDate.toMillis())
 
     if (!hall) return res
         .status(200)
