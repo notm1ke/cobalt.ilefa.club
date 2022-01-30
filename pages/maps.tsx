@@ -3,9 +3,10 @@ import styles from '../components/styling/card.module.css';
 
 import { useState } from 'react';
 import { Map, Marker } from 'pigeon-maps';
-import { DevPage, HoverablePopover } from '../components';
+import { DiningHallType } from '@ilefa/blueplate';
 import { MarkerPayload, useCartographer } from '../hooks';
 import { DAYLIGHT_SAVINGS, getDateFromTime } from '../util';
+import { DevPage, DiningHallInspection, HoverablePopover } from '../components';
 
 type PopoverEntry = {
     name: string;
@@ -24,6 +25,7 @@ enum BuildingColorType {
 const MapsPage = () => {
     const [markers, loading, error] = useCartographer();
     const [popovers, setPopovers] = useState<PopoverEntry[]>([]);
+    const [activeModal, setActiveModal] = useState<JSX.Element>();
 
     const icons = {
         academic: 'rgb(41, 96, 144)',
@@ -81,6 +83,17 @@ const MapsPage = () => {
             && now.getTime() <= end.getTime();
     }
 
+    // const getModal = (payload: MarkerPayload) => {
+    //     if (payload.type === 'dining' && payload.diningHallType)
+    //         return <DiningHallInspection
+    //             buildingType={payload.diningHallType as keyof typeof DiningHallType} 
+    //             open={true}
+    //             setOpen={() => setActiveModal(<></>)} 
+    //         />
+
+    //     return <></>;
+    // }
+
     return (
         <DevPage>
             <Head>
@@ -99,13 +112,12 @@ const MapsPage = () => {
                         <Marker
                             key={ent.position.lat + ent.position.lng}
                             anchor={[ent.position.lat, ent.position.lng]}
-                            onClick={() => console.log(ent)}
+                            onClick={() => setActiveModal(<DiningHallInspection buildingType={ent.diningHallType as keyof typeof DiningHallType} open={true} setOpen={() => setActiveModal(<></>)} />)}
                             color={icons[(ent as MarkerPayload).type ?? 'other']}
                             width={40}
                             className={ent.name.replace(/[\s._/\\&]/g, '')}
                             onMouseOver={() => togglePopover(ent, true)}
                             onMouseOut={() => togglePopover(ent, false)}
-
                         />
                     ))
                 }
@@ -148,6 +160,7 @@ const MapsPage = () => {
                     })
                 }
             </Map>
+            { activeModal && {...activeModal} }
         </DevPage>
     );
 }

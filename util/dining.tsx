@@ -101,3 +101,15 @@ export const getMealHours = (hall: keyof typeof DiningHallType, date = new Date(
 
     return DiningHallMealHours[status];
 }
+
+/**
+ * Returns whether the given input string is a
+ * valid dining hall type.
+ * 
+ * @param str the inputted string
+ */
+export const isDiningHallType = (str: string): str is keyof typeof DiningHallType => {
+    return Object
+        .keys(DiningHallType)
+        .includes(str as DiningHallType);
+}

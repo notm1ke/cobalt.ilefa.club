@@ -4,8 +4,8 @@ import styles from '../../styling/inspection.module.css';
 import { useEffect, useState } from 'react';
 import { RoomInspectionPayload } from '../../../hooks';
 import { capitalizeFirst, RoomImageMode } from '../../../util';
-import { BoardType, BuildingCode, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
 import { BuildingOverviewModal } from './BuildingOverviewModal';
+import { BoardType, BuildingCode, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
 
 export interface RoomOverviewTabProps {
     room: RoomInspectionPayload;

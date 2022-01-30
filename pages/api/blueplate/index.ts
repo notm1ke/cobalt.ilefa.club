@@ -1,5 +1,6 @@
+import { DateTime } from 'luxon';
+import { getEnumKeyByEnumValue } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DAYLIGHT_SAVINGS, getEnumKeyByEnumValue } from '../../../util';
 
 import {
     DiningHalls,
@@ -36,16 +37,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: 'Must specify dining hall to use historical lookup' });
 
-    let now = new Date();
+    let now = DateTime.now().setZone('America/New_York');
     let validatedDate = date
-        ? new Date(date)
+        ? DateTime.fromJSDate(new Date(date), {
+            zone: 'America/New_York'
+        })
         : now;
-    
-    let customDate = now.getTime() !== validatedDate.getTime();
-    if (!customDate && validatedDate.getTimezoneOffset() === 0) {
-        validatedDate.setHours(validatedDate.getHours() - 4);
-        DAYLIGHT_SAVINGS && validatedDate.setHours(validatedDate.getHours() - 1);
-    }
 
     if (!hall) return res
         .status(200)
@@ -53,8 +50,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             halls: await Promise.all(Object
                 .keys(DiningHallType)
                 .map(async type => {
-                    let data = await getMenu(DiningHallType[type.toUpperCase()], validatedDate);
-                    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate));
+                    let data = await getMenu(DiningHallType[type.toUpperCase()], validatedDate.toJSDate());
+                    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate.toJSDate()));
                     if (status !== 'CLOSED' && (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0)))
                         status = 'CLOSED';
                         
@@ -62,14 +59,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 }))
         });
 
-    let data = await getMenu(DiningHallType[hall.toUpperCase()], validatedDate);
+    let data = await getMenu(DiningHallType[hall.toUpperCase()], validatedDate.toJSDate());
     if (!data)
         return res
             .status(502)
             .json({ message: 'Bad Gateway' });
     
     // if weekend, merge breakfast + brunch menus, since they are the same - and will be able to display brunch tab
-    if (validatedDate.getDay() === 0 || validatedDate.getDay() === 6) {
+    if (validatedDate.weekday === 6 || validatedDate.weekday === 7) {
         let merged = data.meals.map(meal => {
             if (meal.name === 'Lunch')
                 meal.name = 'Brunch'
@@ -80,7 +77,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         data.meals = merged
     }
 
-    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate));
+    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall.toUpperCase()], validatedDate.toJSDate()));
     if (status !== 'CLOSED' && (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0)))
         status = 'CLOSED';
 
