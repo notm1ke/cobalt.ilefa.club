@@ -43,6 +43,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             zone: 'America/New_York'
         })
         : now;
+        
+    console.log(`${date ? date : 'NOW'}`, validatedDate.toMillis())
 
     if (!hall) return res
         .status(200)
