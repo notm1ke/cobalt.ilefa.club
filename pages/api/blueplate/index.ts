@@ -43,7 +43,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .fromObject({
             year: parseInt(date.split('-')[2]),
             month: parseInt(date.split('-')[0]),
-            day: parseInt(date.split('-')[1])
+            day: parseInt(date.split('-')[1]),
+            hour: 3,
+            minute: 33,
+            second: 33,
         }, { zone: 'America/New_York' });
 
     console.log(`${date ? date : 'NOW'}`, validatedDate.toMillis(), validatedDate.toJSDate().getTime(), validatedDate.toJSDate(), validatedDate.toJSDate().getTime() === validatedDate.toMillis())
