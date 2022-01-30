@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { DateTime } from 'luxon';
 import { getEnumKeyByEnumValue } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -9,6 +11,11 @@ import {
     getDiningHallStatus,
     getMenu
 } from '@ilefa/blueplate';
+
+axios.interceptors.request.use((rej) => {
+    console.log('->', rej.method, rej.url, rej.params, rej.data);
+    return rej;
+})
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method && req.method !== 'GET')
