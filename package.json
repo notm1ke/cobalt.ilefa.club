@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@ilefa/bluepages": "^1.0.0",
-    "@ilefa/blueplate": "^1.0.5-1",
+    "@ilefa/blueplate": "^1.0.5-2",
     "@ilefa/bluesign": "^1.0.0",
     "@ilefa/husky": "^1.1.4",
     "@mdi/font": "^5.9.55",
