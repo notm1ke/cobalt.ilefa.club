@@ -38,12 +38,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({ message: 'Must specify dining hall to use historical lookup' });
 
     let now = DateTime.now().setZone('America/New_York');
-    let validatedDate = date
-        ? DateTime.fromJSDate(new Date(date), {
-            zone: 'America/New_York'
-        })
-        : now;
-        
+    let validatedDate = now;
+    if (date) validatedDate = DateTime
+        .fromObject({
+            year: parseInt(date.split('-')[2]),
+            month: parseInt(date.split('-')[0]),
+            day: parseInt(date.split('-')[1])
+        }, { zone: 'America/New_York' });
+
     console.log(`${date ? date : 'NOW'}`, validatedDate.toMillis())
 
     if (!hall) return res
