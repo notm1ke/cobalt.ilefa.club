@@ -7,6 +7,9 @@ import { DiningHallType } from '@ilefa/blueplate';
 import { MarkerPayload, useCartographer } from '../hooks';
 import { DAYLIGHT_SAVINGS, getDateFromTime } from '../util';
 import { DevPage, DiningHallInspection, HoverablePopover } from '../components';
+import { isMobile } from 'react-device-detect';
+import { AcademicMarker, AthleticsMarker, DiningHallMarker, DormMarker, PointOfInterestMarker } from '../components/maps/markers';
+import { MiscMarker } from '../components/maps/markers/MiscMarker';
 
 type PopoverEntry = {
     name: string;
@@ -37,6 +40,9 @@ const MapsPage = () => {
     }
 
     const togglePopover = (ent: MarkerPayload, state: boolean) => {
+        if (isMobile)
+            return;
+
         let popup = popovers.find(p => p.name === ent.name);
         if (!popup) return setPopovers([...popovers, { name: ent.name, state }]);
         if (popup.state) return updateEntry(ent.name, false);
@@ -61,8 +67,6 @@ const MapsPage = () => {
         if (!ent.hours || !ent.hours.length)
             return null;
 
-        console.log(ent.hours);
-
         // check hours to see if current time means it's open
         const now = new Date();
         if (now.getTimezoneOffset() === 0) {
@@ -81,6 +85,26 @@ const MapsPage = () => {
 
         return now.getTime() >= start.getTime()
             && now.getTime() <= end.getTime();
+    }
+
+    const getMarkerElementForType = (ent: MarkerPayload) => {
+        if (ent.type === 'academic')
+            return <AcademicMarker marker={ent} />
+
+        if (ent.type === 'athletics')
+            return <AthleticsMarker marker={ent} />
+
+        if (ent.type === 'dining')
+            return <DiningHallMarker marker={ent} />
+
+        if (ent.type === 'poi')
+            return <PointOfInterestMarker marker={ent} />
+
+        if (ent.type === 'residential')
+            return <DormMarker marker={ent} />
+
+        if (ent.type === 'other')
+            return <MiscMarker marker={ent} />
     }
 
     // const getModal = (payload: MarkerPayload) => {
@@ -112,12 +136,12 @@ const MapsPage = () => {
                         <Marker
                             key={ent.position.lat + ent.position.lng}
                             anchor={[ent.position.lat, ent.position.lng]}
-                            onClick={() => setActiveModal(<DiningHallInspection buildingType={ent.diningHallType as keyof typeof DiningHallType} open={true} setOpen={() => setActiveModal(<></>)} />)}
+                            onClick={() => setActiveModal(<DiningHallInspection hallType={ent.diningHallType as keyof typeof DiningHallType} open={true} setOpen={() => setActiveModal(<></>)} />)}
                             color={icons[(ent as MarkerPayload).type ?? 'other']}
                             width={40}
                             className={ent.name.replace(/[\s._/\\&]/g, '')}
-                            onMouseOver={() => togglePopover(ent, true)}
-                            onMouseOut={() => togglePopover(ent, false)}
+                            onMouseOver={() => !isMobile && togglePopover(ent, true)}
+                            onMouseOut={() => !isMobile && togglePopover(ent, false)}
                         />
                     ))
                 }
@@ -125,6 +149,7 @@ const MapsPage = () => {
                     markers && !loading && !error && markers.map(ent => {
                         let open = isOpen(ent);
                         let displayStatus = open !== null;
+                        let marker = getMarkerElementForType(ent);
 
                         return (
                             <HoverablePopover
@@ -149,12 +174,7 @@ const MapsPage = () => {
                                     className: styles.popoverCardTitle
                                 }}
                             >
-                                {ent.address && (
-                                    <><i className="fas fa-location-arrow fa-fw"></i> <i>{ent.address}</i> <br /><br /></>
-                                )}
-                                {ent.description ?? `There is no description for ${ent.name}.`}
-                                <hr />
-                                <span className="text-primary"><i className="fa fa-link fa-fw"></i> Click the marker for more information.</span>
+                                {marker}
                             </HoverablePopover>
                         )
                     })

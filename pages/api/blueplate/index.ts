@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { DateTime } from 'luxon';
 import { getEnumKeyByEnumValue } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -11,11 +9,6 @@ import {
     getDiningHallStatus,
     getMenu
 } from '@ilefa/blueplate';
-
-axios.interceptors.request.use((rej) => {
-    console.log('->', rej.method, rej.url, rej.params, rej.data);
-    return rej;
-})
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method && req.method !== 'GET')
@@ -46,7 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     let now = DateTime.now().setZone('America/New_York');
     let validatedDate = now;
-    if (date) validatedDate = DateTime
+    if (validatedDate.toMillis() !== now.toMillis()) validatedDate = DateTime
         .fromObject({
             year: parseInt(date.split('-')[2]),
             month: parseInt(date.split('-')[0]),
@@ -55,8 +48,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             minute: 33,
             second: 33,
         }, { zone: 'America/New_York' });
-
-    console.log(`${date ? date : 'NOW'}`, validatedDate.toMillis(), validatedDate.toJSDate().getTime(), validatedDate.toJSDate(), validatedDate.toJSDate().getTime() === validatedDate.toMillis())
 
     if (!hall) return res
         .status(200)

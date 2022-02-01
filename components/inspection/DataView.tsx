@@ -18,6 +18,5 @@ export const DataView: React.FC<DataViewProps> = ({ name, value, divider = true 
                 <h6 className={`text-dark ${styles.statisticField}`}>{value}</h6>
             </div>
         </div>
-        
     </div>
 )

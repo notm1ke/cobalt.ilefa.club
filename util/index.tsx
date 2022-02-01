@@ -723,7 +723,7 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
 export const getDateFromTime = (time: string, date = new Date()) => {
     let offset = time.split(':')[0].length;
     let hours = parseInt(time.substring(0, offset));
-    if (hours !== 12 && time.includes('PM'))
+    if (hours !== 12 && time.toLowerCase().includes('pm'))
         hours += 12;
 
     return new Date(date.getFullYear(),
