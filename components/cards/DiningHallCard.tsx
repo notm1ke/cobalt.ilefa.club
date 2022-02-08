@@ -22,6 +22,7 @@ import {
 import {
     DiningHallPayload,
     generateDdsLink,
+    getChangeString,
     getDiningHallStatusColor,
     getEnumKeyByEnumValue,
     getIconForDiningHall,
@@ -77,6 +78,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
     const allCollapsed = () => meals.every(meal => meal.state);
     const toggleAll = (state = !allCollapsed()) => setMeals(meals.map(meal => ({ ...meal, state })));
 
+    const dayDiff = selectedDate.getDate() - new Date().getDate();
     const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
     const modalTitle = (
         <span>
@@ -95,7 +97,9 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                         onChange={input => moment.isMoment(input) && setDate(input.toDate())}
                     />
                 </div>
-            </span> ➜ {hallName} { now && <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span> }
+            </span> ➜ {hallName} {" "}
+            { now && <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span> }
+            { !now && <span className="font-weight-bold">({getChangeString(dayDiff, '', 0, true)} day{dayDiff !== 1 ? 's' : ''})</span> }
         </span>
     );
     

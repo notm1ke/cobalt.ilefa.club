@@ -534,6 +534,26 @@ export const getInstructorName = (instructor: string) => {
 }
 
 /**
+ * Generates a change string for stock prices.
+ * 
+ * @param input the input value
+ * @param seperator the seperator to place between the prepended +/- and the value
+ * @param digits the amount of digits to fix the resulting value to
+ * @param prependPlus whether or not to prepend a plus sign if the change is positive
+ */
+ export const getChangeString = (input: string | number, seperator: string, digits: number, prependPlus?: boolean) => {
+    return (Number(input) > 0 
+        ? prependPlus 
+            ? '+' 
+            : '' 
+        : '-') 
+        + seperator 
+        + Math
+            .abs(Number(input))
+            .toFixed(digits);
+}
+
+/**
  * Returns whether a given string is a valid course name.
  * @param input the string to test
  */
