@@ -7,12 +7,12 @@
     "url": "git@github.com:notm1ke/cobalt.ilefa.club"
   },
   "scripts": {
-    "dev": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=development next",
+    "dev": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/dorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=development next",
     "dev:windows": "next",
     "build": "npm run artifacts && next build",
     "start": "next start",
-    "start:prod": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=production next",
-    "start:staging": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/UConnDorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=preview next",
+    "start:prod": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/dorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=production next",
+    "start:staging": "npm run artifacts && DORMS_TARGET=https://ilefa-cdn.s3.amazonaws.com/dorms.json REACT_EDITOR=code-insiders NEXT_PUBLIC_VERCEL_ENV=preview next",
     "artifacts": "chmod +x generate_build.sh && ./generate_build.sh",
     "type-check": "tsc"
   },
