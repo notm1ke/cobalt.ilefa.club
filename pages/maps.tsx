@@ -3,13 +3,20 @@ import styles from '../components/styling/card.module.css';
 
 import { useState } from 'react';
 import { Map, Marker } from 'pigeon-maps';
+import { isMobile } from 'react-device-detect';
 import { DiningHallType } from '@ilefa/blueplate';
 import { MarkerPayload, useCartographer } from '../hooks';
 import { DAYLIGHT_SAVINGS, getDateFromTime } from '../util';
 import { DevPage, DiningHallInspection, HoverablePopover } from '../components';
-import { isMobile } from 'react-device-detect';
-import { AcademicMarker, AthleticsMarker, DiningHallMarker, DormMarker, PointOfInterestMarker } from '../components/maps/markers';
-import { MiscMarker } from '../components/maps/markers/MiscMarker';
+
+import {
+    AcademicMarker,
+    AthleticsMarker,
+    DiningHallMarker,
+    DormMarker,
+    MiscMarker,
+    PointOfInterestMarker
+} from '../components';
 
 type PopoverEntry = {
     name: string;
@@ -130,6 +137,14 @@ const MapsPage = () => {
                 boxClassname="map-container"
                 defaultZoom={17}
                 metaWheelZoom={false}
+                attributionPrefix={
+                    <span>
+                        <a href="https://ilefa.club" className="text-primary font-weight-bold shine" target="_blank" rel="noreferrer noopener">
+                            ILEFA Labs
+                        </a>
+                    </span>
+                }
+
             >
                 {
                     markers && !loading && !error && markers.map(ent => (
