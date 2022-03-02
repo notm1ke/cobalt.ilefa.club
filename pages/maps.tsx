@@ -1,19 +1,32 @@
 import Head from 'next/head';
+import MdiIcon from '@mdi/react';
+
 import styles from '../components/styling/card.module.css';
 
 import { useState } from 'react';
 import { Map, Marker } from 'pigeon-maps';
 import { isMobile } from 'react-device-detect';
 import { DiningHallType } from '@ilefa/blueplate';
+import { mdiDomain, mdiMedal, mdiStar } from '@mdi/js';
 import { MarkerPayload, useCartographer } from '../hooks';
-import { DAYLIGHT_SAVINGS, getDateFromTime } from '../util';
-import { DevPage, DiningHallInspection, HoverablePopover } from '../components';
+
+import {
+    DAYLIGHT_SAVINGS,
+    getDateFromTime,
+    getIconForBuilding,
+    getIconForDiningHall,
+    getIconForResHall
+} from '../util';
 
 import {
     AcademicMarker,
     AthleticsMarker,
+    BuildingInspection,
+    DevPage,
+    DiningHallInspection,
     DiningHallMarker,
     DormMarker,
+    HoverablePopover,
     MiscMarker,
     PointOfInterestMarker
 } from '../components';
@@ -114,16 +127,43 @@ const MapsPage = () => {
             return <MiscMarker marker={ent} />
     }
 
-    // const getModal = (payload: MarkerPayload) => {
-    //     if (payload.type === 'dining' && payload.diningHallType)
-    //         return <DiningHallInspection
-    //             buildingType={payload.diningHallType as keyof typeof DiningHallType} 
-    //             open={true}
-    //             setOpen={() => setActiveModal(<></>)} 
-    //         />
+    const getModal = (payload: MarkerPayload) => {
+        if (payload.type === 'dining' && payload.diningHallType)
+            return <DiningHallInspection
+                hallType={payload.diningHallType as keyof typeof DiningHallType} 
+                open={true}
+                setOpen={() => setActiveModal(<></>)} 
+            />
 
-    //     return <></>;
-    // }
+        if (payload.type === 'academic' && payload.classroomPrefixes && payload.classroomPrefixes.length)
+            return <BuildingInspection
+                marker={payload}
+                open={true}
+                setOpen={() => setActiveModal(<></>)}
+            />
+
+        return <></>;
+    }
+
+    const getHeaderIconForMarker = (ent: MarkerPayload) => {
+        if (ent.type === 'academic')
+            return getIconForBuilding(ent.classroomPrefixes![0] as any, 'fa-fw vaSub');
+
+        if (ent.type === 'athletics')
+            return <MdiIcon path={mdiMedal} size="16px" className="fa-fw vaSub" />;
+        
+        if (ent.type === 'dining')
+            return getIconForDiningHall(ent.diningHallType! as keyof typeof DiningHallType, 'fa-fw vaSub');
+
+        if (ent.type === 'poi')
+            return <MdiIcon path={mdiStar} size="16px" className="fa-fw vaSub" />;
+
+        if (ent.type === 'residential')
+            return getIconForResHall(ent.residenceHallType! as any, 'fa-fw vaSub');
+
+        if (ent.type === 'other')
+            return <MdiIcon path={mdiDomain} size="16px" className="fa-fw vaSub" />;
+    }
 
     return (
         <DevPage>
@@ -151,7 +191,7 @@ const MapsPage = () => {
                         <Marker
                             key={ent.position.lat + ent.position.lng}
                             anchor={[ent.position.lat, ent.position.lng]}
-                            onClick={() => setActiveModal(<DiningHallInspection hallType={ent.diningHallType as keyof typeof DiningHallType} open={true} setOpen={() => setActiveModal(<></>)} />)}
+                            onClick={() => setActiveModal(getModal(ent))}
                             color={icons[(ent as MarkerPayload).type ?? 'other']}
                             width={40}
                             className={ent.name.replace(/[\s._/\\&]/g, '')}
@@ -175,7 +215,7 @@ const MapsPage = () => {
                                 target={'.' + ent.name.replace(/[\s./\\&]/g, '')}
                                 header={
                                     <span className={`${BuildingColorType[ent.type.toUpperCase()]} font-weight-bold`}>
-                                        {ent.name}
+                                        {getHeaderIconForMarker(ent)} {ent.name}
                                         {
                                             displayStatus
                                                 ? open

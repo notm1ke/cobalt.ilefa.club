@@ -9,6 +9,8 @@ export * from './useDiningHalls';
 export * from './useDorm';
 export * from './useDorms';
 export * from './useLatestCommit';
+export * from './useManagedSite';
+export * from './useManagedRooms';
 export * from './useProfessor';
 export * from './useProfessors';
 export * from './useRoom';

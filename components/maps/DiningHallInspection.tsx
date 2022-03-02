@@ -158,7 +158,6 @@ const getMealServiceString = (hours: MealHourEntry[]) => {
     let entries = getMealHourEntries(hours, now);
 
     let status = entries.find(h => now >= h.start && now <= h.end);
-    let isLast = status && status.index === entries.length - 1;
     if (!status) {
         let nextDay = now.getHours() > entries[entries.length - 1].end.getHours();
         if (nextDay) {
@@ -170,9 +169,13 @@ const getMealServiceString = (hours: MealHourEntry[]) => {
         status = { name: 'Closed', start: entries[0].start, end: entries[0].end, index: -1, days: [] };
     }
     
+    let isLast = status ? status.index === entries.length - 1 : true;
     let until = isLast
         ? status.end
         : entries[status.index + 1].start;
+
+    if (status.name === 'Closed' && until.getDate() == now.getDate())
+        until.setDate(until.getDate() + 1);
 
     let timeDiff = getLatestTimeValue(until.getTime() - Date.now());
     let next = <>in <b>{timeDiff}</b></>;
@@ -256,13 +259,6 @@ export const DiningHallInspection: React.FC<DiningHallInspectionProps> = ({ hall
                         )
                     }
                     <br/>
-
-                    {/* {enabled && (
-                        <>
-                            Food will {menu!.status === 'CLOSED' ? 'resume' : 'continue'} being served {menu!.status === 'CLOSED' ? '' : 'for another'} 
-                            <br/>
-                        </>
-                    )} */}
                     <div className={styles.diningSeparator}></div>
                     <div className="row">
                         <div className="col-md-6">

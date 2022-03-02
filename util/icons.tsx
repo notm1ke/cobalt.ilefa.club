@@ -429,6 +429,9 @@ export const getIconForResHallType = (type: keyof typeof DormsByType, classes = 
  * @param size    [optional] the size of the icon
  */
 export const getIconForRoom = (room: CompleteRoomPayload | Classroom, classes = '', size = 16) => {
+    if (!room || !room.seatingType)
+        return <MdiIcon path={mdiGoogleClassroom} className={`fa-fw ${classes}`} size={`${size}px`} />
+
     switch (SeatingType[room.seatingType]) {
         case SeatingType.TABLES:
         case SeatingType.TABLES_AND_ARMCHAIRS:

@@ -43,6 +43,7 @@
     "react-datetime": "^3.1.1",
     "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.1",
+    "react-gantt-simple-timeline": "^1.0.19",
     "react-grid-gallery": "^0.5.5",
     "react-isolated-scroll": "^0.1.1",
     "react-loader-spinner": "^4.0.0",

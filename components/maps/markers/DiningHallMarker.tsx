@@ -34,16 +34,11 @@ const getMealHourEntries = (hours: MealHourEntry[], now: Date) =>
             index: i
         }));
 
-export const DiningHallMarker: React.FC<DiningHallMarkerProps> = ({ marker }) => {
-    let hallType = marker.diningHallType;
-    if (!hallType) throw new Error('Cannot instantiate DiningHallMarker without a diningHallType');
-
+const getMealServiceString = (hours: MealHourEntry[]) => {
     let now = new Date();
-    let hours = StandardMealHours[hallType] as MealHourEntry[];
     let entries = getMealHourEntries(hours, now);
 
     let status = entries.find(h => now >= h.start && now <= h.end);
-    let isLast = status && status.index === entries.length - 1;
     if (!status) {
         let nextDay = now.getHours() > entries[entries.length - 1].end.getHours();
         if (nextDay) {
@@ -55,22 +50,53 @@ export const DiningHallMarker: React.FC<DiningHallMarkerProps> = ({ marker }) =>
         status = { name: 'Closed', start: entries[0].start, end: entries[0].end, index: -1, days: [] };
     }
     
+    let isLast = status ? status.index === entries.length - 1 : true;
     let until = isLast
         ? status.end
         : entries[status.index + 1].start;
 
+    if (status.name === 'Closed' && until.getDate() == now.getDate())
+        until.setDate(until.getDate() + 1);
+
+    console.log(isLast, until);
+        
     let timeDiff = getLatestTimeValue(until.getTime() - Date.now());
     let next = <>in <b>{timeDiff}</b></>;
     if ((status.name !== 'Reset' && status.name !== 'Closed') && !isLast)
         next = <>for another <b>{timeDiff}</b></>;
 
+    return <>Meal service will {isLast ? 'end' : (status.name === 'Reset' || status.name === 'Closed') ? 'resume' : 'continue'} {next}.</>;
+}
+
+export const DiningHallMarker: React.FC<DiningHallMarkerProps> = ({ marker }) => {
+    let hallType = marker.diningHallType;
+    if (!hallType) throw new Error('Cannot instantiate DiningHallMarker without a diningHallType');
+
+    let now = new Date();
+    let hours = StandardMealHours[hallType] as MealHourEntry[];
+    let entries = getMealHourEntries(hours, now);
+
+    let status = entries.find(h => now >= h.start && now <= h.end);
+    if (!status) {
+        let nextDay = now.getHours() > entries[entries.length - 1].end.getHours();
+        if (nextDay) {
+            let date = new Date(now);
+            date.setDate(date.getDate() + 1);
+            entries = getMealHourEntries(hours, date);
+        }
+        
+        status = { name: 'Closed', start: entries[0].start, end: entries[0].end, index: -1, days: [] };
+    }
+    
     return (
         <>
-            {marker.address && (
-                <><i className="fas fa-location-arrow fa-fw"></i> <i>{marker.address}</i> <br /><br /></>
-            )}
+            {
+                marker.address && (
+                    <><i className="fas fa-location-arrow fa-fw"></i> <i>{marker.address}</i> <br /><br /></>
+                )
+            }
             {marker.name.split('Dining Hall')[0]} is {getDiningHallStatusName(status.name)}. <br />
-            Meal service will {isLast ? 'end' : (status.name === 'Reset' || status.name === 'Closed') ? 'resume' : 'continue'} {next}.
+            {getMealServiceString(hours)}
             <br /><br />
 
             <span className="text-primary"><i className="fa fa-link fa-fw"></i> Click for more information</span>

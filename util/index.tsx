@@ -373,7 +373,7 @@ export const getCurrentSemester = (date = new Date()) => {
     const year = date.getFullYear();
     const month = date.getMonth();
     if (month >= 0 && month <= 4)
-        return 'spring ' + (year - 1);
+        return 'spring ' + year;
     return 'fall ' + year;
 }
 

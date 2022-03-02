@@ -69,3 +69,7 @@
     list-style-type: none !important;
     margin-left: -39px !important;
 }
+
+.buildingDirectory {
+    margin-left: -20px !important;
+}
