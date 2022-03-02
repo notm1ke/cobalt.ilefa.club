@@ -146,7 +146,7 @@ export const BuildingDirectoryEntry: React.FC<RoomDataProps> = ({ data }) => {
     const renderRowHeaderItem = _ => (<></>)
 
     // noinspection JSUnusedLocalSymbols
-    const handleElementClick = (element, rowIndex, e) => {
+    const handleElementClick = (element, rowIndex, _e) => {
         // eslint-disable-next-line no-undef
         alert(`clicked to element with key "${element.key}" at row with index "${rowIndex}"`)
     }
