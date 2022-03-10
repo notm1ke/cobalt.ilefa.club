@@ -12,6 +12,7 @@ import {
     UConnService,
     UConnServiceStatus
 } from '@ilefa/husky';
+import { MutatorCallback } from 'swr/dist/types';
 
 export * from './dorms';
 export * from './icons';
@@ -625,6 +626,20 @@ export const sum = (arr: number[]) => arr
 export const prependZero = (int: number) => int < 10 ? `0${int}` : `${int}`;
 
 /**
+ * Returns whether a given course name
+ * should be a grad-level course.
+ * 
+ * @param prefix the prefix of the course
+ * @param number the course catalog number
+ */
+export const isGradLevel = (prefix: string, number: number) => {
+    console.log('[g]', prefix, number);
+    if (prefix === 'PHRX' && number < 5199)
+        return false;
+    return number > 5000;
+}
+
+/**
  * Replaces all occurances of a given
  * search string within another string.
  * 
@@ -767,36 +782,48 @@ export const getDateFromTime = (time: string, date = new Date()) => {
 export const createRemoteHook = <Response extends UnshapedApiResponse, Return extends GenericShapedHook>(
     name: string,
     req: string,
-    transform: (type: ApiResponseType, data: Response | null | undefined, error: boolean, url: string) => Return,
-    pollTime?: number
+    transform: (type: ApiResponseType,
+                data: Response | null | undefined,
+                error: boolean,
+                url: string,
+                revalidate?: () => void,
+                mutate?: (data?: Response | Promise<Response> | MutatorCallback<Response> | undefined, shouldRevalidate?: boolean) => Promise<Response | undefined>
+               ) => Return,
+    pollTime?: number,
+    method: 'GET' | 'POST' = 'GET',
+    body: any = {},
 ): Return => {
     const start = Date.now();
-    const fetcher = (url: string) => fetch(url)
+    const props: any = { method };
+    if (body && method === 'POST')
+        props.body = JSON.stringify(body);
+
+    const fetcher = (url: string) => fetch(url, props)
         .then(res => res.json())
         .then(res => res as Response);
 
-    const { data, error } = useSWR(req, fetcher, {
+    const { data, error, revalidate, mutate } = useSWR(req, fetcher, {
         refreshInterval: pollTime || 0
     });
 
     if (!data && !error)
-        return transform(ApiResponseType.LOADING, null, false, req);
+        return transform(ApiResponseType.LOADING, null, false, req, revalidate, mutate);
     
     if (error) {
         Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
         Logger.debug(`use${name}`, `The server responded with an unknown error.`, Logger.LogLevelColor.ERROR);
-        return transform(ApiResponseType.ERROR, null, true, req);
+        return transform(ApiResponseType.ERROR, null, true, req, revalidate, mutate);
     }
 
     if (data && data.message) {
         Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
         Logger.debug(`use${name}`, `The server responded with: ${data.message}`, Logger.LogLevelColor.ERROR);
-        return transform(ApiResponseType.ERROR, null, true, req);
+        return transform(ApiResponseType.ERROR, null, true, req, revalidate, mutate);
     }
 
     Logger.timings(`use${name}`, 'Fetch', start);
     Logger.debug(`use${name}`, 'Server response:', undefined, undefined, data);
-    return transform(ApiResponseType.SUCCESS, data, false, req);
+    return transform(ApiResponseType.SUCCESS, data!, false, req, revalidate, mutate);
 }
 
 /**

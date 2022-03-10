@@ -9,7 +9,22 @@ import { isPreview } from '../util';
 import { Footer, InlineLink, Nav, PreviewPage } from '../components';
 import { COMMIT_HASH, INSTANCE_HOST, RELEASE_CHANNEL } from '../util/build';
 
-const CHANGELOG = []
+const CHANGELOG = [
+    "Expanded capabilities and adaptability of the course viewer",
+    "Greatly improved CobaltSearch performance by using server-side query processing",
+    "DiningHallCard now shows as \"closed\" if no menu items are available",
+    "DiningHallCard schedule / menu timezone fixes",
+    "Added warning for courses not currently being offered",
+    "Added room schedules to the room inspection UI",
+    "Added realtime room status to the room inspection UI",
+    "Added the \"I'm feeling silly\" button to CobaltSearch",
+    "Updated dining hall hours to reflect new Spring 2022 hours",
+    "Updated dorms payload target",
+    "[In Progress] Added support for graduate courses",
+    "[In Progress] Added Cobalt Maps, and currently expanding functionality",
+    "[Planned] CMD + K command pallette",
+    "[Planned] Global search shortcut in navbar",
+]
 
 const ChangelogPage = () => (
     <PreviewPage allowDev>
@@ -43,11 +58,11 @@ const ChangelogPage = () => (
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 {
                                     CHANGELOG.length === 0 && (
-                                        <>There are no listed changes for this instance.</>
+                                        <>There are no listed changes for this deployment.</>
                                     )
                                 }
                                 {
-                                    CHANGELOG.length === 0 && CHANGELOG.map(ent => (
+                                    CHANGELOG.length !== 0 && CHANGELOG.map(ent => (
                                         <li key={Math.random()} className={previewStyles.changelogItem}>
                                             - {ent}
                                         </li>

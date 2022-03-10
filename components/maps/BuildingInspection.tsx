@@ -1,9 +1,9 @@
 import MdiIcon from '@mdi/react';
 import cardStyles from '../styling/card.module.css';
 
-import { MarkerPayload} from '../../hooks';
 import { BuildingCode } from '@ilefa/husky';
 import { BuildingDirectory, Modal } from '../';
+import { DayType, MarkerPayload } from '../../hooks';
 import { mdiCalendarBlankMultiple, mdiClockFast, mdiSignText } from '@mdi/js';
 
 import {
@@ -43,6 +43,7 @@ export const BuildingInspection: React.FC<BuildingInspectionProps> = ({ marker, 
     if (!addr) addr = 'NONE';
 
     let atOn = isNaN(parseFloat(addr.substring(0, 1))) ? 'on' : 'at';
+    let dayMappings = Object.values(DayType).map((day, i) => ({ day, i }));
 
     return (
         <Modal
@@ -77,7 +78,7 @@ export const BuildingInspection: React.FC<BuildingInspectionProps> = ({ marker, 
                                             <li key={key.day} className={cardStyles.dataEntryList}>
                                                 <div className={cardStyles.dataEntry}>
                                                     <div className={cardStyles.head}>
-                                                        <h6 className={`text-dark font-weight-bold`}>{key.day}</h6>
+                                                        <h6 className={`text-dark font-weight-bold`}>{dayMappings.find(({ i }) => i === parseInt(key.day))?.day ?? key.day}</h6>
                                                     </div>
                                                     <div className={cardStyles.divider}></div>
                                                     <div className={cardStyles.value}>

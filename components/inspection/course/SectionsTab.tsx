@@ -115,7 +115,7 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                     {
                                         !honors && !!data.notes && (
                                             <>
-                                                <p><b>Notes:</b> {data.notes}</p>
+                                                <p><b>Notes:</b> <span dangerouslySetInnerHTML={{__html: data.notes}}></span></p>
                                                 <br/>
                                             </>
                                         )
@@ -299,7 +299,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             sortable: true,
             grow: 0,
             format: (row, _i) => <span className={row.enrollment.full ? 'text-danger' : 'text-success'}>
-                                    {row.enrollment.current + '/' + row.enrollment.max} {row.enrollment.waitlist
+                                    {(row.enrollment.current ?? 0) + '/' + (row.enrollment.max ?? 0)} {row.enrollment.waitlist
                                         ?   <>
                                                 <span className="text-primary" id={`tooltip-waitlist-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>(+{row.enrollment.waitlist})</span>{" "}
                                                 <UncontrolledTooltip delay={0} placement="top" target={`tooltip-waitlist-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>

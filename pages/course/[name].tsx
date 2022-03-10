@@ -175,7 +175,7 @@ const CourseInspection = () => {
     }
 
     const recordMetric = (event: MetricsEvent) => metrics.push(event);
-    recordMetric({ request, success: true, time: course.timings });
+    recordMetric({ request, success: true, data: course, time: course.timings });
     
     const info = getSidebarInfo(course, setActiveTab);
     const icon = getIconForCourse(name, styles.courseIcon, 40);

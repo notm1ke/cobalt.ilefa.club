@@ -38,6 +38,7 @@ const flattenSchedules = (schedules: RoomSchedule[][]): RoomSchedule[] => Array.
 const createRoomEntries = (schedules: RoomSchedule[][]) =>
     flattenSchedules(schedules)
         .map(schedule => {
+            if (!schedule) return { entries: [] };
             let target = Classrooms.filter(room => room.name === (schedule as any).title.replace(/\s/g, ''));
             if (!target) return schedule;
             return { ...schedule, ...target };

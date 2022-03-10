@@ -97,53 +97,55 @@ const HomePage = () => {
                     tags={[
                         {
                             icon: <i className="fa fa-search fa-fw"></i>,
-                            color: 'primary',
+                            color: 'primary-light',
                             display: 'Powerful Search'
                         },
                         {
                             icon: <i className="fa fa-book fa-fw"></i>,
-                            color: 'primary',
+                            color: 'primary-light',
                             display: 'Practical Course Information'
                         },
                         {
                             icon: <i className="fa fa fa-quote-right fa-fw"></i>,
-                            color: 'primary',
+                            color: 'primary-light',
                             display: 'RateMyProfessors Integration'
                         }
                     ]}
                 />
     
-                <DevElement>
-                    <FeatureSection
-                        title="Maps"
-                        flip
-                        glyph="/glyphs/maps.svg"
-                        alt="Maps Glyph"
-                        description="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo eum reiciendis, alias ullam deserunt accusamus ipsam quo. Sequi modi voluptate molestiae, doloremque dicta assumenda incidunt animi, voluptas, at sunt enim?"
-                        className="background-circuits"
-                        tags={[
-                            {
-                                icon: <i className="fa fa-map-marker-alt fa-fw"></i>,
-                                color: 'primary',
-                                display: 'Points of Interest'
-                            },
-                            {
-                                icon: <i className="fa fa-building fa-fw"></i>,
-                                color: 'primary',
-                                display: 'Building Directories & Room Schedules'
-                            },
-                            {
-                                icon: <i className="fa fa-utensils fa-fw"></i>,
-                                color: 'primary',
-                                display: 'Dining Hall Menus'
-                            }
-                        ]}
-                    />
-                </DevElement>
+                <FeatureSection
+                    title="Maps"
+                    flip
+                    glyph="/glyphs/maps.svg"
+                    alt="Maps Glyph"
+                    description={
+                        <>
+                            <span className="font-weight-bolder">Coming Soon</span>
+                            <br/>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo eum reiciendis, alias ullam deserunt accusamus ipsam quo. Sequi modi voluptate molestiae, doloremque dicta assumenda incidunt animi, voluptas, at sunt enim?
+                        </>
+                    }
+                    className="background-circuits"
+                    tags={[
+                        {
+                            icon: <i className="fa fa-map-marker-alt fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Points of Interest'
+                        },
+                        {
+                            icon: <i className="fa fa-building fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Building Directories & Room Schedules'
+                        },
+                        {
+                            icon: <i className="fa fa-utensils fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Dining Hall Menus'
+                        }
+                    ]}
+                />
     
                 <FeatureSection
                     title="Buildings"
-                    flip
                     glyph="/glyphs/building.svg"
                     alt="Buildings Glyph"
                     className="background-circuits"
@@ -169,6 +171,7 @@ const HomePage = () => {
 
                 <FeatureSection
                     title="Dorms"
+                    flip
                     glyph="/glyphs/dorms.svg"
                     alt="Dorms Glyph"
                     className="background-circuits"
@@ -194,7 +197,6 @@ const HomePage = () => {
     
                 <FeatureSection
                     title="Dining Halls"
-                    flip
                     glyph="/glyphs/dining.svg"
                     alt="Dining Glyph"
                     className="background-circuits"
@@ -234,17 +236,17 @@ const HomePage = () => {
                         tags={[
                             {
                                 icon: <i className="fa fa-file-download fa-fw"></i>,
-                                color: 'info',
+                                color: 'primary-light',
                                 display: 'Semester-by-Semester Complete Snapshots'
                             },
                             {
                                 icon: <i className="fa fa-user-graduate fa-fw"></i>,
-                                color: 'info',
+                                color: 'primary-light',
                                 display: 'Professor Ratings Progression'
                             },
                             {
                                 icon: <i className="fa fa-chart-line fa-fw"></i>,
-                                color: 'info',
+                                color: 'primary-light',
                                 display: 'Course Registration Metrics'
                             }
                         ]}

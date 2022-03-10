@@ -61,7 +61,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({
                 sites: siteSchedules.map((ent, i) => ({
                     name: sites[i],
-                    schedules: ent
+                    schedules: ent.filter(s => !!s)
                 })),
                 timings: Date.now() - start
             });

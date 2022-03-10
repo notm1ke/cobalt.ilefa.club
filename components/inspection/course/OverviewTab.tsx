@@ -12,6 +12,15 @@ export interface OverviewTabProps {
 export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => (
     <div className={styles.tabBody}>
         {
+            data.sections.length === 0 && (
+                <>
+                    <pre className={`${styles.sectionTitle} text-danger mt-3`}><i className="fa fa-times fa-fw"></i> Not Offered</pre>
+                    <p className={styles.description}><b>{data.name}</b> is not being offered right now.</p>
+                </>
+            )
+        }
+        
+        {
             data.grading === 'Honors Credit' && (
                 <>
                     <pre className={`${styles.sectionTitle} text-danger mt-3`}><i className="fa fa-medal fa-fw"></i> Honors Enrollment</pre>

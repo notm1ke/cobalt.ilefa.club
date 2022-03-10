@@ -81,7 +81,20 @@ const modifiers = [
                     <br/>Environmental Literacy (E)
                 </>
     },
-    
+    {
+        name: 'g',
+        tooltip: <>
+                    <b>Course Level</b>
+                    <br/>Graduate Courses
+                </>
+    },
+    {
+        name: 'ug',
+        tooltip: <>
+                    <b>Course Level</b>
+                    <br/>Undergraduate Courses
+                </>
+    }
 ];
 
 const statMarkers = [
