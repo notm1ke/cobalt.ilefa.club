@@ -120,8 +120,10 @@ const HomePage = () => {
                     alt="Maps Glyph"
                     description={
                         <>
-                            <span className="font-weight-bolder">Coming Soon</span>
-                            <br/>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo eum reiciendis, alias ullam deserunt accusamus ipsam quo. Sequi modi voluptate molestiae, doloremque dicta assumenda incidunt animi, voluptas, at sunt enim?
+                            <div className="mt--3 mb--2">
+                                <span className={styles.comingSoonFeature}>Coming Soon</span>
+                            </div>
+                            <br/>Explore the Storrs Campus and view rich information about buildings and the <b>rooms that are available</b> in them, dining halls and <b>what they're serving</b>, residential buildings and the <b>quality of their dorms</b>, and other points of interest.
                         </>
                     }
                     className="background-circuits"
