@@ -248,8 +248,8 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                     cleanName = 'Unknown';
 
                 let display = <>{cleanName}</>;
-                if (cleanName.split(', ').length > 1)
-                    display = <>{cleanName.split(', ')[0]} <span className={styles.extraRoomsIndicator}>{'+' + (cleanName.split(', ').length - 1)}</span></>;
+                if (cleanName.split(' & ').length > 1)
+                    display = <>{cleanName.split(' & ')[0]} <span className={styles.extraRoomsIndicator}>{'+' + (cleanName.split(' & ').length - 1)}</span></>;
 
                 return (
                     <>

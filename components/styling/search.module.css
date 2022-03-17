@@ -51,69 +51,12 @@
     color: #777;
 }
 
-@media screen and (min-width: 1000px) {
-    .inputBoxRadius {
-        width: 96%;
-    }
-
-    .inputBoxRadiusEgg {
-        width: 90%;
-    }
+.inputBoxRadius {
+    width: calc(100% - 50px);
 }
 
-@media screen and (min-width: 800px) {
-    .inputBoxRadius {
-        width: 91%;
-    }
-
-
-    .inputBoxRadiusEgg {
-        width: 85%;
-    }
-}
-
-@media screen and (min-width: 431px) {
-    .inputBoxRadius {
-        width: 90%;
-    }
-
-
-    .inputBoxRadiusEgg {
-        width: 84%;
-    }
-}
-
-@media screen and (min-width: 430px) {
-    .inputBoxRadius {
-        width: 89%;
-    }
-
-
-    .inputBoxRadiusEgg {
-        width: 83%;
-    }
-}
-
-@media screen and (min-width: 400px) {
-    .inputBoxRadius {
-        width: 88%;
-    }
-
-
-    .inputBoxRadiusEgg {
-        width: 82%;
-    }
-}
-
-@media screen and (min-width: 350px) {
-    .inputBoxRadius {
-        width: 87%;
-    }
-
-
-    .inputBoxRadiusEgg {
-        width: 84%;
-    }
+.inputBoxRadiusEgg {
+    width: calc(100% - 77px);
 }
 
 .inputBoxRadius input {

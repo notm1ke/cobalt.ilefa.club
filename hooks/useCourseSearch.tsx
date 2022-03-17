@@ -22,6 +22,7 @@ type CoursePayload = {
     name: string;
     gradingType: string;
     catalogName: string;
+    catalogNumber: string;
     attributes: {
         lab: boolean;
         writing: boolean;

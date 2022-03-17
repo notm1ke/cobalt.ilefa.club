@@ -58,8 +58,6 @@ const getMealServiceString = (hours: MealHourEntry[]) => {
     if (status.name === 'Closed' && until.getDate() == now.getDate())
         until.setDate(until.getDate() + 1);
 
-    console.log(isLast, until);
-        
     let timeDiff = getLatestTimeValue(until.getTime() - Date.now());
     let next = <>in <b>{timeDiff}</b></>;
     if ((status.name !== 'Reset' && status.name !== 'Closed') && !isLast)

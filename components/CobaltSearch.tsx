@@ -6,7 +6,7 @@ import IsolatedScroll from 'react-isolated-scroll';
 
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { CoursePayload, useCourseList, useDebounce } from '../hooks';
+import { CoursePayload, useDebounce } from '../hooks';
 import { ChangeEvent, SuggestionSelectedEventData } from 'react-autosuggest';
 import { ContentArea, getIconForCourse, isGradLevel, isValidCourseName } from '../util';
 
@@ -148,7 +148,7 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
         });
     }
 
-    const [data, _loading, _error] = useCourseList();
+    // const [data, _loading, _error] = useCourseList();
 
     useEffect(() => {
         fetch(`/api/search`, {
@@ -185,8 +185,6 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
 
     const renderSymbols = (course: CoursePayload, element = true) => {
         let symbols: AttributeSymbol[] = [];
-        console.log(course.name, course.name.split(/(\d)/))
-
         if (course.attributes.lab)
             symbols.push({ icon: mdiBeakerOutline });
 
@@ -247,14 +245,15 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
         router.push(`/course/${current.toUpperCase()}`);
     }
 
-    const pickSillyCourse = () => {
-        if (!data)
-            return;
+    const pickSillyCourse = () => fetch('/api/courses')
+        .then(res => res.json())
+        .then(res => {
+            if (res.error)
+                return;
 
-        setLoading(true);
-        let silly = data[Math.floor(Math.random() * data.length)];
-        router.push(`/course/${silly.name.toUpperCase()}`);
-    }
+            const random = Math.floor(Math.random() * res.courses.length);
+            router.push(`/course/${res.courses[random].name}`);
+        });
 
     return (
         <FormGroup>

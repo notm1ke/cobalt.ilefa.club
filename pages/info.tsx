@@ -4,7 +4,7 @@ import Head from 'next/head';
 import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
-import { useStatistics } from '../hooks';
+import { useSnapshotRecords, useStatistics } from '../hooks';
 import { ContentAreaNames } from '../util';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -138,6 +138,7 @@ const statMarkers = [
 
 const InfoPage = () => {
     const [stats, loading, error] = useStatistics('full');
+    const [records, _loading, _error] = useSnapshotRecords();
 
     return (
         <main>
@@ -225,7 +226,7 @@ const InfoPage = () => {
                                 }
 
                                 {
-                                    stats && (
+                                    stats && records && (
                                         <StatisticSection
                                             className="background-circuits"
                                             section={false}
@@ -234,7 +235,9 @@ const InfoPage = () => {
                                                     ...marker,
                                                     amount: stats[marker.key ?? marker.name.toLowerCase()],
                                                     loading: false,
-                                                    change: 0
+                                                    change: !['buildings', 'assets'].includes(marker.name.toLowerCase())
+                                                        ? stats![marker.key ?? marker.name.toLowerCase()] - records[marker.name.toLowerCase()]
+                                                        : 0                                               
                                                 }))
                                             }
                                         />

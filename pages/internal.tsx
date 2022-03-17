@@ -138,6 +138,7 @@ const InternalHome = () => {
                                     <GitButton owner="ilefa" repo="snapshots" />
                                     <GitButton owner="ilefa" repo="bluepages" />
                                     <GitButton owner="ilefa" repo="blueplate" />
+                                    <GitButton owner="ilefa" repo="bluetrade" />
                                 </span>
                             </h4>
                             

@@ -4,11 +4,11 @@ import MdiIcon from '@mdi/react';
 import styles from '../components/styling/card.module.css';
 
 import { useState } from 'react';
-import { Map, Marker } from 'pigeon-maps';
 import { isMobile } from 'react-device-detect';
 import { DiningHallType } from '@ilefa/blueplate';
-import { mdiDomain, mdiMedal, mdiStar } from '@mdi/js';
+import { Map, Marker, ZoomControl } from 'pigeon-maps';
 import { MarkerPayload, useCartographer } from '../hooks';
+import { mdiDomain, mdiMedal, mdiStar } from '@mdi/js';
 
 import {
     DAYLIGHT_SAVINGS,
@@ -186,6 +186,7 @@ const MapsPage = () => {
                 }
 
             >
+                <ZoomControl />
                 {
                     markers && !loading && !error && markers.map(ent => (
                         <Marker

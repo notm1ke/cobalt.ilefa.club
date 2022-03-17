@@ -24,6 +24,7 @@ export interface ProfessorViewProps extends IMetricsComponent {
     professor: ProfessorData;
     rmp: boolean;
     show: boolean;
+    showTerm: boolean;
 }
 
 enum RmpTag {
@@ -115,7 +116,7 @@ const proOrConSorting = (tag: string) => {
     return RmpTagOrdinal.UNKNOWN;
 }
 
-export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, recordMetric }) => {
+export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, showTerm, recordMetric }) => {
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
     
@@ -165,7 +166,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                             .sort((a, b) => getCampusIndicator(a.campus).localeCompare(getCampusIndicator(b.campus)))
                                             .map(ent => (
                                                 <li key={ent.section}>
-                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /><b>[{ent.campus}{showTerm ? ` - ${ent.term.substring(0, 1) + ent.term.split(/(\d{2,4})/)[1].substring(2)}` : ''}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
                                                 </li>
                                             ))
                                     }
@@ -248,7 +249,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                             .sort((a, b) => getCampusIndicator(a.campus).localeCompare(getCampusIndicator(b.campus)))
                                             .map(ent => (
                                                 <li key={ent.section}>
-                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}{showTerm ? ` - ${ent.term.substring(0, 1) + ent.term.split(/(\d{2,4})/)[1].substring(2)}` : ''}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
                                                 </li>
                                             ))
                                     }

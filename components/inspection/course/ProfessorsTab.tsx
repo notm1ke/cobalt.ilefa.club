@@ -29,6 +29,8 @@ export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetr
         <ErrorTab message="There aren't any professors teaching this course." color="text-gray" />
     )
 
+    let showTerm = data.professors!.some(prof => prof.sections.some(sec => sec.term !== prof.sections[0].term));
+
     return (
         <>
             {
@@ -41,6 +43,7 @@ export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetr
                             key={professor.name}
                             rmp={professor.rmpIds.length > 0}
                             show={distinct.length === 1}
+                            showTerm={showTerm}
                             recordMetric={recordMetric}
                         />)
             }

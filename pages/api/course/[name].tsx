@@ -39,7 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     // don't query professors so we save time on initial load
     let course = await searchCourse(name, campus ? campus as CampusType : 'any', useBare, useInitial ? [SearchParts.SECTIONS] : [SearchParts.SECTIONS, SearchParts.PROFESSORS]);
-    let mappings = CourseMappings.filter(mapping => mapping.name === name)[0];
+    let mappings = (CourseMappings as any).filter(mapping => mapping.name === name)[0];
 
     if (!course || !mappings)
         return res
@@ -52,10 +52,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return {
             ...section,
             enrollment: {
-                max: enrollment.total,
-                current: enrollment.available,
+                max: enrollment?.total ?? 0,
+                current: enrollment?.available ?? 0,
                 waitlist: section.enrollment.waitlist,
-                full: enrollment.overfill,
+                full: enrollment?.overfill ?? false,
             }
         }
     }));

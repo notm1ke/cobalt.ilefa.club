@@ -2,8 +2,8 @@ import React from 'react';
 import MdiIcon from '@mdi/react';
 
 import { DiningHallStatus, DiningHallType } from '@ilefa/blueplate';
-import { CompleteRoomPayload, DormHallType, DormsByType } from '.';
 import { BuildingCode, Classroom, SeatingType } from '@ilefa/husky';
+import { CompleteRoomPayload, DormHallType, DormsByType } from '.';
 
 import {
     mdiAbacus,

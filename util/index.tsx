@@ -633,7 +633,6 @@ export const prependZero = (int: number) => int < 10 ? `0${int}` : `${int}`;
  * @param number the course catalog number
  */
 export const isGradLevel = (prefix: string, number: number) => {
-    console.log('[g]', prefix, number);
     if (prefix === 'PHRX' && number < 5199)
         return false;
     return number > 5000;

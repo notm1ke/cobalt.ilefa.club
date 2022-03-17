@@ -122,7 +122,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                     .filter(isValidModifier)
             ];
 
-    let result = CourseMappings
+    let result = (CourseMappings as any)
         .filter(course => predicates.some(predicate =>
             predicate(input
                 .split(' ')
@@ -146,7 +146,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ? undefined
             : limit);
 
+    result = processModifiers(modifiers, result);
+    result = result.filter((course: any, index: number, self: any[]) =>
+        index === self.findIndex(t => (
+            t.name === course.name &&
+            t.catalogNumber === course.catalogNumber
+        ))
+    );
+
     return res
         .status(200)
-        .json({ query: input, courses: processModifiers(modifiers, result) });
+        .json({ query: input, courses: result });
 }

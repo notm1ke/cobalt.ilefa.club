@@ -54,7 +54,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const getStatistic = (mode: StatisticsQueryMode) => {
-    if (mode === 'courses') return CourseMappings.length;
+    if (mode === 'courses') return (CourseMappings as any).length;
     if (mode === 'professors') return RmpMappings.length;
     if (mode === 'rooms') return Classrooms.length;
     if (mode === 'buildings') return Object.keys(BuildingCode).length;

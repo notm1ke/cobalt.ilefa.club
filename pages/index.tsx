@@ -6,14 +6,7 @@ import styles from '../components/styling/home.module.css';
 import { mdiFlask } from '@mdi/js';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
-
-import {
-    capitalizeFirst,
-    getCurrentSemester,
-    intToWords,
-    isDevelopment,
-    isPreview
-} from '../util';
+import { capitalizeFirst, getCurrentSemester, intToWords } from '../util';
 
 import {
     CobaltSearch,
@@ -27,8 +20,8 @@ import {
 } from '../components';
 
 const HomePage = () => {
-    let rawDays = moment('2022-01-19').diff(moment(), 'days');
-    let breakOver = rawDays <= 0;
+    let rawDays = moment('2022-05-7').diff(moment(), 'days');
+    let semOver = rawDays <= 0;
     
     return (
         <main>
@@ -61,14 +54,14 @@ const HomePage = () => {
                                         <h2 className={`${styles.tagline} display-4 font-weight-normal text-white mb-5`}>
                                             An intelligent suite of tools built by UConn students, for UConn students.
                                         </h2>
-                                        <CobaltSearch feelingSilly={isDevelopment() || isPreview()} />
+                                        <CobaltSearch feelingSilly />
                                         <small className="text-secondary">
-                                            <i className={'fa ' + (breakOver ? 'fas fa-chalkboard-teacher text-warning' : 'fa-clock text-success') + ' fa-fw mr-1'}></i>
+                                            <i className={'fa ' + (semOver ? 'fa-clock text-success' : 'fas fa-chalkboard-teacher text-warning') + ' fa-fw mr-1'}></i>
                                             <i>
                                                 {
-                                                    breakOver
-                                                        ? `The ${getCurrentSemester()} semester has started, good luck!`
-                                                        : `There are ${intToWords(rawDays)} day${rawDays === 1 ? '' : 's'} left until the ${capitalizeFirst(getCurrentSemester())} semester starts.`
+                                                    semOver
+                                                        ? `The ${getCurrentSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!`
+                                                        : `There are ${intToWords(rawDays)} day${rawDays === 1 ? '' : 's'} left until the ${capitalizeFirst(getCurrentSemester())} semester ends.`
                                                 }
                                             </i>
                                         </small>
@@ -151,7 +144,7 @@ const HomePage = () => {
                     glyph="/glyphs/building.svg"
                     alt="Buildings Glyph"
                     className="background-circuits"
-                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats it has, and more."
+                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats they have, and their schedules."
                     tags={[
                         {
                             icon: <i className="fa fa-grip-horizontal fa-fw"></i>,

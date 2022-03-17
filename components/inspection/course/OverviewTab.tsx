@@ -30,7 +30,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ data }) => (
         }
         <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-file-alt fa-fw"></i> Course Description</pre>
         <p className={styles.description}>{decodeEntities(data.description)}</p>
-        <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-file-alt fa-fw"></i> Content Areas</pre>
+        <pre className={`${styles.sectionTitle} text-primary`}><i className="fa fa-flag fa-fw"></i> Content Areas</pre>
         {
             !!data.attributes.contentAreas.length && (
                 <p className={styles.description}>

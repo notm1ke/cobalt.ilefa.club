@@ -31,6 +31,7 @@ import {
 import {
     DataView,
     DevElement,
+    EquivTab,
     ErrorTab,
     ErrorView,
     Footer,
@@ -145,10 +146,16 @@ const TABS = [
         idInt: 2,
     },
     {
+        icon: 'fa fa-arrow-right-arrow-left',
+        name: 'Transfer',
+        id: 'transfer',
+        idInt: 3,
+    },
+    {
         icon: 'fa fa-broadcast-tower',
         name: 'Metrics',
         id: 'metrics',
-        idInt: 3,
+        idInt: 4,
         devOnly: true
     }
 ];
@@ -279,6 +286,9 @@ const CourseInspection = () => {
                                                             {
                                                                 error && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" />
                                                             }
+                                                        </TabPane>
+                                                        <TabPane tabId="transfer">
+                                                            <EquivTab data={course} recordMetric={recordMetric} />
                                                         </TabPane>
                                                         <DevElement>
                                                             <TabPane tabId="metrics">
