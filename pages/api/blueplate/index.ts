@@ -15,13 +15,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(405)
             .json({ message: 'Method not allowed' });
 
-    let { hall, date } = req.query;
-    if (hall instanceof Array || date instanceof Array)
+    let { hall, date, mode } = req.query;
+    if (hall instanceof Array || date instanceof Array || mode instanceof Array)
         return res
             .status(400)
             .json({ message: 'Invalid payload' });
 
-    if (hall && !DiningHallType[hall.toUpperCase()])
+    if (!mode && hall && !DiningHallType[hall.toUpperCase()])
         return res
             .status(400)
             .json({ message: 'Invalid dining hall' });
@@ -47,6 +47,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         DAYLIGHT_SAVINGS && validatedDate.setHours(validatedDate.getHours() - 1);
     }
     
+    // fetch all meals and include in the payload
+    if (mode && mode.toLowerCase() === 'site' && !hall)
+        return res.status(200).json({
+            halls: await Promise.all(Object
+                .keys(DiningHallType)
+                .map(async type => {
+                    let data = await getMenu(DiningHallType[type.toUpperCase()], validatedDate);
+                    let status = getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[type.toUpperCase()], validatedDate));
+                    if (status !== 'CLOSED' && (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0)))
+                        status = 'CLOSED';
+                        
+                    return {
+                        ...DiningHalls[type.toUpperCase()],
+                        meals: data.meals, status
+                    };
+                }))
+        })
+
+    // fetch all statuses, but do not include meals
     if (!hall) return res
         .status(200)
         .json({

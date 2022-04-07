@@ -8,7 +8,7 @@ import globalStyles from '../components/styling/home.module.css';
 import { intToWords } from '../util';
 import { useDiningHalls } from '../hooks';
 import { mdiAlert, mdiLoading } from '@mdi/js';
-import { DiningHallCard, Footer, Nav } from '../components';
+import { DiningHallCard, DiningHallSiteCard, Footer, Nav } from '../components';
 
 const DiningHallsPage = () => {
     const [data, loading, error] = useDiningHalls({ poll: 10000 });
@@ -47,6 +47,12 @@ const DiningHallsPage = () => {
                 <section className={`section ${styles.buildingSection} background-circuits mt--3`}>
                     <div className="container mt--3" id="body">
                         <div className="row">
+                            {
+                                enabled && <div className="col-md-4">
+                                    <DiningHallSiteCard />
+                                </div>
+                            }
+                            
                             {
                                 enabled &&
                                     data! 

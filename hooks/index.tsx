@@ -8,6 +8,7 @@ export * from './useCourseList';
 export * from './useCourseSearch';
 export * from './useDiningHall';
 export * from './useDiningHalls';
+export * from './useDiningHallSite';
 export * from './useDorm';
 export * from './useDorms';
 export * from './useLatestCommit';
