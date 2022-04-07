@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import * as Logger from './logger';
 
+import { MutatorCallback } from 'swr/dist/types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
@@ -12,11 +13,11 @@ import {
     UConnService,
     UConnServiceStatus
 } from '@ilefa/husky';
-import { MutatorCallback } from 'swr/dist/types';
 
 export * from './dorms';
 export * from './icons';
 export * from './dining';
+export * from './rec';
 export * from './buildings';
 
 export type Color = 'blue'
@@ -219,6 +220,8 @@ export type CompleteRoomPayload = Classroom & {
     }
 }
 
+export type RecQueryMode = 'occupants' | 'daily' | 'weekly';
+
 export enum Modalities {
     WW = 'These classes never meet in person, nor are you expected to be available at any particular time for classroom instruction. These courses are taught asynchronously with no pre-assigned meeting times.',
     DL = 'These classes never meet in person, but you are expected to deliver instruction synchronously at the times for which the class is scheduled.',
@@ -310,6 +313,17 @@ export const isValidStatisticsQueryMode = (input: string): input is StatisticsQu
         || lower === 'rooms'
         || lower === 'buildings'
         || lower === 'assets';
+}
+
+/**
+ * Typeguard to verify that a string is a valid {@link RecQueryMode}.
+ * @param input the string to verify
+ */
+export const isValidRecQueryMode = (input: string): input is RecQueryMode => {
+    let lower = input.toLowerCase();
+    return lower === 'occupants'
+        || lower === 'daily'
+        || lower === 'weekly';
 }
 
 /**
@@ -777,6 +791,10 @@ export const getDateFromTime = (time: string, date = new Date()) => {
  * @param name the name of the hook for debug logging
  * @param transform how to transform the result into a Return shaped object
  * @param pollTime [optional] millis to wait before fetching new data (disabled by default)
+ * @param method [optional] the method to use for the request
+ * @param body [optional] the body to send with the request
+ * @param retryCount [optional] the number of times to retry the request
+ * @param retryDelay [optional] the number of millis to wait before retrying the request
  */
 export const createRemoteHook = <Response extends UnshapedApiResponse, Return extends GenericShapedHook>(
     name: string,
@@ -791,6 +809,8 @@ export const createRemoteHook = <Response extends UnshapedApiResponse, Return ex
     pollTime?: number,
     method: 'GET' | 'POST' = 'GET',
     body: any = {},
+    retryCount?: number,
+    retryInterval?: number
 ): Return => {
     const start = Date.now();
     const props: any = { method };
@@ -802,7 +822,9 @@ export const createRemoteHook = <Response extends UnshapedApiResponse, Return ex
         .then(res => res as Response);
 
     const { data, error, revalidate, mutate } = useSWR(req, fetcher, {
-        refreshInterval: pollTime || 0
+        refreshInterval: pollTime || 0,
+        errorRetryCount: retryCount,
+        errorRetryInterval: retryInterval
     });
 
     if (!data && !error)

@@ -1,3 +1,4 @@
+export * from './useBluefit';
 export * from './useBluepages';
 export * from './useBluesign';
 export * from './useBluetrade';

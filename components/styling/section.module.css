@@ -21,6 +21,12 @@
     letter-spacing: -0.09rem !important;
 }
 
+.cardText {
+    font-size: 1.25rem !important;
+    font-family: 'Roboto Mono', monospace !important;
+    letter-spacing: -0.09rem !important;
+}
+
 .cardDeckFlex > div {
     flex: 1 1 300px !important;
 }
@@ -31,4 +37,23 @@
 
 .loaderIcon {
     font-size: 1.1rem;
+}
+
+.textRedMuted {
+    color: #cf2323b3 !important;
+}
+
+.textGreenMuted {
+    color: #247c24b3 !important;
+}
+
+.facility {
+    font-size: 0.95rem !important;
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.09rem !important;
+}
+
+.facilityStatus {
+    font-size: 0.85rem !important;
 }

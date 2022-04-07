@@ -53,6 +53,28 @@
     color: $gray-800;
 }
 
+.badge-yellow {
+    color: $white;
+}
+
+.badge-yellow:hover {
+    color: $white !important;
+}
+
+.badge-teal {
+    background-color: $teal;
+    color: $white;
+}
+
+.badge-purple {
+    background-color: $purple;
+    color: $white;
+}
+
+.badge-purple:hover {
+    color: $white;
+}
+
 // Link badges
 
 .btn {

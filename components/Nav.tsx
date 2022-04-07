@@ -78,6 +78,13 @@ const ELEMENTS: NavElement[] = [
                     content: 'Explore res halls and see their rooms.',
                 },
                 {
+                    name: 'recreational',
+                    href: '/rec',
+                    icon: <i className="fa fa-dumbbell fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore traffic insights for the SRC.',
+                },
+                {
                     name: 'dining',
                     href: '/dining',
                     icon: <i className="fa fa-utensils fa-fw"></i>,

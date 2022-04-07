@@ -189,8 +189,34 @@ const HomePage = () => {
                         }
                     ]}
                 />
+
+                <FeatureSection
+                    title="Rec Center"
+                    glyph="/glyphs/rec.svg"
+                    alt="Rec Center Glyph"
+                    className="background-circuits"
+                    description="Planning to work out on campus? Check out realtime traffic insights regarding the Storrs Rec Center, what facilities are open, and "
+                    tags={[
+                        {
+                            icon: <i className="fa fa-chart-line fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Realtime Occupants'
+                        },
+                        {
+                            icon: <i className="fa fa-calendar-day fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Traffic Insights'
+                        },
+                        {
+                            icon: <i className="fa fa-user-check fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Facility Status'
+                        }
+                    ]}
+                />
     
                 <FeatureSection
+                    flip
                     title="Dining Halls"
                     glyph="/glyphs/dining.svg"
                     alt="Dining Glyph"
@@ -217,7 +243,6 @@ const HomePage = () => {
 
                 <DevElement>
                     <FeatureSection
-                        flip
                         title="Snapshots"
                         glyph="/glyphs/snapshot.svg"
                         alt="Snapshot Glyph"
