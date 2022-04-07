@@ -92,7 +92,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
     };
 
     let dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
-    let delta = data!.daily!.slice(-1)[0].average - data!.daily!.slice(-1)[0].values.slice(-1)[0];
+    // let delta = data!.daily!.slice(-1)[0].average - data!.daily!.slice(-1)[0].values.slice(-1)[0];
 
     return (
         <div className="card shadow shadow-lg--hover mt-5 mb-4 mb-xl-0">
