@@ -55,7 +55,7 @@ const getDailyOccupancy = async (day: number) => {
         .get(url)
         .then(res => res.data)
         .then(res => res.values)
-        .catch(_ => null);
+        .catch(_ => { console.error(_); return null; });
 
     if (!data)
         return null;
@@ -81,7 +81,7 @@ const getWeeklyOccupancy = async () => {
         .get(url)
         .then(res => res.data)
         .then(res => res.values)
-        .catch(_ => null);
+        .catch(_ => { console.error(_); return null; });
 
     if (!data)
         return null;
