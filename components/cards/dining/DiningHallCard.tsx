@@ -2,14 +2,14 @@ import moment from 'moment';
 import MdiIcon from '@mdi/react';
 import ReactDateTime from 'react-datetime';
 
-import styles from '../styling/dining.module.css';
-import cardStyles from '../styling/card.module.css';
+import styles from '../../styling/dining.module.css';
+import cardStyles from '../../styling/card.module.css';
 
 import { Collapse } from 'reactstrap';
-import { useDiningHall } from '../../hooks';
 import { isMobile } from 'react-device-detect';
+import { useDiningHall } from '../../../hooks';
 import { useEffect, useRef, useState } from 'react';
-import { Modal, useBoundedClickDetector } from '..';
+import { Modal, useBoundedClickDetector } from '../..';
 import { DiningHallStatus, DiningHallType, Meal } from '@ilefa/blueplate';
 
 import {
@@ -28,7 +28,7 @@ import {
     getIconForDiningHall,
     getIconForDiningStatus,
     getMealHours
-} from '../../util';
+} from '../../../util';
 
 export interface DiningHallCardProps {
     hall: DiningHallPayload;
