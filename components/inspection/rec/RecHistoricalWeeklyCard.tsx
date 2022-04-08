@@ -82,7 +82,7 @@ export const RecHistoricalWeeklyCard: React.FC = () => {
     const [sunday, setSunday] = useState(true);
     
     if (loading) return <></>;
-    if (error) return <></>;
+    if (error || !data?.weekly) return <></>;
     
     const getters = [sunday, monday, tuesday, wednesday, thursday, friday, saturday];
     const setters = [setSunday, setMonday, setTuesday, setWednesday, setThursday, setFriday, setSaturday];

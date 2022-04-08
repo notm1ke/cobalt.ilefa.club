@@ -56,7 +56,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
 
     const [data, _req, loading, error] = useBluefit(undefined, 'daily');
     if (loading) return <></>;
-    if (error) return <></>;
+    if (error || !data?.daily) return <></>;
 
     let dataset: ChartData<'line', (number | undefined)[]> = {
         labels: data!.daily!.map(({ time }) => time),

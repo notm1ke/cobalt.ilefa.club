@@ -20,7 +20,7 @@ const RecCenterPage = () => {
         <main>
             <Head>
                 <title>Cobalt » Rec Center</title>
-                <meta name="description" content={`Explore traffic information for the UConn Storrs Rec Center.`} />
+                <meta name="description" content="Explore traffic information for the UConn Storrs Rec Center." />
             </Head>
             <Nav/>
             <div className="position-relative background-gradient">
@@ -33,7 +33,7 @@ const RecCenterPage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1 ${styles.titleLineHeight}`}>Rec Center</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-3`}>
-                                            <span>placeholder</span>
+                                            <span>All systems operational</span>
                                         </h2>
                                     </div>
                                 </div>
