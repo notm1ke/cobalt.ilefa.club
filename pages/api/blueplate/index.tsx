@@ -31,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: 'Invalid date' });
 
-    if (date && !hall)
+    if (date && !hall && !mode)
         return res
             .status(400)
             .json({ message: 'Must specify dining hall to use historical lookup' });
