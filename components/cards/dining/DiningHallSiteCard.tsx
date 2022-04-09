@@ -49,11 +49,11 @@ type Station = {
 }
 
 enum DiningHallStatusSorting {
-    BREAKFAST,
-    BRUNCH,
-    LUNCH,
-    DINNER,
-    LATE_NIGHT
+    BREAKFAST = 0,
+    BRUNCH = 1,
+    LUNCH = 2,
+    DINNER = 3,
+    LATE_NIGHT = 4
 }
 
 const SILLY_FOODS = [
@@ -277,7 +277,7 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
                             {
                                 Object
                                     .entries(splitByMealTime(meals))
-                                    .sort(([aTime, _a], [bTime, _b]) => DiningHallStatusSorting[aTime.toUpperCase()] - DiningHallStatusSorting[bTime.toUpperCase()])
+                                    .sort(([aTime, _a], [bTime, _b]) => DiningHallStatusSorting[aTime.toUpperCase().replace(/\s/g, '_')] - DiningHallStatusSorting[bTime.toUpperCase().replace(/\s/g, '_')])
                                     .map(([mealTime, food]) => (
                                         <FoodEntriesContainer
                                             key={mealTime}
