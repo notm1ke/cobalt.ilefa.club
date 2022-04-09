@@ -8,5 +8,7 @@ DEV_NAME=$(git log -1 --pretty=format:"%an")
 DEV_EMAIL=$(git log -1 --pretty=format:'%ae')
 
 rm -rf build_info.json
+COMMIT_MESSAGE=$(echo $COMMIT_MESSAGE | sed 's/"/\\"/g')
+
 echo "{\"version\":\"$MAJOR_VERSION\",\"sha\":\"$COMMIT_SHA\",\"message\":\"$COMMIT_MESSAGE\",\"channel\":\"$RELEASE_CHANNEL\",\"device\":\"$DEVICE\",\"dev\":\"$DEV_NAME <$DEV_EMAIL>\",\"dev_name\":\"$DEV_NAME\",\"dev_email\":\"$DEV_EMAIL\",\"time\":\"$GENERATED_TIME\"}" | tee build_info.json > /dev/null
 echo "build_info.json saved for deployment $COMMIT_SHA ($RELEASE_CHANNEL) by $DEV_NAME <$DEV_EMAIL>"
