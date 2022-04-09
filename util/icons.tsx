@@ -40,7 +40,6 @@ import {
     mdiCoffee,
     mdiCogs,
     mdiCommaCircleOutline,
-    mdiCookie,
     mdiCow,
     mdiCurrencyUsd,
     mdiDiamondStone,
@@ -128,6 +127,7 @@ import {
     mdiVote,
     mdiWaterPump,
     mdiWaves,
+    mdiWeatherNight,
     mdiWeightLifter,
     mdiWrench
 } from '@mdi/js';
@@ -479,14 +479,14 @@ export const getIconForDiningHall = (hall: keyof typeof DiningHallType, classes 
  * @param size    [optional] the size of the icon
  */
 export const getIconForDiningStatus = (status: keyof typeof DiningHallStatus, classes = '', size = 16) => {
-    switch (status) {
+    switch (status.toUpperCase().replace(/\s/g, '_')) {
         case 'BETWEEN_MEALS':
         case 'CLOSED':
             return <MdiIcon path={mdiFoodOff} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'BREAKFAST': return <MdiIcon path={mdiCoffee} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'BRUNCH': return <MdiIcon path={mdiBowlMix} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'DINNER': return <MdiIcon path={mdiFoodSteak} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case 'LATE_NIGHT': return <MdiIcon path={mdiCookie} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'LATE_NIGHT': return <MdiIcon path={mdiWeatherNight} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'LUNCH': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;
         default: <MdiIcon path={mdiFoodOff} className={`fa-fw ${classes}`} size={`${size}px`} />;
     }

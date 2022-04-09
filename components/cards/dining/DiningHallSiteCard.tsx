@@ -27,7 +27,6 @@ import {
     mdiLoading
 } from '@mdi/js';
 
-
 export interface DiningHallSiteModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -35,7 +34,7 @@ export interface DiningHallSiteModalProps {
 
 type UniversalMealOption = {
     name: string;
-    mealTime: string[];
+    mealTime: string;
     diningHalls: string[];
 }
 
@@ -74,16 +73,15 @@ const coalesce = (payload: DiningHallResponse[]) => {
 
             for (const { options } of stations) {
                 for (const option of options) {
-                    const item = items.find(i => i.name === option);
+                    const item = items.find(i => i.name === option && i.mealTime === meal.name);
                     if (item) {
                         item.diningHalls.push(hall.name);
-                        !item.mealTime.includes(meal.name) && item.mealTime.push(meal.name);
                         continue;
                     }
 
                     items.push({
                         name: option,
-                        mealTime: [meal.name],
+                        mealTime: meal.name,
                         diningHalls: [hall.name]
                     });
                 }
@@ -97,18 +95,23 @@ const coalesce = (payload: DiningHallResponse[]) => {
 const splitByMealTime = (items: UniversalMealOption[]) => {
     let mealTimes: { [key: string]: UniversalMealOption[] } = {};
     for (const item of items) {
-        for (const mealTime of item.mealTime) {
-            const meal = mealTimes[mealTime];
-            if (meal) {
-                meal.push(item);
-                continue;
-            }
-
-            mealTimes[mealTime] = [item];
+        const meal = mealTimes[item.mealTime];
+        if (meal) {
+            meal.push(item);
+            continue;
         }
+
+        mealTimes[item.mealTime] = [item];
     }
 
     return mealTimes;
+}
+
+const offeredAt = (item: UniversalMealOption) => {
+    let halls = [...new Set(item.diningHalls)].sort((a, b) => a.localeCompare(b));
+    if (halls.length === 8)
+        return 'All Dining Halls';
+    return halls.join(', ');
 }
 
 interface FoodEntriesContainerProps {
@@ -133,7 +136,7 @@ const FoodEntriesContainer: React.FC<FoodEntriesContainerProps> = ({ mealTime, f
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map(option => (
                                 <li key={option.name}>
-                                    <b className={SILLY_FOODS.includes(option.name) ? 'text-gold' : 'text-default'}>{option.name}</b> at {[...new Set(option.diningHalls)].sort((a, b) => a.localeCompare(b)).join(', ')}
+                                    <b className={SILLY_FOODS.includes(option.name) ? 'text-gold' : 'text-default'}>{option.name}</b> at {offeredAt(option)}
                                 </li>
                             ))
                     }
