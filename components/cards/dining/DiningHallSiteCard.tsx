@@ -5,18 +5,28 @@ import ReactDateTime from 'react-datetime';
 import styles from '../../styling/dining.module.css';
 import cardStyles from '../../styling/card.module.css';
 
+import { Collapse } from 'reactstrap';
+import { isMobile } from 'react-device-detect';
 import { useDiningHallSite } from '../../../hooks';
 import { useEffect, useRef, useState } from 'react';
-import { DiningHallResponse } from '@ilefa/blueplate';
+import { getIconForDiningStatus } from '../../../util';
 import { Modal, useBoundedClickDetector } from '../..';
+
+import {
+    DiningHallResponse,
+    DiningHallStatus,
+    DiningHallType,
+    getDiningHallStatus
+} from '@ilefa/blueplate';
 
 import {
     mdiAlert,
     mdiCalendar,
+    mdiCityVariantOutline,
     mdiEmoticonSad,
-    mdiFood,
     mdiLoading
 } from '@mdi/js';
+
 
 export interface DiningHallSiteModalProps {
     open: boolean;
@@ -29,10 +39,29 @@ type UniversalMealOption = {
     diningHalls: string[];
 }
 
+type MealCollapsible = {
+    type: string;
+    state: boolean;
+}
+
 type Station = {
     name: string;
     options: string[];
 }
+
+enum DiningHallStatusSorting {
+    BREAKFAST,
+    BRUNCH,
+    LUNCH,
+    DINNER,
+    LATE_NIGHT
+}
+
+const SILLY_FOODS = [
+    'Zesty Fried Chicken Tenders',
+    'Fried Chicken Nuggets',
+    'Baked Chicken Nuggets'
+]
 
 // TODO: please please please refactor, it hurts my eyes
 const coalesce = (payload: DiningHallResponse[]) => {
@@ -65,10 +94,60 @@ const coalesce = (payload: DiningHallResponse[]) => {
     return items;
 }
 
+const splitByMealTime = (items: UniversalMealOption[]) => {
+    let mealTimes: { [key: string]: UniversalMealOption[] } = {};
+    for (const item of items) {
+        for (const mealTime of item.mealTime) {
+            const meal = mealTimes[mealTime];
+            if (meal) {
+                meal.push(item);
+                continue;
+            }
+
+            mealTimes[mealTime] = [item];
+        }
+    }
+
+    return mealTimes;
+}
+
+interface FoodEntriesContainerProps {
+    mealTime: string;
+    food: UniversalMealOption[];
+    collapsed: boolean;
+    updateCollapsible: (type: string) => void;
+}
+
+const FoodEntriesContainer: React.FC<FoodEntriesContainerProps> = ({ mealTime, food, collapsed, updateCollapsible }) => {
+    return (
+        <div>
+            <div className="mb-1" onClick={() => updateCollapsible(mealTime)}>
+                <span className={`text-primary-light ${styles.diningMeal} cursor-pointer shine`}>
+                    {getIconForDiningStatus((mealTime.toUpperCase()) as keyof typeof DiningHallStatus, styles.diningMealIcon, 24)} {mealTime} <span className={styles.diningHours}></span>
+                </span>
+            </div>
+            <ul className={`${styles.diningOptions} text-default mt-2`}>
+                <Collapse isOpen={collapsed}>
+                    {
+                        food
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map(option => (
+                                <li key={option.name}>
+                                    <b className={SILLY_FOODS.includes(option.name) ? 'text-gold' : 'text-default'}>{option.name}</b> at {[...new Set(option.diningHalls)].sort((a, b) => a.localeCompare(b)).join(', ')}
+                                </li>
+                            ))
+                    }
+                </Collapse>
+            </ul>
+        </div>
+    );
+}
+
 const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, setOpen }) => {
     const [date, setDate] = useState(new Date());
     const [dpOpen, setDpOpen] = useState(false);
     const [meals, setMeals] = useState<UniversalMealOption[]>([]);
+    const [collapse, setCollapse] = useState<MealCollapsible[]>([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [now, setNow] = useState(selectedDate.getDate() === new Date().getDate());
 
@@ -98,6 +177,23 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
     
     const [menu, loading, error] = useDiningHallSite({ date: selectedDate, now });
 
+    const updateCollapsible = (type: string) => {
+        let target = collapse.find(meal => meal.type === type);
+        if (!target) {
+            let updated = [...collapse];
+            updated.push({ type, state: false });
+            setCollapse(updated);
+            return;
+        }
+
+        let updated = [...collapse.filter(meal => meal.type !== type)];
+        updated.push({ type, state: !target.state });
+        setCollapse(updated);
+    }
+
+    const allCollapsed = () => collapse.every(meal => meal.state);
+    const toggleAll = (state = !allCollapsed()) => setCollapse(collapse.map(meal => ({ ...meal, state })));
+
     useEffect(() => {
         let newDate = date;
         if (date.getDate() === new Date().getDate())
@@ -114,13 +210,14 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
             return;
 
         setMeals(coalesce(menu));
+        setCollapse(Object.keys(splitByMealTime(coalesce(menu))).map(meal => ({ type: meal, state: true })));
     }, [menu]);
 
     if (loading) return (
         <Modal
             open={open}
             setOpen={() => setOpen(false)}
-            width={'850px'}
+            width="850px"
             title={modalTitle}>
                 <span>
                     <MdiIcon path={mdiLoading} className={`mr-2 ${cardStyles.cardModalInlineIcon} fa-fw`} size={'24px'} spin />
@@ -133,7 +230,7 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
         <Modal
             open={open}
             setOpen={() => setOpen(false)}
-            width={'850px'}
+            width="850px"
             title={modalTitle}>
                 <span>
                     <MdiIcon path={mdiAlert} className={`text-danger mr-2 ${cardStyles.cardModalInlineIcon} fa-fw`} size={'24px'} />
@@ -142,12 +239,25 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
         </Modal>
     );
 
+    let auxButtons = !isMobile;
+
     return (
         <Modal
             open={open}
             setOpen={() => setOpen(false)}
-            width={'850px'}
+            width="850px"
             closeIcon
+            footerButtons={
+                <>
+                    <a
+                        className="btn btn-link text-lowercase"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => toggleAll()}>
+                            <i className={`fa ${allCollapsed() ? 'fas fa-compress' : 'fa-expand'} fa-fw`}></i> {auxButtons ? allCollapsed() ? 'Collapse All' : 'Expand All' : ''}
+                    </a>
+                </>
+            }
             title={modalTitle}>
                 {
                     !menu!.length && (
@@ -161,7 +271,20 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
                 {
                     meals!.length > 0 && (
                         <pre className="text-primary">
-                            {JSON.stringify(meals, null, 3)}
+                            {
+                                Object
+                                    .entries(splitByMealTime(meals))
+                                    .sort(([aTime, _a], [bTime, _b]) => DiningHallStatusSorting[aTime.toUpperCase()] - DiningHallStatusSorting[bTime.toUpperCase()])
+                                    .map(([mealTime, food]) => (
+                                        <FoodEntriesContainer
+                                            key={mealTime}
+                                            mealTime={mealTime}
+                                            food={food}
+                                            collapsed={collapse.find(ent => ent.type === mealTime)?.state ?? false}
+                                            updateCollapsible={updateCollapsible}
+                                        />
+                                    ))
+                            }
                         </pre>
                     )
                 }
@@ -172,6 +295,16 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
 export const DiningHallSiteCard: React.FC = () => {
     const [open, setOpen] = useState(false);
 
+    let diningHallsOpen: DiningHallType[] = [];
+    let diningHallsClosed: DiningHallType[] = [];
+
+    for (const hall of Object.values(DiningHallType)) {
+        let status = getDiningHallStatus(hall);
+        if (status === DiningHallStatus.BETWEEN_MEALS || status === DiningHallStatus.CLOSED)
+            diningHallsClosed.push(hall);
+        else diningHallsOpen.push(hall);
+    }
+
     return (
         <div className={`card shadow shadow-lg--hover mt-5 ${cardStyles.rgCardSm}`}>
             <div className="card-body">
@@ -179,9 +312,15 @@ export const DiningHallSiteCard: React.FC = () => {
                     <div>
                         <h5>
                             <a className={`${cardStyles.cardSectionTitle} text-primary-light cursor-pointer shine`} onClick={() => setOpen(true)}>
-                                <MdiIcon path={mdiFood} size="24px" className={`fa-fw ${cardStyles.cardTitleIcon}`} /> All Food
+                                <MdiIcon path={mdiCityVariantOutline} size="24px" className={`fa-fw ${cardStyles.cardTitleIcon}`} /> All Food
                             </a>
                         </h5>
+
+                        <p className={`text-dark ${cardStyles.cardSectionText}`}>
+                            { diningHallsOpen.length === 1 && <><span className="text-dark"><b>{diningHallsOpen[0]}</b> is the only dining hall currently serving food.</span></> }
+                            { diningHallsOpen.length > 1 && <><b>{diningHallsOpen.length}</b> dining halls are currently serving food.</> }
+                            { diningHallsOpen.length === 0 && <span>No dining halls currently serve food.</span> }
+                        </p>
                     </div>
                 </div>
             </div>

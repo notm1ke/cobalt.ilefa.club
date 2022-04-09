@@ -729,6 +729,9 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
  * @see https://gist.github.com/ForbesLindesay/5467742
  */
  export const intToWords = (int: number) => {
+    if (isNaN(int))
+        return 'unknown';
+
     let ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
                 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
                 'seventeen', 'eighteen', 'nineteen'];
