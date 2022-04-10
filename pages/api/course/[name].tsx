@@ -2,7 +2,7 @@ import CourseMappings from '@ilefa/husky/courses.json';
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { CompleteCoursePayload, CourseAttributes, isValidCampus } from '../../../util';
-import { CampusType, COURSE_IDENTIFIER, getRawEnrollment, searchCourse, SearchParts } from '@ilefa/husky';
+import { CampusType, COURSE_IDENTIFIER, searchCourse, SearchParts } from '@ilefa/husky';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method && req.method !== 'GET')
@@ -46,19 +46,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(404)
             .json({ message: 'Course not found' });
 
-    let patchedSections = await Promise.all(course.sections.map(async section => {
-        let enrollment = await getRawEnrollment(section.internal.termCode, section.internal.classNumber, section.internal.classSection);
+    // TODO: Figure out a better way to do this, times out almost all requests.
+    // let patchedSections = await Promise.all(course.sections.map(async section => {
+    //     let enrollment = await getRawEnrollment(section.internal.termCode, section.internal.classNumber, section.internal.classSection);
 
-        return {
-            ...section,
-            enrollment: {
-                max: enrollment?.total ?? 0,
-                current: enrollment?.available ?? 0,
-                waitlist: section.enrollment.waitlist,
-                full: enrollment?.overfill ?? false,
-            }
-        }
-    }));
+    //     return {
+    //         ...section,
+    //         enrollment: {
+    //             max: enrollment?.total ?? 0,
+    //             current: enrollment?.available ?? 0,
+    //             waitlist: section.enrollment.waitlist,
+    //             full: enrollment?.overfill ?? false,
+    //         }
+    //     }
+    // }));
 
     let payload: CompleteCoursePayload = {
         name: mappings.name,
@@ -69,7 +70,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         credits: parseInt(course.credits),
         prerequisites: course.prereqs,
         description: course.description,
-        sections: patchedSections,
+        sections: course.sections,
         professors: course.professors
     }
 
