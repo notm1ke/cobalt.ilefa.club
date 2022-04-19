@@ -18,7 +18,7 @@ export type RmpResponse = RateMyProfessorReport & TimedRequest & UnshapedApiResp
 }
 
 export const useProfessor = ({ rmpIds, recordMetric }: ProfessorLookupProps): DefaultShapedHook<RmpResponse> =>
-    createRemoteHook<RmpResponse, DefaultShapedHook<RmpResponse>>('Professor', `/api/professor/${rmpIds.join(',')}`,
+    createRemoteHook<RmpResponse, DefaultShapedHook<RmpResponse>>('Professor', `/api/professor/${rmpIds.length ? rmpIds.join(',') : 'noop'}`,
         (type, data, _err, url) => {
             switch (type) {
                 case ApiResponseType.ERROR:

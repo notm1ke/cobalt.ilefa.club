@@ -91,6 +91,11 @@
     padding: 5px;
 }
 
+.tabBodyDataTable {
+    padding: 0px !important;
+    margin: -3px !important;
+}
+
 .sectionDataExpanded {
     padding: 16px;
     display: block;

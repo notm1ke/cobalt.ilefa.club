@@ -5,28 +5,40 @@ import Classrooms from '@ilefa/husky/classrooms.json';
 
 import styles from '../../styling/inspection.module.css';
 
-import { ErrorTab } from '.';
-import { CopyButton } from '../..';
-import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import { useToggle } from '../../../hooks';
+import { CopyButton } from '../..';
 import { mdiChevronDown } from '@mdi/js';
-import { ROOM_REGEX_PATTERN } from '@ilefa/bluesign';
+import { useToggle } from '../../../hooks';
+import { useEffect, useState } from 'react';
+import { EnrollmentButton, ErrorTab } from '.';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
-import { BuildingCode, Classroom, SectionData } from '@ilefa/husky';
+
+import {
+    BuildingCode,
+    Classroom,
+    EnrollmentPayload,
+    SectionData,
+    SectionLocationData
+} from '@ilefa/husky';
 
 import {
     CompleteCoursePayload,
+    convertFromHuskyEnrollment,
+    convertToHuskyEnrollment,
     getCampusIndicator,
+    getEnrollmentColor,
     getIconForRoom,
     getInstructorName,
-    getMeetingRoom,
     getMeetingTime,
     getModalityIndicator,
     getRealRoomCode,
+    getRoomDisplayName,
+    getTermCode,
     Modalities,
-    replaceAll
+    prunePrimitiveDuplicates,
+    replaceAll,
+    SessionNames
 } from '../../../util';
 
 export interface SectionsTabProps {
@@ -38,7 +50,7 @@ interface SectionDataProps {
     course: CompleteCoursePayload;
 }
 
-export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
+export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data, course }) => {
     if (!data) return (
         <div className={styles.sectionDataExpanded}>
             <pre className={`${styles.sectionTitle} text-danger`}><i className="fa fa-times-circle fa-fw"></i> Whoops</pre>
@@ -52,11 +64,35 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
     const [classTermCopied, setTermCopied] = useState(false);
     const [classSessionCopied, setSessionCopied] = useState(false);
 
-    let rooms = getMeetingRoom(data.location.name).sort((a, b) => a.localeCompare(b));
+    const [enrollment, setEnrollment] = useState<EnrollmentPayload>(convertFromHuskyEnrollment(data));
+    const [enrollmentLoading, setEnrollmentLoading] = useState(true);
+
+    useEffect(() => {
+        fetch(`/api/enrollment/${course.name}?section=${data.section}&term=${data.term.replace(/\s/g, '')}`)
+            .then(res => res.text())
+            .then(JSON.parse)
+            .then(res => {
+                if (!res.available || !res.total)
+                    throw new Error('Enrollment data unavailable')
+                return res;
+            })
+            .then(setEnrollment)
+            .then(_ => setEnrollmentLoading(false))
+            .catch(_ => setEnrollment(convertFromHuskyEnrollment(data)));
+    }, []);
+
+    let rooms = data.location.sort((a, b) => a.name.localeCompare(b.name));
     let multipleRooms = rooms.length > 1;
 
     let honors = data.notes && data.notes.toLowerCase().includes('honors');
-    let managedRoom = Classrooms.find(room => room.name === data.location.name.replace(' ', ''));
+    let managedRoom = data
+        .location
+        .map(ent => Classrooms.find(room => ent.name.replace(' ', '') === room.name))
+        .filter(ent => ent !== undefined) as Classroom[];
+
+    let meetingTime = getMeetingTime(data.schedule, data.location);
+    if (meetingTime instanceof Array)
+        meetingTime = prunePrimitiveDuplicates(meetingTime);
 
     return (
         <div className={styles.sectionDataExpanded}>
@@ -76,30 +112,38 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                     <p><b>Campus:</b> {data.campus}</p>
                                     <p><b>Modality:</b> {data.mode}</p>
                                     <p><b>Instructor:</b> {data.instructor.trim().length ? getInstructorName(data.instructor) : 'Unknown'}</p>
-                                    <p><b>Schedule:</b> {getMeetingTime(data.schedule, data.location)}</p>
+                                    
+                                    {
+                                        data.session !== 'Reg' && <p><b>Session:</b> {SessionNames[data.session.toUpperCase()] ?? 'Unknown'}</p>
+                                    }
+
+                                    <p><b>Schedule:</b> {prunePrimitiveDuplicates(getMeetingTime(data.schedule, data.location, undefined, undefined, true) as string[]).join(' & ')}</p>
                                     <p><b>Location:</b> {
-                                        !data.location.name.trim().length
+                                        !data.location.length
                                             ? 'Unknown'
-                                            : data.location.name === 'No Room Required - Online'
+                                            : data.location.every(ent => ent.name === 'No Room Required - Online')
                                                 ? 'Virtual'
                                                 : multipleRooms
                                                     ? rooms
-                                                        .filter(room => ROOM_REGEX_PATTERN.test(room))
                                                         .map((ent, i, arr) => {
-                                                            ent = ent.replace(' ', '');
-                                                            let room = Classrooms.find(room => room.name === ent);
+                                                            let name = ent.name.replace(' ', '');
+                                                            let room = Classrooms.find(room => room.name === ent.name);
                                                             let end = i === arr.length - 1 ? '' : ', ';
-                                                            if (!room) return <span>{ent + end}</span>
+                                                            if (!room) return <span>{ent.name + end}</span>
                                                             
-                                                            return <a href={`/room/${ent.toUpperCase().replace(' ', '')}`}>
-                                                                    <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{ent}</a>{end}</>
-                                                                </a>
+                                                            return <a href={`/room/${ent.name.toUpperCase().replace(' ', '')}`}>
+                                                                      <>{getIconForRoom(room as Classroom, 'text-primary')} <a className="text-primary shine">{name}</a>{end}</>
+                                                                   </a>
                                                         })
-                                                    : !!managedRoom
-                                                        ? <a href={`/room/${data.location.name.toUpperCase().replace(' ', '')}`}>
-                                                            <>{getIconForRoom(managedRoom as Classroom, 'text-primary')} <a className="text-primary shine">{data.location.name}</a></>
-                                                        </a>
-                                                        : getMeetingRoom(data.location.name).join(', ')
+                                                    : managedRoom.length
+                                                        ? managedRoom.map((ent, i) =>
+                                                            <a href={`/room/${ent.name.replace(' ', '')}`}>
+                                                                <>{getIconForRoom(ent as Classroom, 'text-primary')} <a className="text-primary shine">{data.location[i].name}</a></>
+                                                            </a>
+                                                          )
+                                                        : data.location
+                                                            .map(ent => ent.name.split(' ').map((ent, i) => i !== 0 ? ent : getRealRoomCode(ent, ent)).join(' '))
+                                                            .join(', ')
                                     }</p>
                                     <br/>
                                     
@@ -123,8 +167,8 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                     
                                     <p><b>Enrollment Information</b></p>
                                     <ul>
-                                        <li><b>Current:</b> <span className={data.enrollment.full ? 'text-danger' : 'text-success'}>{data.enrollment.current}/{data.enrollment.max}</span></li>
-                                        <li><b>Waitlist Spaces:</b> {data.enrollment.waitlist ?? 'Unavailable'}</li>
+                                        <li><b>Current:</b> {enrollmentLoading && <i className="fa fa-spinner fa-fw fa-spin"></i>} {!enrollmentLoading && <span className={getEnrollmentColor(convertToHuskyEnrollment(enrollment, data))}>{enrollment.available}/{enrollment.total}</span>}</li>
+                                        <li><b>Available Waitlist Spaces:</b> {data.enrollment.waitlist ?? 'Unavailable'}</li>
                                     </ul>
 
                                     <p><b>Internal Information</b></p>
@@ -170,45 +214,33 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             message="There aren't any sections been taught at the moment."
             color="text-gray" />
 
-    // if different terms in section data, show semester marker
-    let useTerm = sections.some(section => section.term !== sections[0].term);
+    let useTerm = true; // sections.some(section => section.term !== sections[0].term);
     const columns: IDataTableColumn[] = [
         {
             name: 'Section',
             selector: 'section',
             sortable: true,
             format: (row, _i) => <>
-                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
-                                        [{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode) + (useTerm ? `/${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}` : '')}]
+                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                                        [{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode) + (useTerm ? `/${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}` : '')}]
                                     </b> {row.section}
-                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         <b>{row.campus}{useTerm ? ` - ${row.term}` : ''}</b>
                                         <br/><span className={styles.modalityTooltipType}>{row.mode}</span>
                                         <br/><span className={styles.modalityTooltipDescription}>{Modalities[getModalityIndicator(row.mode)] || ''}</span>
                                     </UncontrolledTooltip>
                                  </>,
-            grow: useTerm ? 0.75 : 0.5
+            grow: useTerm ? 0.65 : 0.45,
+            allowOverflow: true
         },
         {
             name: 'Room',
-            selector: 'location.name',
+            selector: 'location',
             format: (row, _i) => {
-                let room: string | JSX.Element = !!row.location.name
-                    ? row.location.name === 'No Room Required - Online'
-                        ? 'None'
-                        : getMeetingRoom(row.location.name)
-                            .filter(room => ROOM_REGEX_PATTERN.test(room))
-                            .map(token => !token.includes(' ') ? token.split(/\d/).join(' ') : token)
-                            .map(name => getRealRoomCode(row.location.name, row.location.name.split(' ')[0]) + ' ' + name.split(' ')[1])
-                            .join(', ')
-                    : 'Unknown';
-
-                let tokens = room.split(', ');
-                if (tokens.length > 1) {
-                    let all = getMeetingRoom(row.location.name)
-                        .filter(room => ROOM_REGEX_PATTERN.test(room))
-                        .sort((a, b) => a.localeCompare(b));
-                    room = <>{all[0]} <span className={styles.extraRoomsIndicator}>{'+' + (all.length - 1)}</span></>;
+                let room = getRoomDisplayName(row);
+                if (row.location.length > 1) {
+                    let all = row.location.sort((a: SectionLocationData, b: SectionLocationData) => a.name.localeCompare(b.name));
+                    room = <>{all[0].name} <span className={styles.extraRoomsIndicator}>{'+' + (all.length - 1)}</span></>;
                 }
 
                 return <>
@@ -217,12 +249,15 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                                 room !== 'None' && room !== 'Unknown' && (
                                     <UncontrolledTooltip delay={0} placement="top" target={`tooltip-room-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         {
-                                            tokens
-                                                .sort((a, b) => a.localeCompare(b))
-                                                .map((token, i) => {
-                                                    let code = Object.keys(BuildingCode).find(key => token.startsWith(key));
-                                                    if (!code) return <><span>{token}</span>{i !== tokens.length - 1 ? <br/> : ''}</>
-                                                    return <><span className={styles.roomTooltip}>{BuildingCode[code]} {token.split(code).map(ent => ent.trim()).join('')}</span>{i !== tokens.length - 1 ? <br/> : ''}</>;
+                                            row.location
+                                                .sort((a: SectionLocationData, b: SectionLocationData) => a.name.localeCompare(b.name))
+                                                .map((token: SectionLocationData, i: number) => {
+                                                    let code = Object.keys(BuildingCode).find(key => token.name.startsWith(key));
+                                                    if (!code) return <><span>{token.name}</span>{i !== row.location.length - 1 ? <br/> : ''}</>
+                                                    return <>
+                                                        <span className={styles.roomTooltip}>
+                                                            {BuildingCode[code]} {token.name.split(code).map(ent => ent.trim()).join('')}
+                                                        </span>{i !== row.location.length - 1 ? <br/> : ''}</>;
                                                 })
                                         }
                                     </UncontrolledTooltip>
@@ -232,6 +267,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             },
             sortable: true,
             grow: useTerm ? 0 : 0.5,
+            allowOverflow: true
         },
         {
             name: 'Professor',
@@ -259,7 +295,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                                 <UncontrolledTooltip delay={0} placement="top" target={`tooltip-prof-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                     {
                                         cleanName
-                                            .split(', ')
+                                            .split(' & ')
                                             .sort((a: string, b: string) => a.localeCompare(b))
                                             .map((name: string) => <><span>{name}</span><br/></>)
                                     }
@@ -271,6 +307,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             },
             sortable: true,
             grow: 0.65,
+            allowOverflow: true
         },
         {
             name: 'Schedule',
@@ -280,34 +317,30 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                 if (tokens.join('') === 'No Meeting Time' || tokens.join('') === 'Unknown')
                     return tokens;
 
+                tokens = prunePrimitiveDuplicates(tokens);
+
                 return <>
                     <span id={`tooltip-schedule-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}><>{tokens[0]} {tokens.length !== 1 ? <span className={styles.extraRoomsIndicator}>{'+' + (tokens.length - 1)}</span> : <></>}</></span>
                     <UncontrolledTooltip delay={0} placement="top" target={`tooltip-schedule-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                         {
-                            (getMeetingTime(row.schedule.trim(), sections[i].location, false, undefined, false) as string)
-                                .split(' & ')
-                                .map((time, i, arr) => <><span className={styles.roomTooltip}>{time}</span>{i !== arr.length - 1 ? <br/> : ''}</>)
+                            (prunePrimitiveDuplicates(
+                                (getMeetingTime(row.schedule.trim(), sections[i].location, false, undefined, false) as string)
+                                .split(' & '))
+                                .map((time, i, arr) => <><span className={styles.roomTooltip}>{time}</span>{i !== arr.length - 1 ? <br/> : ''}</>))
                         }
                     </UncontrolledTooltip>
                 </>;
             },
-            sortable: true
+            sortable: true,
+            allowOverflow: true
         },
         {
             name: 'Enrollment',
             selector: 'enrollment.current',
             sortable: true,
+            allowOverflow: true,
             grow: 0,
-            format: (row, _i) => <span className={row.enrollment.full ? 'text-danger' : 'text-success'}>
-                                    {(row.enrollment.current ?? 0) + '/' + (row.enrollment.max ?? 0)} {row.enrollment.waitlist
-                                        ?   <>
-                                                <span className="text-primary" id={`tooltip-waitlist-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>(+{row.enrollment.waitlist})</span>{" "}
-                                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-waitlist-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
-                                                    Waitlist Spaces: <b>{row.enrollment.waitlist}</b>
-                                                </UncontrolledTooltip>
-                                            </>
-                                        : ''}
-                                 </span>
+            format: (row, _i) => <EnrollmentButton course={data} data={row} />
         }
     ];
 

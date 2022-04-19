@@ -1,3 +1,4 @@
+export * from './EnrollmentButton';
 export * from './EquivTab';
 export * from './ErrorTab';
 export * from './LoaderTab';

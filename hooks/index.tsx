@@ -12,6 +12,7 @@ export * from './useDiningHalls';
 export * from './useDiningHallSite';
 export * from './useDorm';
 export * from './useDorms';
+export * from './useEnrollment';
 export * from './useLatestCommit';
 export * from './useManagedSite';
 export * from './useManagedRooms';

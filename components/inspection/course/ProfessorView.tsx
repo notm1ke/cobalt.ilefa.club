@@ -15,9 +15,11 @@ import {
     addTrailingDecimal,
     capitalizeFirst,
     getCampusIndicator,
+    getTermCode,
     IMetricsComponent,
     RMP_TAG_CONS,
-    RMP_TAG_PROS
+    RMP_TAG_PROS,
+    semesterComparator
 } from '../../../util';
 
 export interface ProfessorViewProps extends IMetricsComponent {
@@ -163,10 +165,10 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, s
                                     {
                                         professor
                                             .sections
-                                            .sort((a, b) => getCampusIndicator(a.campus).localeCompare(getCampusIndicator(b.campus)))
+                                            .sort((a, b) => semesterComparator(a.term, b.term))
                                             .map(ent => (
                                                 <li key={ent.section}>
-                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /><b>[{ent.campus}{showTerm ? ` - ${ent.term.substring(0, 1) + ent.term.split(/(\d{2,4})/)[1].substring(2)}` : ''}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light mr-1 fa-fw" /><b>[{ent.campus}{showTerm ? ` - ${getTermCode(ent.term) + ent.term.split(/(\d{2,4})/)[1].substring(2)}` : ''}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
                                                 </li>
                                             ))
                                     }

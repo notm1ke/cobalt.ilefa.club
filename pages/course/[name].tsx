@@ -266,12 +266,12 @@ const CourseInspection = () => {
                                                     </Navbar>
                                                 </div>
                                                 {/* add `shadow` class to give back shadow to the below node */}
-                                                <div className={styles.tabBody}>
+                                                <div className={activeTab === 'sections' ? styles.tabBodyDataTable : styles.tabBody}>
                                                     <TabContent activeTab={activeTab} id="tab">
                                                         <TabPane tabId="overview">
                                                             <OverviewTab data={course} />
                                                         </TabPane>
-                                                        <TabPane tabId="sections">
+                                                        <TabPane tabId="sections" className={styles.tabBodyDataTable}>
                                                             <SectionsTab data={course} />
                                                         </TabPane>
                                                         <TabPane tabId="professors">

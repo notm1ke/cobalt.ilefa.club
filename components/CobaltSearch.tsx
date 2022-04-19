@@ -148,8 +148,6 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
         });
     }
 
-    // const [data, _loading, _error] = useCourseList();
-
     useEffect(() => {
         fetch(`/api/search`, {
             method: 'POST',
