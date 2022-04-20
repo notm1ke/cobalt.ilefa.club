@@ -2,6 +2,8 @@
     vertical-align: sub;
     margin-right: 12px;
     margin-bottom: 3px;
+    background: unset !important;
+    color: #ffffff !important;
 }
 
 .sectionSeparator {
