@@ -118,6 +118,13 @@
     font-weight: 900;
     letter-spacing: -0.035em;
     line-height: 1em;
+
+    background: url("https://images.unsplash.com/photo-1515549832467-8783363e19b6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1227&q=80") !important;
+    background-position: 35% 50% !important;
+    background-size: 75% !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
 }
 
 .nameTitleIcon {
