@@ -63,12 +63,6 @@ enum DiningHallStatusSorting {
     LATE_NIGHT = 4
 }
 
-const SILLY_FOODS = [
-    'Zesty Fried Chicken Tenders',
-    'Fried Chicken Nuggets',
-    'Baked Chicken Nuggets'
-]
-
 // TODO: please please please refactor, it hurts my eyes
 const coalesce = (payload: DiningHallResponse[]) => {
     let items: UniversalMealOption[] = [];
