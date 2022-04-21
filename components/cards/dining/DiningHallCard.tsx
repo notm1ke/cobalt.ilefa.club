@@ -7,10 +7,10 @@ import cardStyles from '../../styling/card.module.css';
 
 import { Collapse } from 'reactstrap';
 import { isMobile } from 'react-device-detect';
-import { useDiningHall } from '../../../hooks';
 import { useEffect, useRef, useState } from 'react';
 import { Modal, useBoundedClickDetector } from '../..';
 import { DiningHallStatus, DiningHallType, Meal } from '@ilefa/blueplate';
+import { DiningHallPayload as DHPayload, useDiningHall } from '../../../hooks';
 
 import {
     mdiAlert,
@@ -32,12 +32,16 @@ import {
 
 export interface DiningHallCardProps {
     hall: DiningHallPayload;
+    favorites: string[];
+    setFavorites: (favorites: string[]) => void;
 }
 
 export interface DiningHallModalProps {
     hall: DiningHallPayload;
     open: boolean;
+    favorites: string[];
     setOpen: (open: boolean) => void;
+    setFavorites: (favorites: string[]) => void;
 }
 
 type MealCollapsible = {
@@ -47,14 +51,14 @@ type MealCollapsible = {
 
 type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
 
-const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOpen }) => {
+const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favorites, setOpen, setFavorites }) => {
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [now, setNow] = useState(selectedDate.getDate() === new Date().getDate());
     const [meals, setMeals] = useState<MealCollapsible[]>([]);
     const [dpOpen, setDpOpen] = useState(false);
     const dpWrapper = useRef(null);
-
+    
     useBoundedClickDetector(dpWrapper, () => setDpOpen(false));
 
     const hallName = isMobile
@@ -75,11 +79,45 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         setMeals(updated);
     }
 
+    const getFoodEntryColor = (item: string, base?: string) => favorites.includes(item) ? `text-gold ${base}` : base ?? '';
+    const getServedFavorites = (menu: DHPayload) => {
+        let food = menu!
+            .meals
+            .map(meal =>
+                (meal.stations instanceof Array
+                    ? meal.stations
+                    : [meal.stations])
+                .map(station => (station as any).options))
+                .reduce((acc, cur) => acc.concat(cur), []);
+
+        return food
+            .reduce((acc, cur) => acc.concat(cur), [])
+            .filter(item => favorites.includes(item));
+    }
+
+    const toggleFavorite = (item: string) => {
+        if (favorites.includes(item)) {
+            setFavorites(favorites.filter(fav => fav !== item));
+            return;
+        }
+
+        setFavorites([...favorites, item]);
+    }
+
     const allCollapsed = () => meals.every(meal => meal.state);
     const toggleAll = (state = !allCollapsed()) => setMeals(meals.map(meal => ({ ...meal, state })));
 
     const dayDiff = selectedDate.getDate() - new Date().getDate();
     const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
+    
+    if (!hallKey) return <></>;
+    const [menu, loading, error] = useDiningHall({
+        hall: hallKey,
+        date: selectedDate,
+        now: selectedDate.getDate() === new Date().getDate() && selectedDate.getHours() === new Date().getHours(),
+        pollTime: 30000
+    });
+
     const modalTitle = (
         <span>
             <span className="text-primary-light cursor-pointer text-primary-light">
@@ -100,16 +138,9 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
             </span> ➜ {hallName} {" "}
             { now && <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span> }
             { !now && <span className="font-weight-bold">({getChangeString(dayDiff, '', 0, true)} day{dayDiff !== 1 ? 's' : ''})</span> }
+            { menu && menu.meals && <span className="text-gold ml-2"><i className="fa fa-star fa-fw"></i> {getServedFavorites(menu).length}</span> }
         </span>
     );
-    
-    if (!hallKey) return <></>;
-    const [menu, loading, error] = useDiningHall({
-        hall: hallKey,
-        date: selectedDate,
-        now: selectedDate.getDate() === new Date().getDate() && selectedDate.getHours() === new Date().getHours(),
-        pollTime: 30000
-    });
 
     const mealCollapseRules: MealCollapsePredicate[] = [
         (menu, meal) => menu.status === 'BETWEEN_MEALS' && (meal.name === 'Breakfast' || meal.name === 'Brunch' || meal.name === 'Lunch' || meal.name === 'Dinner'),
@@ -169,7 +200,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         <Modal
             open={open}
             setOpen={() => setOpen(false)}
-            width={'850px'}
+            width="850px"
             title={modalTitle}>
                 <span>
                     <MdiIcon path={mdiAlert} className={`text-danger mr-2 ${cardStyles.cardModalInlineIcon} fa-fw`} size={'24px'} />
@@ -184,7 +215,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
         <Modal
             open={open}
             setOpen={() => setOpen(false)}
-            width={'850px'}
+            width="850px"
             closeIcon
             footerButtons={
                 <>
@@ -240,7 +271,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
                                                         <ul className={styles.diningOptions}>
                                                             {
                                                                 station.options.map(option => (
-                                                                    <li key={option}>{option}</li>
+                                                                    <li key={option} className={getFoodEntryColor(option, 'cursor-pointer')} onClick={_ => toggleFavorite(option)}>{option}</li>
                                                                 ))
                                                             }
                                                         </ul>
@@ -257,7 +288,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, setOp
     )
 }
 
-export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
+export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites, setFavorites }) => {
     const [open, setOpen] = useState(false);
 
     let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType, cardStyles.cardTitleIcon, 24);
@@ -292,7 +323,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall }) => {
                     </div>
                 </div>
             </div>
-            <DiningHallMenuModal hall={hall} open={open} setOpen={setOpen} />
+            <DiningHallMenuModal hall={hall} open={open} favorites={favorites} setOpen={setOpen} setFavorites={setFavorites} />
         </div>
     );
 }

@@ -73,3 +73,13 @@
 .buildingDirectory {
     margin-left: -20px !important;
 }
+
+.proTip {
+    font-size: 0.85rem !important;
+}
+
+.proTip b {
+    /* text-transform: uppercase; */
+    font-variant: normal;
+    color: #498ac6 !important;
+}

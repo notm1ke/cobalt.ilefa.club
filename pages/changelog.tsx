@@ -18,6 +18,7 @@ const CHANGELOG = [
     "Added support for graduate courses",
     "Added warning for courses not currently being offered",
     "Added \"all food\" button to dining page",
+    "Added food favorites to dining page",
     "Added room schedules to the room inspection UI",
     "Added realtime room status to the room inspection UI",
     "Added the \"I'm feeling silly\" button to CobaltSearch",

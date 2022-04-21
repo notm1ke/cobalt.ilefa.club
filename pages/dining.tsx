@@ -6,12 +6,13 @@ import styles from '../components/styling/building.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
 import { intToWords } from '../util';
-import { useDiningHalls } from '../hooks';
 import { mdiAlert, mdiLoading } from '@mdi/js';
+import { useDiningHalls, useLocalStorage } from '../hooks';
 import { DiningHallCard, DiningHallSiteCard, Footer, Nav } from '../components';
 
 const DiningHallsPage = () => {
     const [data, loading, error] = useDiningHalls({ poll: 10000 });
+    const [favorites, setFavorites] = useLocalStorage<string[]>('diningFavorites', []);
     
     const enabled = !loading
         && !error
@@ -36,7 +37,14 @@ const DiningHallsPage = () => {
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-3`}>
                                             { !enabled && error && <span><MdiIcon path={mdiAlert} size="24px" /> Something went wrong</span> }
                                             { !enabled && !error && <span><MdiIcon path={mdiLoading} size="24px" spin /> Loading..</span> }
-                                            { enabled && <span>Explore {data?.length ? intToWords(data.length) + ' different' : ''} dining halls at Storrs.</span> }
+                                            { enabled &&
+                                                (
+                                                    <>
+                                                        <span>Explore {data?.length ? intToWords(data.length) + ' different' : ''} dining halls at Storrs.</span>
+                                                        <div className="mt-2"><small className={styles.proTip}><b>Protip:</b> Click on food items to favorite them</small></div>
+                                                    </>
+                                                )
+                                            }
                                         </h2>
                                     </div>
                                 </div>
@@ -59,7 +67,7 @@ const DiningHallsPage = () => {
                                         .sort((a, b) => a.name.localeCompare(b.name))
                                         .map(hall => (
                                             <div className="col-md-4" key={hall.name}>
-                                                <DiningHallCard hall={hall} />
+                                                <DiningHallCard hall={hall} favorites={favorites} setFavorites={setFavorites} />
                                             </div>
                                         ))
                             }
