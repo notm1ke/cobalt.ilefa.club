@@ -494,6 +494,12 @@ export const addTrailingDecimal = (int: number) => {
     return int.toString();
 }
 
+/**
+ * Joins an array and places 'and' between the last two items.
+ * 
+ * @param arr the array to join
+ * @param delimiter the delimiter to use
+ */
 export const joinWithAnd = (arr: any[], delimiter: string = ', ') => {
     if (arr.length === 0)
         return '';
@@ -502,6 +508,40 @@ export const joinWithAnd = (arr: any[], delimiter: string = ', ') => {
     if (arr.length === 2)
         return arr.join(' and ');
     return arr.slice(0, -1).join(delimiter) + ' and ' + arr.slice(-1);
+}
+
+/**
+ * Shortens an inputted string to a specified length
+ * by trimming at the max length and adding ellipses.
+ * 
+ * @param input the input string
+ * @param maxLen the maximum allowed length
+ */
+export const shortenWithEllipses = (input: string, maxLen: number) => {
+    if (input.length <= maxLen)
+        return input;
+    return input.slice(0, maxLen - 2) + '..';
+}
+
+/**
+ * Shortens an inputted name by substituting
+ * the last name with it's initial.
+ * 
+ * @param input the inputted name
+ * @param maxLen the maximum allowed length before shortening
+ * @param trailingDot whether to add a trailing dot to the last name
+ */
+export const shortenName = (input: string, maxLen: number, trailingDot: boolean = true) => {
+    if (input.length <= maxLen)
+        return input;
+    return input
+        .split(' ')
+        .map((part, i, arr) => i !== arr.length - 1
+            ? part
+            : part[0] + (trailingDot 
+                ? '.'
+                : ''))
+        .join(' ');
 }
 
 /**

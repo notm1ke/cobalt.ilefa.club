@@ -280,12 +280,9 @@ const CourseInspection = () => {
                                                                     <ProfessorsTab course={course} recordMetric={recordMetric} />
                                                                 )
                                                             }
-                                                            {
-                                                                loading && <LoaderTab />
-                                                            }
-                                                            {
-                                                                error && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" />
-                                                            }
+                                                            
+                                                            { loading && <LoaderTab /> }
+                                                            { error && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" /> }
                                                         </TabPane>
                                                         <TabPane tabId="transfer">
                                                             <EquivTab data={course} recordMetric={recordMetric} />

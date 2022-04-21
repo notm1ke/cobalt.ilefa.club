@@ -38,7 +38,9 @@ import {
     Modalities,
     prunePrimitiveDuplicates,
     replaceAll,
-    SessionNames
+    SessionNames,
+    shortenName,
+    shortenWithEllipses
 } from '../../../util';
 
 export interface SectionsTabProps {
@@ -285,7 +287,9 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
 
                 let display = <>{cleanName}</>;
                 if (cleanName.split(' & ').length > 1)
-                    display = <>{cleanName.split(' & ')[0]} <span className={styles.extraRoomsIndicator}>{'+' + (cleanName.split(' & ').length - 1)}</span></>;
+                    display = <>{shortenWithEllipses(cleanName.split(' & ')[0], 15)} <span className={styles.extraRoomsIndicator}>{'+' + (cleanName.split(' & ').length - 1)}</span></>;
+                else if (cleanName.length > 20)
+                    display = <>{shortenName(cleanName, 20)}</>;
 
                 return (
                     <>
