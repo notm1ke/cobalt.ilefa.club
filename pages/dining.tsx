@@ -57,7 +57,7 @@ const DiningHallsPage = () => {
                         <div className="row">
                             {
                                 enabled && <div className="col-md-4">
-                                    <DiningHallSiteCard />
+                                    <DiningHallSiteCard favorites={favorites} setFavorites={setFavorites} />
                                 </div>
                             }
                             

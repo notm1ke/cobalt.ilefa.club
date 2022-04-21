@@ -323,7 +323,13 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites,
                     </div>
                 </div>
             </div>
-            <DiningHallMenuModal hall={hall} open={open} favorites={favorites} setOpen={setOpen} setFavorites={setFavorites} />
+            <DiningHallMenuModal
+                hall={hall}
+                open={open}
+                favorites={favorites}
+                setOpen={setOpen}
+                setFavorites={setFavorites}
+            />
         </div>
     );
 }

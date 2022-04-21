@@ -27,9 +27,16 @@ import {
     mdiLoading
 } from '@mdi/js';
 
+export interface DiningHallSiteCardProps {
+    favorites: string[];
+    setFavorites: (favorites: string[]) => void;
+}
+
 export interface DiningHallSiteModalProps {
     open: boolean;
+    favorites: string[];
     setOpen: (open: boolean) => void;
+    setFavorites: (favorites: string[]) => void;
 }
 
 type UniversalMealOption = {
@@ -118,10 +125,23 @@ interface FoodEntriesContainerProps {
     mealTime: string;
     food: UniversalMealOption[];
     collapsed: boolean;
+    favorites: string[];
     updateCollapsible: (type: string) => void;
+    setFavorites: (favorites: string[]) => void;
 }
 
-const FoodEntriesContainer: React.FC<FoodEntriesContainerProps> = ({ mealTime, food, collapsed, updateCollapsible }) => {
+const FoodEntriesContainer: React.FC<FoodEntriesContainerProps> = ({ mealTime, food, collapsed, favorites, updateCollapsible, setFavorites }) => {
+    const getFoodEntryColor = (item: string, base?: string, def: string = 'text-default') => favorites.includes(item) ? `text-gold ${base}` : `${def ?? ''} ${base ?? ''}`;
+
+    const toggleFavorite = (item: string) => {
+        if (favorites.includes(item)) {
+            setFavorites(favorites.filter(fav => fav !== item));
+            return;
+        }
+
+        setFavorites([...favorites, item]);
+    }
+
     return (
         <div>
             <div className="mb-1" onClick={() => updateCollapsible(mealTime)}>
@@ -136,7 +156,7 @@ const FoodEntriesContainer: React.FC<FoodEntriesContainerProps> = ({ mealTime, f
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map(option => (
                                 <li key={option.name}>
-                                    <b className={SILLY_FOODS.includes(option.name) ? 'text-gold' : 'text-default'}>{option.name}</b> at {offeredAt(option)}
+                                    <b className={getFoodEntryColor(option.name, 'cursor-pointer', 'text-default')} onClick={() => toggleFavorite(option.name)}>{option.name}</b> at {offeredAt(option)}
                                 </li>
                             ))
                     }
@@ -146,7 +166,7 @@ const FoodEntriesContainer: React.FC<FoodEntriesContainerProps> = ({ mealTime, f
     );
 }
 
-const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, setOpen }) => {
+const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, favorites, setOpen, setFavorites }) => {
     const [date, setDate] = useState(new Date());
     const [dpOpen, setDpOpen] = useState(false);
     const [meals, setMeals] = useState<UniversalMealOption[]>([]);
@@ -175,6 +195,7 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
                     />
                 </div>
             </span> ➜ All Dining Halls {" "}
+            { meals && <span className="text-gold ml-1"><i className="fa fa-star fa-fw"></i> {meals.map(meal => meal.name).filter(item => favorites.includes(item)).length}</span> }
         </span>
     );
     
@@ -284,7 +305,9 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
                                             mealTime={mealTime}
                                             food={food}
                                             collapsed={collapse.find(ent => ent.type === mealTime)?.state ?? false}
+                                            favorites={favorites}
                                             updateCollapsible={updateCollapsible}
+                                            setFavorites={setFavorites}
                                         />
                                     ))
                             }
@@ -295,7 +318,7 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, set
     )
 }
 
-export const DiningHallSiteCard: React.FC = () => {
+export const DiningHallSiteCard: React.FC<DiningHallSiteCardProps> = ({ favorites, setFavorites }) => {
     const [open, setOpen] = useState(false);
 
     let diningHallsOpen: DiningHallType[] = [];
@@ -327,7 +350,12 @@ export const DiningHallSiteCard: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <DiningHallSiteMenuModal open={open} setOpen={setOpen} />
+            <DiningHallSiteMenuModal
+                open={open}
+                favorites={favorites}
+                setOpen={setOpen}
+                setFavorites={setFavorites}
+            />
         </div>
     );
 }
