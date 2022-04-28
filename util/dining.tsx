@@ -184,7 +184,7 @@ export const generateDdsLink = (hall: DiningHall, date = new Date()) => {
  * @param date the date/time to retrieve meal hours for
  */
 export const getMealHours = (hall: keyof typeof DiningHallType, date = new Date(), status?: keyof typeof DiningHallStatus) => {
-    let mealStatus = status ?? getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall])) as keyof typeof DiningHallStatus;
+    let mealStatus = status ?? getEnumKeyByEnumValue(DiningHallStatus, getDiningHallStatus(DiningHallType[hall]))!;
     if (!status) return null;
 
     if (hall === 'SOUTH' && mealStatus === 'BREAKFAST' && (date.getDay() === 0 || date.getDay() === 6))

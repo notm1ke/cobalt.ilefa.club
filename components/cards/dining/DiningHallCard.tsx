@@ -330,7 +330,11 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites,
     let entries = getMealHourEntries(hours, new Date());
     let status = getCurrentMealService(entries);
 
-    let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType, cardStyles.cardTitleIcon, 24);
+    // check for hall status vs meal entry mismatch (hall status can be closed if no food items are served)
+    if (hall.status === 'CLOSED' && status !== 'CLOSED')
+        status = 'CLOSED';
+
+    let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name)!, cardStyles.cardTitleIcon, 24);
     let statusPrefix = status === 'CLOSED' || status === 'BETWEEN_MEALS'
         ? ''
         : 'serving';

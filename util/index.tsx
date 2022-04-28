@@ -758,7 +758,6 @@ export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.tes
  * @param target the target enum
  * @param value the value to search by
  */
-
 export function getEnumKeyByEnumValue<T>(target: T, value: string, caseSensitive = true): keyof T | undefined {
     let keys = Object
         .keys(target)

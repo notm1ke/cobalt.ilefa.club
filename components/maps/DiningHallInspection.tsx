@@ -323,7 +323,7 @@ export const DiningHallInspection: React.FC<DiningHallInspectionProps> = ({ hall
                                     .filter(meal => meal.stations.length)
                                     .map(meal => {
                                         let collapsed = meals.find(ent => ent.type === meal.name)?.state;
-                                        let mealKey = getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus;
+                                        let mealKey = getEnumKeyByEnumValue(DiningHallStatus, meal.name)!;
 
                                         return (
                                             <div className="mb-2 col-md-6" key={`${hall.name}-${meal.name}`}>
