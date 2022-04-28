@@ -103,7 +103,8 @@ export const CustomUConnServices = [
         .map(key => key.toLowerCase())
         .filter(key => key !== 'unknown'),
     'catalog',
-    'phonebook',
+    'dining',
+    'phonebook'
 ];
 
 export type CustomUConnServiceString = 'aurora'
@@ -115,7 +116,8 @@ export type CustomUConnServiceString = 'aurora'
                                      | 'student_admin'
                                      | 'webex'
                                      | 'catalog'
-                                     | 'phonebook';
+                                     | 'phonebook'
+                                     | 'dining';
 
 export type CompleteCoursePayload = {
     name: string;
@@ -276,6 +278,7 @@ export enum ShortenedSeatingType {
 export enum ServiceUrls {
     AURORA = 'https://aurora.uconn.edu',
     CATALOG = 'https://catalog.uconn.edu',
+    DINING = 'http://nutritionanalysis.dds.uconn.edu/shortmenu.aspx?sName=UCONN+Dining+Services&locationNum=01&locationName=Whitney+Dining+Hall&naFlag=1',
     EMAIL = '#',
     HUSKYCT = 'https://huskyct.uconn.edu',
     KFS = '#',
@@ -298,6 +301,7 @@ export const getDisplayNameForService = (custom: CustomUConnServiceString) => {
 
     switch (custom.toLowerCase()) {
         case 'catalog': return 'Course Catalog';
+        case 'dining': return 'Dining Menus';
         case 'phonebook': return 'Phonebook';
         default: return capitalizeFirst(custom.toLowerCase());
     }
@@ -754,7 +758,8 @@ export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.tes
  * @param target the target enum
  * @param value the value to search by
  */
-export const getEnumKeyByEnumValue = (target: any, value: string, caseSensitive = true) => {
+
+export function getEnumKeyByEnumValue<T>(target: T, value: string, caseSensitive = true): keyof T | undefined {
     let keys = Object
         .keys(target)
         .filter(x => caseSensitive
@@ -762,7 +767,7 @@ export const getEnumKeyByEnumValue = (target: any, value: string, caseSensitive 
             : target[x].toLowerCase() == value.toLowerCase());
 
     return keys.length > 0
-        ? keys[0]
+        ? keys[0] as keyof T
         : undefined;
 }
 

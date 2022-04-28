@@ -43,6 +43,13 @@ export type MealHourEntry = {
     days: number[];
 }
 
+export type DateMealHourEntry = {
+    name: string;
+    start: Date;
+    end: Date;
+    days: number[];
+}
+
 export const Weekdays = [1, 2, 3, 4, 5];
 export const Weekends = [0, 6];
 export const AllDays = [...Weekdays, ...Weekends];
@@ -51,20 +58,20 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
     'BUCKLEY': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:30pm', days: Weekdays },
-        { name: 'Reset', start: '2:30pm', end: '4:00pm', days: Weekdays },
+        { name: 'Between Meals', start: '2:30pm', end: '4:00pm', days: Weekdays },
         { name: 'Dinner', start: '4:00pm', end: '7:45pm', days: Weekdays }
     ],
     'PUTNAM': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:30pm', days: Weekdays },
-        { name: 'Reset', start: '2:30pm', end: '4:00pm', days: AllDays },
+        { name: 'Between Meals', start: '2:30pm', end: '4:00pm', days: AllDays },
         { name: 'Dinner', start: '4:00pm', end: '7:45pm', days: AllDays },
         { name: 'Brunch', start: '10:30am', end: '2:30pm', days: Weekends }
     ],
     'NORTHWEST': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:30pm', days: Weekdays },
-        { name: 'Reset', start: '2:30pm', end: '4:00pm', days: AllDays },
+        { name: 'Between Meals', start: '2:30pm', end: '4:00pm', days: AllDays },
         { name: 'Dinner', start: '4:00pm', end: '7:45pm', days: [1] },
         { name: 'Dinner', start: '4:00pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) },
         { name: 'Brunch', start: '10:30am', end: '2:30pm', days: Weekends }
@@ -72,7 +79,7 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
     'SOUTH': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:00pm', days: Weekdays },
-        { name: 'Reset', start: '2:00pm', end: '3:30pm', days: AllDays },
+        { name: 'Between Meals', start: '2:00pm', end: '3:30pm', days: AllDays },
         { name: 'Dinner', start: '3:30pm', end: '7:45pm', days: AllDays },
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: [6] },
         { name: 'Breakfast', start: '8:00am', end: '10:30am', days: [0] },
@@ -81,31 +88,31 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
     'TOWERS': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:00pm', days: Weekdays },
-        { name: 'Reset', start: '2:00pm', end: '3:30pm', days: Weekdays },
+        { name: 'Between Meals', start: '2:00pm', end: '3:30pm', days: Weekdays },
         { name: 'Dinner', start: '3:30pm', end: '7:45pm', days: Weekdays },
         { name: 'Breakfast', start: '9:30am', end: '10:30am', days: Weekends },
         { name: 'Brunch', start: '10:30am', end: '2:00pm', days: Weekends },
-        { name: 'Reset', start: '2:00pm', end: '3:30pm', days: Weekends },
+        { name: 'Between Meals', start: '2:00pm', end: '3:30pm', days: Weekends },
         { name: 'Dinner', start: '3:30pm', end: '7:45pm', days: Weekends }
     ],
     'NORTH': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '3:00pm', days: Weekdays },
-        { name: 'Reset', start: '3:00pm', end: '4:30pm', days: AllDays },
+        { name: 'Between Meals', start: '3:00pm', end: '4:30pm', days: AllDays },
         { name: 'Dinner', start: '4:30pm', end: '7:45pm', days: AllDays },
         { name: 'Brunch', start: '10:30am', end: '3:00pm', days: Weekends }
     ],
     'WHITNEY': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '3:00pm', days: Weekdays },
-        { name: 'Reset', start: '3:00pm', end: '4:30pm', days: AllDays },
+        { name: 'Between Meals', start: '3:00pm', end: '4:30pm', days: AllDays },
         { name: 'Dinner', start: '4:30pm', end: '7:45pm', days: AllDays },
         { name: 'Brunch', start: '10:30am', end: '3:00pm', days: Weekends }
     ],
     'MCMAHON': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:15pm', days: Weekdays },
-        { name: 'Reset', start: '2:15pm', end: '3:45pm', days: AllDays },
+        { name: 'Between Meals', start: '2:15pm', end: '3:45pm', days: AllDays },
         { name: 'Dinner', start: '3:45pm', end: '7:45pm', days: [1] },
         { name: 'Dinner', start: '3:45pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) },
         { name: 'Brunch', start: '10:30am', end: '2:15pm', days: Weekends }
@@ -113,7 +120,7 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
 }
 
 export const getDiningHallStatusName = (name: string) => {
-    if (name === 'Reset')
+    if (name === 'Between Meals')
         return 'currently resetting';
 
     if (name === 'Closed')
@@ -126,24 +133,22 @@ export const getDiningHallStatusName = (name: string) => {
  * Returns a color to represent the status of a dining hall.
  * @param hall the dining hall to get the status of
  */
-export const getDiningHallStatusColor = (hall: DiningHall | DiningHallPayload): Color => {
-    let status = getDiningHallStatus(hall.name as DiningHallType);
-    if (!status) return 'purple';
-
-    if ('status' in hall)
-        status = DiningHallStatus[hall.status];
+export const getDiningHallStatusColor = (status: keyof typeof DiningHallStatus): Color => {
+    console.log(status);
+    if (!status)
+        return 'purple';
 
     switch (status) {
-        case 'Breakfast':
-        case 'Brunch':
-        case 'Lunch':
-        case 'Dinner':
+        case 'BREAKFAST':
+        case 'BRUNCH':
+        case 'LUNCH':
+        case 'DINNER':
             return 'success';
-        case 'Late Night':
+        case 'LATE_NIGHT':
             return 'primary';
-        case 'Between Meals':
+        case 'BETWEEN_MEALS':
             return 'orange';
-        case 'Closed':
+        case 'CLOSED':
             return 'danger';
         default: 
             return 'purple';
