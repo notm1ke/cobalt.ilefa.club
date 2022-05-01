@@ -118,6 +118,13 @@ const ELEMENTS: NavElement[] = [
         prodOnly: true,
     },
     {
+        name: 'recreation',
+        icon: 'fa fa-dumbbell',
+        href: '/rec',
+        key: 'rec',
+        prodOnly: true,
+    },
+    {
         name: 'residential',
         icon: 'fa fa-bed',
         href: '/dorms',

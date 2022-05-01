@@ -3,7 +3,7 @@ import styles from './styling/footer.module.css';
 
 import { capitalizeFirst } from '../util';
 import { COMMIT_HASH } from '../util/build';
-import { DevElement, PreviewElement } from '.';
+import { DevElement, PreviewElement, ProdElement } from '.';
 
 import {
     Container,
@@ -42,6 +42,13 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }
                                 <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt Preview {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} <i className="fa fa-hands-helping fa-fw"></i></a>
                             </Link>
                         </PreviewElement>
+
+                        <ProdElement>
+                            <br />
+                            <Link href="/">
+                                <a className={`text-primary-light ${styles.envWarning} shine`}><b>The Cobalt Project</b> (4.0, {COMMIT_HASH?.substring(0, 7) ?? 'no_git_id'}, stable)</a>
+                            </Link>
+                        </ProdElement>
                     </div>
                 </div>
                 <div className="col-4 ml--2">
