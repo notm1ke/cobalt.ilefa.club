@@ -18,7 +18,9 @@ export interface DiningHallLookupProps {
     pollTime?: number;
 }
 
-export type DiningHallPayload = DiningHallResponse & UnshapedApiResponse;
+export type DiningHallPayload = DiningHallResponse & UnshapedApiResponse & {
+    hasMeals: boolean;
+};
 
 type DiningHallShapedResponse = [
     DiningHallPayload | null,

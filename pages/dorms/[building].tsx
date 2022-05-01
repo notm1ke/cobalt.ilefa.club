@@ -11,7 +11,15 @@ import { useDorm } from '../../hooks';
 import { useRouter } from 'next/router';
 import { isMobile } from 'react-device-detect';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
-import { ContributorButton, ErrorView, Footer, InlineLink, Loader, Nav } from '../../components';
+
+import {
+    ContributorButton,
+    ErrorView,
+    Footer,
+    InlineLink,
+    Loader,
+    Nav
+} from '../../components';
 
 import {
     mdiAccountSupervisorCircle,

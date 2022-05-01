@@ -67,7 +67,12 @@ const DiningHallsPage = () => {
                                         .sort((a, b) => a.name.localeCompare(b.name))
                                         .map(hall => (
                                             <div className="col-md-4" key={hall.name}>
-                                                <DiningHallCard hall={hall} favorites={favorites} setFavorites={setFavorites} />
+                                                <DiningHallCard
+                                                    hall={hall}
+                                                    hasMeals={hall.hasMeals}
+                                                    favorites={favorites}
+                                                    setFavorites={setFavorites}
+                                                />
                                             </div>
                                         ))
                             }

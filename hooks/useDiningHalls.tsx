@@ -9,12 +9,16 @@ type BlueplateProps = {
     poll?: number;
 }
 
+type CustomDiningHallPayload = DiningHallPayload & {
+    hasMeals: boolean;
+};
+
 type BlueplateResponse = UnshapedApiResponse & {
-    halls: DiningHallPayload[];
+    halls: CustomDiningHallPayload[];
 };
 
 type BlueplateShapedResponse = [
-    DiningHallPayload[] | null,
+    CustomDiningHallPayload[] | null,
     boolean,
     boolean
 ];

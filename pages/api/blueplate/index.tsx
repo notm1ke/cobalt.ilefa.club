@@ -77,7 +77,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                     if (status !== 'CLOSED' && (data.meals.length === 0 || data.meals.every(meal => meal.stations.length === 0)))
                         status = 'CLOSED';
                         
-                    return { ...DiningHalls[type.toUpperCase()], status };
+                    return {
+                        ...DiningHalls[type.toUpperCase()],
+                        hasMeals: data.meals.length > 0 && data.meals.some(meal => meal.stations.length > 0),
+                        status
+                    };
                 }))
         });
 

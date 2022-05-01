@@ -36,6 +36,7 @@ import {
 
 export interface DiningHallCardProps {
     hall: DiningHallPayload;
+    hasMeals: boolean;
     favorites: string[];
     setFavorites: (favorites: string[]) => void;
 }
@@ -323,7 +324,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favor
     )
 }
 
-export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites, setFavorites }) => {
+export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, hasMeals, favorites, setFavorites }) => {
     const [open, setOpen] = useState(false);
 
     let hours = StandardMealHours[hall.name.toUpperCase()] as MealHourEntry[];
@@ -331,7 +332,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites,
     let status = getCurrentMealService(entries);
 
     // check for hall status vs meal entry mismatch (hall status can be closed if no food items are served)
-    if (hall.status === 'CLOSED' && status !== 'CLOSED')
+    if (status !== 'CLOSED' && !hasMeals)
         status = 'CLOSED';
 
     let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name)!, cardStyles.cardTitleIcon, 24);
