@@ -24,7 +24,7 @@ export enum LogLevelColor {
  */
 export const log = (level: LogLevel, module: string | null, text: string, ...opts: string[]) => {
     let header = module ?? level;
-    let color = LogLevelColor[getEnumKeyByEnumValue(LogLevel, level) as string];
+    let color = LogLevelColor[getEnumKeyByEnumValue(LogLevel, level)!];
     console.log(`%c ${header.toUpperCase()} %c ${text}`, `background: ${color}; color: #fff;`, 'color: inherit;', opts);
 }
 

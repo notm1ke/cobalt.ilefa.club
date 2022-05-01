@@ -20,14 +20,18 @@ import {
 } from '@mdi/js';
 
 import {
+    DateMealHourEntry,
     DiningHallPayload,
     generateDdsLink,
     getChangeString,
+    getDateFromTime,
     getDiningHallStatusColor,
     getEnumKeyByEnumValue,
     getIconForDiningHall,
     getIconForDiningStatus,
-    getMealHours
+    getMealHours,
+    MealHourEntry,
+    StandardMealHours
 } from '../../../util';
 
 export interface DiningHallCardProps {
@@ -39,6 +43,7 @@ export interface DiningHallCardProps {
 export interface DiningHallModalProps {
     hall: DiningHallPayload;
     open: boolean;
+    status: keyof typeof DiningHallStatus;
     favorites: string[];
     setOpen: (open: boolean) => void;
     setFavorites: (favorites: string[]) => void;
@@ -51,7 +56,37 @@ type MealCollapsible = {
 
 type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
 
-const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favorites, setOpen, setFavorites }) => {
+const getTimeRangeSortingKey = (a: string, b: string) => {
+    let aAM = a.includes('am');
+    let bAM = b.includes('am');
+
+    return aAM === bAM
+        ? parseInt(a.split(':')[0]) - parseInt(a.split(':')[0])
+        : aAM
+            ? -1
+            : 1;
+}
+
+const getMealHourEntries = (hours: MealHourEntry[], now: Date): DateMealHourEntry[] =>
+    hours
+        .filter(h => h.days.includes(now.getDay()))
+        .sort((a, b) => getTimeRangeSortingKey(a.start, b.start))
+        .map((h, i) => ({
+            ...h,
+            start: getDateFromTime(h.start),
+            end: getDateFromTime(h.end),
+            index: i
+        }));
+
+const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof DiningHallStatus => {
+    let now = new Date();
+    let status = hours.find(h => now >= h.start && now <= h.end);
+    if (!status) return 'CLOSED';
+    
+    return getEnumKeyByEnumValue(DiningHallStatus, status.name, false) ?? 'CLOSED';    
+}
+
+const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favorites, status, setOpen, setFavorites }) => {
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [now, setNow] = useState(selectedDate.getDate() === new Date().getDate());
@@ -136,7 +171,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favor
                     />
                 </div>
             </span> ➜ {hallName} {" "}
-            { now && <span className={`text-${getDiningHallStatusColor(hall)}`}>({DiningHallStatus[hall.status]})</span> }
+            { now && <span className={`text-${getDiningHallStatusColor(status)}`}>({DiningHallStatus[status]})</span> }
             { !now && <span className="font-weight-bold">({getChangeString(dayDiff, '', 0, true)} day{dayDiff !== 1 ? 's' : ''})</span> }
             { menu && menu.meals && <span className="text-gold ml-2"><i className="fa fa-star fa-fw"></i> {getServedFavorites(menu).length}</span> }
         </span>
@@ -291,8 +326,16 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favor
 export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites, setFavorites }) => {
     const [open, setOpen] = useState(false);
 
-    let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType, cardStyles.cardTitleIcon, 24);
-    let statusPrefix = hall.status === 'CLOSED' || hall.status === 'BETWEEN_MEALS'
+    let hours = StandardMealHours[hall.name.toUpperCase()] as MealHourEntry[];
+    let entries = getMealHourEntries(hours, new Date());
+    let status = getCurrentMealService(entries);
+
+    // check for hall status vs meal entry mismatch (hall status can be closed if no food items are served)
+    if (hall.status === 'CLOSED' && status !== 'CLOSED')
+        status = 'CLOSED';
+
+    let icon = getIconForDiningHall(getEnumKeyByEnumValue(DiningHallType, hall.name)!, cardStyles.cardTitleIcon, 24);
+    let statusPrefix = status === 'CLOSED' || status === 'BETWEEN_MEALS'
         ? ''
         : 'serving';
     
@@ -308,7 +351,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites,
                         </h5>
     
                         <p className={`text-dark ${cardStyles.cardSectionText}`}>
-                            <b>{hall.name}</b> is {statusPrefix} <span className={`text-${getDiningHallStatusColor(hall)} font-weight-500`}>{DiningHallStatus[hall.status].toLowerCase()}</span>.
+                            <b>{hall.name}</b> is {statusPrefix} <span className={`text-${getDiningHallStatusColor(status)} font-weight-500`}>{DiningHallStatus[status].toLowerCase()}</span>.
                         </p>
                         
                         <div className={styles.projectCardLink}>
@@ -326,6 +369,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, favorites,
             <DiningHallMenuModal
                 hall={hall}
                 open={open}
+                status={status}
                 favorites={favorites}
                 setOpen={setOpen}
                 setFavorites={setFavorites}

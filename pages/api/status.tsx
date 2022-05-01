@@ -17,6 +17,11 @@ export const ValidCustomServices = [
         url: 'https://catalog.uconn.edu/directory-of-courses'
     },
     {
+        name: 'Dining',
+        token: 'dining',
+        url: 'http://nutritionanalysis.dds.uconn.edu/shortmenu.aspx?sName=UCONN+Dining+Services&locationNum=01&locationName=Whitney+Dining+Hall&naFlag=1'
+    },
+    {
         name: 'Phonebook',
         token: 'phonebook',
         url: 'https://phonebook.uconn.edu'
