@@ -48,11 +48,11 @@ export const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ course, data
     }, []);
 
     return (
-        <span className={getEnrollmentColor(convertToHuskyEnrollment(enrollment, data))} onClick={runUpdate} id={`tooltip-waitlist-${data.section}-${data.campus}-${data.term.substring(0, 1) + data.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+        <span className={getEnrollmentColor(convertToHuskyEnrollment(enrollment, data))} onClick={runUpdate} id={`tooltip-waitlist-${data.section.replace(/[^\d\+]/g, '')}-${data.campus}-${data.term.substring(0, 1) + data.term.split(/(\d{2,4})/)[1].substring(2)}`}>
             {loading && <i className="fas fa-spinner fa-spin text-default" />}{" "}
             {!loading && ((enrollment.available ?? 0) + '/' + (enrollment.total ?? 0))}{" "}
             {data.enrollment.waitlist && <span className={`${styles.extraRoomsIndicator} text-primary`}>+{data.enrollment.waitlist}</span>}{" "}
-            <UncontrolledTooltip delay={0} placement="top" target={`tooltip-waitlist-${data.section}-${data.campus}-${data.term.substring(0, 1) + data.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+            <UncontrolledTooltip delay={0} placement="top" target={`tooltip-waitlist-${data.section.replace(/[^\d\+]/g, '')}-${data.campus}-${data.term.substring(0, 1) + data.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                 <b>Enrollment Information</b>
                 <br/>{enrollment.available}/{enrollment.total} ({Math.round(enrollment.percent * 100)}%)
                 <br />{moment(lastUpdated).fromNow()}

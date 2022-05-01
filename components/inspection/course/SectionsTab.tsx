@@ -223,10 +223,10 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             selector: 'section',
             sortable: true,
             format: (row, _i) => <>
-                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         [{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode) + (useTerm ? `/${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}` : '')}]
                                     </b> {row.section}
-                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         <b>{row.campus}{useTerm ? ` - ${row.term}` : ''}</b>
                                         <br/><span className={styles.modalityTooltipType}>{row.mode}</span>
                                         <br/><span className={styles.modalityTooltipDescription}>{Modalities[getModalityIndicator(row.mode)] || ''}</span>
@@ -246,10 +246,10 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                 }
 
                 return <>
-                            <span id={`tooltip-room-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>{room}</span>
+                            <span id={`tooltip-room-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>{room}</span>
                             {
                                 room !== 'None' && room !== 'Unknown' && (
-                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-room-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-room-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         {
                                             row.location
                                                 .sort((a: SectionLocationData, b: SectionLocationData) => a.name.localeCompare(b.name))
@@ -293,10 +293,10 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
 
                 return (
                     <>
-                        <span id={`tooltip-prof-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>{display}</span>
+                        <span id={`tooltip-prof-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>{display}</span>
                         {
                             row.instructor.trim() && (
-                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-prof-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                                <UncontrolledTooltip delay={0} placement="top" target={`tooltip-prof-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                     {
                                         cleanName
                                             .split(' & ')
@@ -324,8 +324,8 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                 tokens = prunePrimitiveDuplicates(tokens);
 
                 return <>
-                    <span id={`tooltip-schedule-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}><>{tokens[0]} {tokens.length !== 1 ? <span className={styles.extraRoomsIndicator}>{'+' + (tokens.length - 1)}</span> : <></>}</></span>
-                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-schedule-${row.section}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                    <span id={`tooltip-schedule-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}><>{tokens[0]} {tokens.length !== 1 ? <span className={styles.extraRoomsIndicator}>{'+' + (tokens.length - 1)}</span> : <></>}</></span>
+                    <UncontrolledTooltip delay={0} placement="top" target={`tooltip-schedule-${row.section.replace(/[^\d\+]/g, '')}-${row.campus}-${row.term.substring(0, 1) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                         {
                             (prunePrimitiveDuplicates(
                                 (getMeetingTime(row.schedule.trim(), sections[i].location, false, undefined, false) as string)
