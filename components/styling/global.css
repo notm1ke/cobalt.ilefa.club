@@ -39,6 +39,10 @@
     display: none !important;
 }
 
+.rdt_TableHead {
+    margin-left: -28px !important;
+}
+
 .loader-bg, body {
     background: #2C2C2C !important;
 }

@@ -622,36 +622,28 @@ export const getRoomNumber = (room: string, buildingCode: string) => {
  * @param row the section row to parse
  */
 export const getRoomDisplayName = (row: SectionData): string | JSX.Element => {
-    if (!row.location.length || (row.location.length === 1 && row.location[0].name === 'No Room Required - Online')) {
-        if (row.mode === 'Online' || row.mode === 'Distance Learning')
+    let rowData = { ...row, location: row.location.filter(ent => ent.name) };
+    if (!rowData.location.length || (rowData.location.length === 1 && rowData.location[0].name === 'No Room Required - Online')) {
+        if (rowData.mode === 'Online' || rowData.mode === 'Distance Learning')
             return 'None';
         return 'Unknown';
     }
 
     // special case for some wrongly formatted courses (for example ECE2001 offered in Hartford) :/
-    row.location = row
-        .location
-        .map(ent => ({
-            ...ent,
-            name: ent
-                .name
-                .split(/<br\/*>/)
-                .filter(e => !e.startsWith('No Room Required -'))[0]
-        }));
+    let locations: string[] = [];
+    rowData.location.forEach(ent => ent.name.split(/<br\/*>/).forEach(e => locations.push(e)));
 
-    if (row.location.length === 1 && row.location[0].name.startsWith('No Room Required -'))
-        return row.location[0].name.split(' - ')[1];
+    if (locations.length === 1 && locations[0].startsWith('No Room Required -'))
+        return rowData.location[0].name.split(' - ')[1];
 
-    if (row.schedule.includes('12:00am-12:00am'))
+    if (rowData.schedule.includes('12:00am-12:00am'))
         return 'None';
 
-    if (row.location.length === 1)
-        return row.location[0].name;
+    if (rowData.location.length === 1)
+        return locations[0];
 
-    return row
-        .location
-        .map((token: SectionLocationData) => token.name)
-        .map((name: string) => getRealRoomCode(name, name.split(' ')[0]) + ' ' + name.split(' ')[1])
+    return locations
+        .map(name => getRealRoomCode(name, name.split(' ')[0]) + ' ' + name.split(' ')[1])
         .join(', ');
 }
 
