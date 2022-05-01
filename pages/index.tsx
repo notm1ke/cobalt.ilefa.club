@@ -4,9 +4,9 @@ import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
 import { mdiFlask } from '@mdi/js';
+import { getCurrentSemester } from '../util';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
-import { capitalizeFirst, getCurrentSemester, intToWords } from '../util';
 
 import {
     CobaltSearch,
@@ -56,12 +56,12 @@ const HomePage = () => {
                                         </h2>
                                         <CobaltSearch feelingSilly />
                                         <small className="text-secondary">
-                                            <i className={'fa ' + (semOver ? 'fa-clock text-success' : 'fas fa-chalkboard-teacher text-warning') + ' fa-fw mr-1'}></i>
+                                            <i className={'fa ' + (semOver ? 'fas fa-umbrella-beach text-success' : 'fas fa-sun text-warning') + ' fa-fw mr-1'}></i>
                                             <i>
                                                 {
                                                     semOver
                                                         ? `The ${getCurrentSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!`
-                                                        : `There are ${intToWords(rawDays)} day${rawDays === 1 ? '' : 's'} left until the ${capitalizeFirst(getCurrentSemester())} semester ends.`
+                                                        : `Enjoy the weather & good luck on finals!`
                                                 }
                                             </i>
                                         </small>
