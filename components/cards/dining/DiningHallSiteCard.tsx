@@ -9,14 +9,12 @@ import { Collapse } from 'reactstrap';
 import { isMobile } from 'react-device-detect';
 import { useDiningHallSite } from '../../../hooks';
 import { useEffect, useRef, useState } from 'react';
-import { getIconForDiningStatus } from '../../../util';
 import { Modal, useBoundedClickDetector } from '../..';
 
 import {
     DiningHallResponse,
     DiningHallStatus,
-    DiningHallType,
-    getDiningHallStatus
+    DiningHallType
 } from '@ilefa/blueplate';
 
 import {
@@ -26,6 +24,14 @@ import {
     mdiEmoticonSad,
     mdiLoading
 } from '@mdi/js';
+
+import {
+    getCurrentMealService,
+    getIconForDiningStatus,
+    getMealHourEntries,
+    MealHourEntry,
+    StandardMealHours
+} from '../../../util';
 
 export interface DiningHallSiteCardProps {
     favorites: string[];
@@ -189,7 +195,7 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, fav
                     />
                 </div>
             </span> ➜ All Dining Halls {" "}
-            { meals && <span className="text-gold ml-1"><i className="fa fa-star fa-fw"></i> {meals.map(meal => meal.name).filter(item => favorites.includes(item)).length}</span> }
+            { meals && <span className="text-gold ml-1"><i className="fa fa-star fa-fw"></i> { meals.map(meal => meal.name).filter(item => favorites.includes(item)).length }</span> }
         </span>
     );
     
@@ -315,12 +321,15 @@ const DiningHallSiteMenuModal: React.FC<DiningHallSiteModalProps> = ({ open, fav
 export const DiningHallSiteCard: React.FC<DiningHallSiteCardProps> = ({ favorites, setFavorites }) => {
     const [open, setOpen] = useState(false);
 
-    let diningHallsOpen: DiningHallType[] = [];
-    let diningHallsClosed: DiningHallType[] = [];
+    let diningHallsOpen: string[] = [];
+    let diningHallsClosed: string[] = [];
 
-    for (const hall of Object.values(DiningHallType)) {
-        let status = getDiningHallStatus(hall);
-        if (status === DiningHallStatus.BETWEEN_MEALS || status === DiningHallStatus.CLOSED)
+    for (const hall of Object.keys(DiningHallType)) {
+        let hours = StandardMealHours[hall] as MealHourEntry[];
+        let entries = getMealHourEntries(hours, new Date());
+        let status = getCurrentMealService(entries);
+
+        if (status === 'BETWEEN_MEALS' || status === 'CLOSED')
             diningHallsClosed.push(hall);
         else diningHallsOpen.push(hall);
     }

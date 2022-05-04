@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import { Color, getEnumKeyByEnumValue } from '.';
+import { Color, getDateFromTime, getEnumKeyByEnumValue } from '.';
 
 import {
     DiningHall,
@@ -203,4 +203,53 @@ export const isDiningHallType = (str: string): str is keyof typeof DiningHallTyp
     return Object
         .keys(DiningHallType)
         .includes(str as DiningHallType);
+}
+
+/**
+ * Comparator function for sorting times by AM/PM.
+ * 
+ * @param a the first date to compare
+ * @param b the second date to compare
+ */
+export const getTimeRangeSortingKey = (a: string, b: string) => {
+    let aAM = a.includes('am');
+    let bAM = b.includes('am');
+
+    return aAM === bAM
+        ? parseInt(a.split(':')[0]) - parseInt(a.split(':')[0])
+        : aAM
+            ? -1
+            : 1;
+}
+
+/**
+ * Returns the dining hall meal hour
+ * entries for the given dining hall.
+ * 
+ * @param hours the standard meal hours
+ * @param now the current time
+ */
+export const getMealHourEntries = (hours: MealHourEntry[], now: Date): DateMealHourEntry[] =>
+    hours
+        .filter(h => h.days.includes(now.getDay()))
+        .sort((a, b) => getTimeRangeSortingKey(a.start, b.start))
+        .map((h, i) => ({
+            ...h,
+            start: getDateFromTime(h.start),
+            end: getDateFromTime(h.end),
+            index: i
+        }));
+
+/**
+ * Returns the current meal service for
+ * a given dining hall.
+ * 
+ * @param hours the meal hour entries
+ */
+export const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof DiningHallStatus => {
+    let now = new Date();
+    let status = hours.find(h => now >= h.start && now <= h.end);
+    if (!status) return 'CLOSED';
+    
+    return getEnumKeyByEnumValue(DiningHallStatus, status.name, false) ?? 'CLOSED';    
 }

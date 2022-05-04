@@ -20,15 +20,15 @@ import {
 } from '@mdi/js';
 
 import {
-    DateMealHourEntry,
     DiningHallPayload,
     generateDdsLink,
     getChangeString,
-    getDateFromTime,
+    getCurrentMealService,
     getDiningHallStatusColor,
     getEnumKeyByEnumValue,
     getIconForDiningHall,
     getIconForDiningStatus,
+    getMealHourEntries,
     getMealHours,
     MealHourEntry,
     StandardMealHours
@@ -56,36 +56,6 @@ type MealCollapsible = {
 }
 
 type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
-
-const getTimeRangeSortingKey = (a: string, b: string) => {
-    let aAM = a.includes('am');
-    let bAM = b.includes('am');
-
-    return aAM === bAM
-        ? parseInt(a.split(':')[0]) - parseInt(a.split(':')[0])
-        : aAM
-            ? -1
-            : 1;
-}
-
-const getMealHourEntries = (hours: MealHourEntry[], now: Date): DateMealHourEntry[] =>
-    hours
-        .filter(h => h.days.includes(now.getDay()))
-        .sort((a, b) => getTimeRangeSortingKey(a.start, b.start))
-        .map((h, i) => ({
-            ...h,
-            start: getDateFromTime(h.start),
-            end: getDateFromTime(h.end),
-            index: i
-        }));
-
-const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof DiningHallStatus => {
-    let now = new Date();
-    let status = hours.find(h => now >= h.start && now <= h.end);
-    if (!status) return 'CLOSED';
-    
-    return getEnumKeyByEnumValue(DiningHallStatus, status.name, false) ?? 'CLOSED';    
-}
 
 const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favorites, status, setOpen, setFavorites }) => {
     const [date, setDate] = useState(new Date());
