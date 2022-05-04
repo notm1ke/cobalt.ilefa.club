@@ -20,16 +20,17 @@ import {
 } from '@mdi/js';
 
 import {
+    DateMealHourEntry,
     DiningHallPayload,
     generateDdsLink,
     getChangeString,
+    getCurrentMealHoursForHall,
     getCurrentMealService,
     getDiningHallStatusColor,
     getEnumKeyByEnumValue,
     getIconForDiningHall,
     getIconForDiningStatus,
     getMealHourEntries,
-    getMealHours,
     MealHourEntry,
     StandardMealHours
 } from '../../../util';
@@ -44,6 +45,7 @@ export interface DiningHallCardProps {
 export interface DiningHallModalProps {
     hall: DiningHallPayload;
     open: boolean;
+    hours: DateMealHourEntry[];
     status: keyof typeof DiningHallStatus;
     favorites: string[];
     setOpen: (open: boolean) => void;
@@ -57,7 +59,7 @@ type MealCollapsible = {
 
 type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
 
-const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favorites, status, setOpen, setFavorites }) => {
+const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, hours, favorites, status, setOpen, setFavorites }) => {
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [now, setNow] = useState(selectedDate.getDate() === new Date().getDate());
@@ -265,7 +267,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favor
                                     <div className="mb-2" key={`${hall.name}-${meal.name}`}>
                                         <div className="mb-1" onClick={() => updateCollapsible(meal.name)}>
                                             <span className={`text-primary-light ${styles.diningMeal} cursor-pointer shine`}>
-                                                {getIconForDiningStatus(mealKey, styles.diningMealIcon, 24)} {meal.name} <span className={styles.diningHours}>({getMealHours(hallKey, selectedDate, mealKey)})</span>
+                                                {getIconForDiningStatus(mealKey, styles.diningMealIcon, 24)} {meal.name} <span className={styles.diningHours}>({getCurrentMealHoursForHall(hours, mealKey)})</span>
                                             </span>
                                         </div>
                                         <br />
@@ -340,6 +342,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, hasMeals, 
             <DiningHallMenuModal
                 hall={hall}
                 open={open}
+                hours={entries}
                 status={status}
                 favorites={favorites}
                 setOpen={setOpen}

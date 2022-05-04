@@ -180,6 +180,10 @@ export const generateDdsLink = (hall: DiningHall, date = new Date()) => {
  * because simply providing the dining hall/date will
  * try to fetch the status at that datetime.
  * 
+ * @deprecated use getCurrentMealHoursForHall instead
+ * since this API utilizes the older dining status API
+ * which has now been deprecated, and is pending deletion.
+ * 
  * @param hall the dining hall to get meal hours for
  * @param date the date/time to retrieve meal hours for
  */
@@ -252,4 +256,23 @@ export const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof 
     if (!status) return 'CLOSED';
     
     return getEnumKeyByEnumValue(DiningHallStatus, status.name, false) ?? 'CLOSED';    
+}
+
+/**
+ * Attempts to resolve the meal hours for a given
+ * meal time at a given dining hall.
+ * 
+ * @apiNote replaces the older getMealHours API
+ * 
+ * @param hall the dining hall to get meal hours for
+ * @param hours the meal hour entries
+ * @param meal the meal to resolve
+ */
+export const getCurrentMealHoursForHall = (hours: DateMealHourEntry[], meal: string) => {
+    let now = new Date();
+    let target = hours.find(h => h.name.toLowerCase() === meal.toLowerCase() && h.days.includes(now.getDay()));
+    if (!target)
+        return 'Unknown';
+
+    return `${moment(target.start).format('h:mma')} - ${moment(target.end).format('h:mma')}`;
 }
