@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/section.module.css';
@@ -6,7 +16,9 @@ import { useState } from 'react';
 import { Badge } from 'reactstrap';
 import { Line } from 'react-chartjs-2';
 import { useBluefit } from '../../../hooks';
+import { isMobile } from 'react-device-detect';
 import { mdiChartBellCurve, mdiRadioTower } from '@mdi/js';
+import { getDateFromTime, preventAnd, SUMMER_HOURS } from '../../../util';
 
 import {
     Chart as ChartJS,
@@ -47,7 +59,7 @@ const options: any = {
         hover: {
             mode: 'index',
         }
-    }
+    },
 };
 
 export const RecHistoricalDailyCard: React.FC = () => {
@@ -59,7 +71,15 @@ export const RecHistoricalDailyCard: React.FC = () => {
     if (error || !data?.daily) return <></>;
 
     let dataset: ChartData<'line', (number | undefined)[]> = {
-        labels: data!.daily!.map(({ time }) => time),
+        
+        labels: data!
+            .daily!
+            .map(({ time }) => time)
+            .filter(time => !SUMMER_HOURS
+                    || (SUMMER_HOURS
+                        && (getDateFromTime(time).getHours() < 18
+                            || getDateFromTime(time).getHours() === 18
+                            && getDateFromTime(time).getMinutes() === 0))),
         datasets: [
             {
                 label: 'average',
@@ -99,13 +119,13 @@ export const RecHistoricalDailyCard: React.FC = () => {
             <div className="card-body">
                 <div className="row">
                     <div className="col-md-9">
-                        <div className={`card-title text-lowercase font-weight-600 text-muted mb-3 ${styles.cardTitle}`}>{dayName} live vs average occupants</div>
+                        <div className={`card-title text-lowercase font-weight-600 text-muted mb-3 ${styles.cardTitle} ${isMobile ? 'text-center' : ''}`}>{dayName} live vs average occupants</div>
                     </div>
-                    <div className="col-md-3">
-                        <Badge color="primary" className="ml-3 mr-1 text-lowercase" href="#" onClick={_ => setAverage(!average)}>
+                    <div className={`col-md-3 ${isMobile ? 'ml-6 mb-3' : ''}`}>
+                        <Badge color="primary" className="ml-3 mr-1 text-lowercase" href="#" onClick={e => preventAnd(e, () => setAverage(!average))}>
                             <MdiIcon path={mdiChartBellCurve} size="12.5px" className="fa-fw" /> Average
                         </Badge>
-                        <Badge color="success" className="text-lowercase" href="#" onClick={_ => setLive(!live)}>
+                        <Badge color="success" className="text-lowercase" href="#" onClick={e => preventAnd(e, () => setLive(!live))}>
                             <MdiIcon path={mdiRadioTower} size="12.5px" className="fa-fw" /> Live
                         </Badge>
                     </div>

@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import axios from 'axios';
 
 import { getOccupancy } from '@ilefa/bluefit';
@@ -33,7 +43,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     let payload = {} as any;
     for (let m of modes) {
         if (m === 'occupants')
-            payload[m] = (await getOccupancy() as any).occupants;
+            payload[m] = (await getOccupancy() as any).occupants ?? await getLatestOccupancy();
         if (m === 'daily')
             payload[m] = await getDailyOccupancy(new Date().getDay());
         if (m === 'weekly')
@@ -48,6 +58,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
 };
 
+const getLatestOccupancy = async () => {
+    let dayName = DAYS[new Date().getDay()];
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:Z1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let data = await axios
+        .get(url)
+        .then(res => res.data)
+        .then(res => res.values)
+        .catch(_ => null);
+
+    if (!data)
+        return null;
+
+    let last = data[data.length - 1];
+    let [_, ...raw] = last;
+    let val = raw[raw.length - 1];
+
+    return val;
+}
+
 const getDailyOccupancy = async (day: number) => {
     let dayName = DAYS[day];
     let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:Z1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
@@ -55,7 +84,7 @@ const getDailyOccupancy = async (day: number) => {
         .get(url)
         .then(res => res.data)
         .then(res => res.values)
-        .catch(_ => { console.error(_); return null; });
+        .catch(_ => null);
 
     if (!data)
         return null;
@@ -81,7 +110,7 @@ const getWeeklyOccupancy = async () => {
         .get(url)
         .then(res => res.data)
         .then(res => res.values)
-        .catch(_ => { console.error(_); return null; });
+        .catch(_ => null);
 
     if (!data)
         return null;

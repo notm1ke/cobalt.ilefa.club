@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import useSWR from 'swr';
 import * as Logger from './logger';
 
@@ -820,6 +830,17 @@ export const isGradLevel = (prefix: string, number: number) => {
     if (prefix === 'PHRX' && number < 5199)
         return false;
     return number > 5000;
+}
+
+/**
+ * Event#preventDefault() + call function (shorthand code for event handlers)
+ * 
+ * @param event the event to preventDefault on
+ * @param func the function to execute alongside the preventDefault
+ */
+export const preventAnd = (event: React.MouseEvent<HTMLElement>, func: any) => {
+    event.preventDefault();
+    func();
 }
 
 /**

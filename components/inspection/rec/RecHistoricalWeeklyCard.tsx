@@ -1,10 +1,22 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import styles from '../../styling/section.module.css';
 
 import { useState } from 'react';
 import { Badge } from 'reactstrap';
 import { Line } from 'react-chartjs-2';
+import { getDateFromTime, preventAnd, SUMMER_HOURS } from '../../../util';
 import { useBluefit } from '../../../hooks';
+import { isMobile } from 'react-device-detect';
 
 import {
     Chart as ChartJS,
@@ -87,17 +99,13 @@ export const RecHistoricalWeeklyCard: React.FC = () => {
     const getters = [sunday, monday, tuesday, wednesday, thursday, friday, saturday];
     const setters = [setSunday, setMonday, setTuesday, setWednesday, setThursday, setFriday, setSaturday];
 
-    const labels: string[] = [];
-    const labelHours = [6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    const labelMinutes = [0, 15, 30, 45];
-    for (let hour of labelHours) {
-        for (let minute of labelMinutes) {
-            labels.push(`${hour}:${minute === 0 ? '00' : minute}`);
-        }
-    }
-    
+    let labels = [...new Set(Array<string>().concat.apply([], data!.weekly.map(day => day.values.map(val => val.time))))];
     let dataset: ChartData<'line', (number | undefined)[]>  = {
-        labels,
+        labels: labels.filter(time => !SUMMER_HOURS
+            || (SUMMER_HOURS
+                && (getDateFromTime(time).getHours() < 18
+                    || getDateFromTime(time).getHours() === 18
+                    && getDateFromTime(time).getMinutes() === 0))),
         datasets: data!.weekly!.map((ent, i) => ({
             label: ent.day,
             data: ent.values.map(({ occupants }) => occupants),
@@ -112,13 +120,13 @@ export const RecHistoricalWeeklyCard: React.FC = () => {
             <div className="card-body">
                 <div className="row">
                     <div className="col-md-5">
-                        <div className={`card-title text-lowercase font-weight-600 text-muted mb-3 ${styles.cardTitle}`}>daily average occupants</div>
+                        <div className={`card-title text-lowercase font-weight-600 text-muted mb-3 ${styles.cardTitle} ${isMobile ? 'text-center' : ''}`}>daily average occupants</div>
                     </div>
-                    <div className="col-md-7">
+                    <div className={`col-md-7 ${isMobile ? 'ml-7 mb-3' : ''}`}>
                         {
                             days.map((day, i) => (
-                                <Badge color={colors[i]} className={`${i == 0 ? 'ml--5' : ''} mr-1 text-lowercase`} href="#" onClick={_ => setters[i](!getters[i])}>
-                                    {day}
+                                <Badge color={!getters[i] ? 'dark' : colors[i]} className={`${i == 0 ? 'ml--5' : ''} mr-1 text-lowercase`} href="#" onClick={e => preventAnd(e, () => setters[i](!getters[i]))}>
+                                    {isMobile ? day.substring(0, 2) : day}
                                 </Badge>
                             ))
                         }

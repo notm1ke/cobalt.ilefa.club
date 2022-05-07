@@ -2,6 +2,7 @@
   "name": "cobalt.ilefa.club",
   "version": "4.0.0",
   "description": "An intelligent suite of tools built by UConn students, for UConn students.",
+  "license": "SEE LICENSE IN LICENSE.MD",
   "repository": {
     "type": "git",
     "url": "git@github.com:notm1ke/cobalt.ilefa.club"

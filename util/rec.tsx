@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import { DAYLIGHT_SAVINGS, getDateFromTime } from '.';
 
 export type RecHourEntry = {
@@ -17,6 +27,8 @@ export enum RecFacility {
 const Weekdays = [1, 2, 3, 4, 5];
 const Weekends = [0, 6];
 const AllDays = [...Weekdays, ...Weekends];
+
+export const SUMMER_HOURS = true;
 
 export const StandardRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
     'SRC': [
@@ -44,6 +56,27 @@ export const StandardRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> 
     ]
 }
 
+export const SummerRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
+    'SRC': [
+        { start: '8:00am', end: '6:00pm', days: Weekdays },
+        { start: '8:00am', end: '2:00pm', days: Weekends }
+    ],
+    'AQUATIC': [
+        { start: '8:00am', end: '9:30am', days: Weekdays },
+        { start: '11:00am', end: '1:00pm', days: AllDays },
+        { start: '3:30pm', end: '5:30pm', days: Weekdays },
+    ],
+    'CLIMB': [{ start: '12:00pm', end: '6:00pm', days: Weekdays }],
+    'ADV': [{ start: '12:00am', end: '5:00pm', days: Weekdays }],
+    'ADMIN': []
+}
+
+/**
+ * Returns the current status a given recreational facility.
+ * 
+ * @param facility the facility to query status for
+ * @param now the time to query status for; defaults to now
+ */
 export const getRecStatus = (facility: keyof typeof RecFacility, now = new Date()) => {
     let date = new Date();
     let validatedDate = now
@@ -56,7 +89,7 @@ export const getRecStatus = (facility: keyof typeof RecFacility, now = new Date(
         DAYLIGHT_SAVINGS && validatedDate.setHours(validatedDate.getHours() - 1);
     }
 
-    const hours = StandardRecHours[facility];
+    const hours = SUMMER_HOURS ? SummerRecHours[facility] : StandardRecHours[facility];
     const day = validatedDate.getDay();
     const time = validatedDate.getHours();
     const isOpen = hours
@@ -71,26 +104,37 @@ export const getRecStatus = (facility: keyof typeof RecFacility, now = new Date(
     return isOpen;
 }
 
+/**
+ * Attempts to return the time until a given recreational facility closes.
+ * 
+ * @param facility the facility to query status for
+ * @param now the time to query status for; defaults to now
+ */
 export const getTimeUntilRecClose = (facility: keyof typeof RecFacility, now = new Date()) => {
-    const hours = StandardRecHours[facility];
+    const hours = SUMMER_HOURS ? SummerRecHours[facility] : StandardRecHours[facility];
     const day = now.getDay();
     const time = now.getHours();
-    const isOpen = hours.some(({ days }) => {
-        if (days.includes(day)) {
-            const start = parseInt(hours[0].start.slice(0, 2));
-            const end = parseInt(hours[0].end.slice(0, 2));
-            return time >= start && time < end;
-        }
-        return false;
-    });
+    const statuses = hours
+        .filter(({ days }) => days.includes(day))
+        .map(ent => {
+            let start = getDateFromTime(ent.start);
+            let end = getDateFromTime(ent.end);
+            return { status: time >= start.getHours() && time < end.getHours(), end: end.getTime() };
+        });
 
-    if (isOpen) return parseInt(hours[0].end.slice(0, 2)) - time;
+    let isOpen = statuses.reduce((acc, cur) => acc || cur.status, false);
+    if (isOpen) return statuses.find(e => e.status)!.end - now.getTime();
+
     return 0;
 }
 
+/**
+ * Returns statuses for all recreational facilities.
+ * @param now the time to query status for; defaults to now
+ */
 export const getAllStatuses = (now = new Date()) => {
     const statuses: Record<keyof typeof RecFacility, boolean> = {} as any;
-    Object.keys(StandardRecHours).forEach(facility => {
+    Object.keys(SUMMER_HOURS ? SummerRecHours : StandardRecHours).forEach(facility => {
         statuses[facility] = getRecStatus(facility as keyof typeof RecFacility, now);
     });
 

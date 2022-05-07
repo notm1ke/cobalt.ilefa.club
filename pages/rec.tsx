@@ -10,9 +10,11 @@ import {
     RecCapacityCard,
     RecHistoricalDailyCard,
     RecHistoricalWeeklyCard,
+    RecInsightsCard,
     RecOccupancyCard,
     RecOccupancyProvider,
-    RecStatusCard
+    RecStatusCard,
+    RecUntilCloseTagline
 } from '../components';
 
 const RecCenterPage = () => {
@@ -33,7 +35,7 @@ const RecCenterPage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${globalStyles.nameTitle} text-white display-1 ${styles.titleLineHeight}`}>Rec Center</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-3`}>
-                                            <span>All systems operational</span>
+                                            <RecUntilCloseTagline />
                                         </h2>
                                     </div>
                                 </div>
@@ -45,10 +47,11 @@ const RecCenterPage = () => {
                     <div className="container mt--3" id="body">
                         <div className="row">
                             <div className="col-md-4">
-                                <RecOccupancyProvider pollTime={10000}>
+                                <RecOccupancyProvider pollTime={60000}>
                                     <RecOccupancyCard />
                                     <RecCapacityCard />
                                 </RecOccupancyProvider>
+                                <RecInsightsCard />
                                 <RecStatusCard />
                             </div>
                             <div className="col-md-8">

@@ -31,6 +31,10 @@
     vertical-align: sub !important;
 }
 
+.vaRevert {
+    vertical-align: revert !important;
+}
+
 .noBorder {
     border: none !important;
 }

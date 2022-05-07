@@ -45,6 +45,10 @@ enum BuildingColorType {
     OTHER = 'text-gray'
 }
 
+const IMPLEMENTED_MARKERS = [
+    'academic', 'dining'
+]
+
 const MapsPage = () => {
     const [markers, loading, error] = useCartographer();
     const [popovers, setPopovers] = useState<PopoverEntry[]>([]);
@@ -188,52 +192,58 @@ const MapsPage = () => {
             >
                 <ZoomControl />
                 {
-                    markers && !loading && !error && markers.map(ent => (
-                        <Marker
-                            key={ent.position.lat + ent.position.lng}
-                            anchor={[ent.position.lat, ent.position.lng]}
-                            onClick={() => setActiveModal(getModal(ent))}
-                            color={icons[(ent as MarkerPayload).type ?? 'other']}
-                            width={40}
-                            className={ent.name.replace(/[\s._/\\&]/g, '')}
-                            onMouseOver={() => !isMobile && togglePopover(ent, true)}
-                            onMouseOut={() => !isMobile && togglePopover(ent, false)}
-                        />
-                    ))
+                    markers && !loading && !error &&
+                        markers
+                            // .filter(marker => IMPLEMENTED_MARKERS.includes(marker.type))
+                            .map(ent => (
+                                <Marker
+                                    key={ent.position.lat + ent.position.lng}
+                                    anchor={[ent.position.lat, ent.position.lng]}
+                                    onClick={() => IMPLEMENTED_MARKERS.includes(ent.type) && setActiveModal(getModal(ent))}
+                                    color={icons[(ent as MarkerPayload).type ?? 'other']}
+                                    width={40}
+                                    className={ent.name.replace(/[\s._/\\&]/g, '')}
+                                    onMouseOver={() => !isMobile && togglePopover(ent, true)}
+                                    onMouseOut={() => !isMobile && togglePopover(ent, false)}
+                                />
+                            ))
                 }
                 {
-                    markers && !loading && !error && markers.map(ent => {
-                        let open = isOpen(ent);
-                        let displayStatus = open !== null;
-                        let marker = getMarkerElementForType(ent);
+                    markers && !loading && !error &&
+                        markers
+                            // .filter(marker => IMPLEMENTED_MARKERS.includes(marker.type))
+                            .map(ent => {
+                                let open = isOpen(ent);
+                                let displayStatus = open !== null;
+                                let marker = getMarkerElementForType(ent);
 
-                        return (
-                            <HoverablePopover
-                                active={getStateForPopover(ent)}
-                                setActive={() => togglePopover(ent, !getStateForPopover(ent))}
-                                placement="top"
-                                key={ent.name.replace(/[\s./\\&]/g, '')} 
-                                target={'.' + ent.name.replace(/[\s./\\&]/g, '')}
-                                header={
-                                    <span className={`${BuildingColorType[ent.type.toUpperCase()]} font-weight-bold`}>
-                                        {getHeaderIconForMarker(ent)} {ent.name}
-                                        {
-                                            displayStatus
-                                                ? open
-                                                    ? <span className="text-success"> (Open)</span>
-                                                    : <span className="text-danger"> (Closed)</span>
-                                                : ''
+                                return (
+                                    <HoverablePopover
+                                        active={getStateForPopover(ent)}
+                                        setActive={() => togglePopover(ent, !getStateForPopover(ent))}
+                                        placement="top"
+                                        key={ent.name.replace(/[\s./\\&]/g, '')} 
+                                        target={'.' + ent.name.replace(/[\s./\\&]/g, '')}
+                                        header={
+                                            <span className={`${BuildingColorType[ent.type.toUpperCase()]} font-weight-bold`}>
+                                                {getHeaderIconForMarker(ent)} {ent.name}
+                                                {
+                                                    displayStatus
+                                                        ? open
+                                                            ? <span className="text-success"> (Open)</span>
+                                                            : <span className="text-danger"> (Closed)</span>
+                                                        : ''
+                                                }
+                                            </span>
                                         }
-                                    </span>
-                                }
-                                headerProps={{
-                                    className: styles.popoverCardTitle
-                                }}
-                            >
-                                {marker}
-                            </HoverablePopover>
-                        )
-                    })
+                                        headerProps={{
+                                            className: styles.popoverCardTitle
+                                        }}
+                                    >
+                                        {marker}
+                                    </HoverablePopover>
+                                )
+                            })
                 }
             </Map>
             { activeModal && {...activeModal} }
