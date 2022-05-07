@@ -34,12 +34,13 @@ import {
     DiningHallPayload,
     generateDdsLink,
     getChangeString,
-    getDateFromTime,
+    getCurrentMealHoursForHall,
+    getCurrentMealService,
     getDiningHallStatusColor,
     getEnumKeyByEnumValue,
     getIconForDiningHall,
     getIconForDiningStatus,
-    getMealHours,
+    getMealHourEntries,
     MealHourEntry,
     StandardMealHours
 } from '../../../util';
@@ -54,6 +55,7 @@ export interface DiningHallCardProps {
 export interface DiningHallModalProps {
     hall: DiningHallPayload;
     open: boolean;
+    hours: DateMealHourEntry[];
     status: keyof typeof DiningHallStatus;
     favorites: string[];
     setOpen: (open: boolean) => void;
@@ -67,37 +69,7 @@ type MealCollapsible = {
 
 type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
 
-const getTimeRangeSortingKey = (a: string, b: string) => {
-    let aAM = a.includes('am');
-    let bAM = b.includes('am');
-
-    return aAM === bAM
-        ? parseInt(a.split(':')[0]) - parseInt(a.split(':')[0])
-        : aAM
-            ? -1
-            : 1;
-}
-
-const getMealHourEntries = (hours: MealHourEntry[], now: Date): DateMealHourEntry[] =>
-    hours
-        .filter(h => h.days.includes(now.getDay()))
-        .sort((a, b) => getTimeRangeSortingKey(a.start, b.start))
-        .map((h, i) => ({
-            ...h,
-            start: getDateFromTime(h.start),
-            end: getDateFromTime(h.end),
-            index: i
-        }));
-
-const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof DiningHallStatus => {
-    let now = new Date();
-    let status = hours.find(h => now >= h.start && now <= h.end);
-    if (!status) return 'CLOSED';
-    
-    return getEnumKeyByEnumValue(DiningHallStatus, status.name, false) ?? 'CLOSED';    
-}
-
-const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favorites, status, setOpen, setFavorites }) => {
+const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, hours, favorites, status, setOpen, setFavorites }) => {
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [now, setNow] = useState(selectedDate.getDate() === new Date().getDate());
@@ -305,7 +277,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, favor
                                     <div className="mb-2" key={`${hall.name}-${meal.name}`}>
                                         <div className="mb-1" onClick={() => updateCollapsible(meal.name)}>
                                             <span className={`text-primary-light ${styles.diningMeal} cursor-pointer shine`}>
-                                                {getIconForDiningStatus(mealKey, styles.diningMealIcon, 24)} {meal.name} <span className={styles.diningHours}>({getMealHours(hallKey, selectedDate, mealKey)})</span>
+                                                {getIconForDiningStatus(mealKey, styles.diningMealIcon, 24)} {meal.name} <span className={styles.diningHours}>({getCurrentMealHoursForHall(hours, mealKey)})</span>
                                             </span>
                                         </div>
                                         <br />
@@ -380,6 +352,7 @@ export const DiningHallCard: React.FC<DiningHallCardProps> = ({ hall, hasMeals, 
             <DiningHallMenuModal
                 hall={hall}
                 open={open}
+                hours={entries}
                 status={status}
                 favorites={favorites}
                 setOpen={setOpen}

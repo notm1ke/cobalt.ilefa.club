@@ -10,7 +10,7 @@
 
 import moment from 'moment';
 
-import { Color, getEnumKeyByEnumValue } from '.';
+import { Color, getDateFromTime, getEnumKeyByEnumValue } from '.';
 
 import {
     DiningHall,
@@ -190,6 +190,10 @@ export const generateDdsLink = (hall: DiningHall, date = new Date()) => {
  * because simply providing the dining hall/date will
  * try to fetch the status at that datetime.
  * 
+ * @deprecated use getCurrentMealHoursForHall instead
+ * since this API utilizes the older dining status API
+ * which has now been deprecated, and is pending deletion.
+ * 
  * @param hall the dining hall to get meal hours for
  * @param date the date/time to retrieve meal hours for
  */
@@ -213,4 +217,72 @@ export const isDiningHallType = (str: string): str is keyof typeof DiningHallTyp
     return Object
         .keys(DiningHallType)
         .includes(str as DiningHallType);
+}
+
+/**
+ * Comparator function for sorting times by AM/PM.
+ * 
+ * @param a the first date to compare
+ * @param b the second date to compare
+ */
+export const getTimeRangeSortingKey = (a: string, b: string) => {
+    let aAM = a.includes('am');
+    let bAM = b.includes('am');
+
+    return aAM === bAM
+        ? parseInt(a.split(':')[0]) - parseInt(a.split(':')[0])
+        : aAM
+            ? -1
+            : 1;
+}
+
+/**
+ * Returns the dining hall meal hour
+ * entries for the given dining hall.
+ * 
+ * @param hours the standard meal hours
+ * @param now the current time
+ */
+export const getMealHourEntries = (hours: MealHourEntry[], now: Date): DateMealHourEntry[] =>
+    hours
+        .filter(h => h.days.includes(now.getDay()))
+        .sort((a, b) => getTimeRangeSortingKey(a.start, b.start))
+        .map((h, i) => ({
+            ...h,
+            start: getDateFromTime(h.start),
+            end: getDateFromTime(h.end),
+            index: i
+        }));
+
+/**
+ * Returns the current meal service for
+ * a given dining hall.
+ * 
+ * @param hours the meal hour entries
+ */
+export const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof DiningHallStatus => {
+    let now = new Date();
+    let status = hours.find(h => now >= h.start && now <= h.end);
+    if (!status) return 'CLOSED';
+    
+    return getEnumKeyByEnumValue(DiningHallStatus, status.name, false) ?? 'CLOSED';    
+}
+
+/**
+ * Attempts to resolve the meal hours for a given
+ * meal time at a given dining hall.
+ * 
+ * @apiNote replaces the older getMealHours API
+ * 
+ * @param hall the dining hall to get meal hours for
+ * @param hours the meal hour entries
+ * @param meal the meal to resolve
+ */
+export const getCurrentMealHoursForHall = (hours: DateMealHourEntry[], meal: string) => {
+    let now = new Date();
+    let target = hours.find(h => h.name.toLowerCase() === meal.toLowerCase() && h.days.includes(now.getDay()));
+    if (!target)
+        return 'Unknown';
+
+    return `${moment(target.start).format('h:mma')} - ${moment(target.end).format('h:mma')}`;
 }
