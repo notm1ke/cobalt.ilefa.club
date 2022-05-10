@@ -21,7 +21,7 @@ export interface RecCapacityCardProps {
 }
 
 export const RecCapacityCard: React.FC<RecCapacityCardProps> = ({ data }) => {
-    const [value, setValue] = useLocalStorage('rec-capacity', data ?? 0);
+    const [value, setValue] = useLocalStorage('rec-capacity', data ? (data / MAXIMUM_CAPACITY) : 0);
     
     useEffect(() => {
         if (data)
@@ -35,7 +35,7 @@ export const RecCapacityCard: React.FC<RecCapacityCardProps> = ({ data }) => {
                     <div className="col">
                         <div className={`card-title text-lowercase font-weight-600 text-muted mb-0 ${styles.cardTitle}`}>capacity percent</div>
                         <span className={`h2 font-weight-bold mb-0 ${styles.cardText}`}>
-                            {(((!value || (value && value) < 0 ? 0 : value) / MAXIMUM_CAPACITY) * 100).toFixed(2)}%
+                            {(((!value || (value && value < 0) ? 0 : value) / MAXIMUM_CAPACITY) * 100).toFixed(2)}%
                         </span>
                     </div>
                     <div className="col-auto col">

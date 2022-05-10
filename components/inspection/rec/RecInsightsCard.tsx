@@ -12,7 +12,7 @@ import MdiIcon from '@mdi/react';
 import styles from '../../styling/section.module.css';
 
 import { useEffect } from 'react';
-import { isRecClosed } from '../../../util';
+import { getDateFromTime, isRecClosed } from '../../../util';
 
 import {
     mdiCalendarToday,
@@ -27,6 +27,7 @@ import {
     useBluefit,
     useLocalStorage
 } from '../../../hooks';
+import moment from 'moment';
 
 export interface RecInsightsCardProps {
     data?: number;
@@ -79,7 +80,7 @@ const getTrend = (current: number, historic: number[]) => {
         </span>
     );
 
-    let avg = Math.floor(historic.reduce((a, b) => a + b, 0) / historic.length);
+    let avg = Math.floor(historic.slice(-2).reduce((a, b) => a + b, 0) / 2);
     if (avg === 0) return (
         <span className="text-danger">
             <i className="fa fa-times fa-fw"></i> not available
@@ -115,7 +116,7 @@ const getLocalMaximums = (vals: BluefitDailyRecord[]) => {
     let nums = vals.map(val => ({ value: val.average, time: val.time }));
     let maxes = Array<LocalMaximumPayload>()
     for (let i = 1; i < nums.length - 1; ++i) {
-        if (nums[i-1].value < nums[i].value && nums[i].value > nums[i+1].value)
+        if (nums[i - 1].value < nums[i].value && nums[i].value > nums[i + 1].value)
             maxes.push(nums[i])
     } 
 
@@ -129,8 +130,13 @@ export const RecInsightsCard: React.FC<RecInsightsCardProps> = ({ data }) => {
             setValue(data);
     }, []);
 
+    useEffect(() => {
+        if (data !== -1)
+            setValue(data);
+    }, [data]);
+
     const [stats, _url, loading, error] = useBluefit(0, 'daily', 'weekly');
-    let enabled = stats && !loading && !error && value !== -1;
+    let enabled = stats && !loading && !error;
 
     return (
         <div className="card shadow shadow-lg--hover mt-3 mb-4 mb-xl-0">
@@ -146,7 +152,7 @@ export const RecInsightsCard: React.FC<RecInsightsCardProps> = ({ data }) => {
                                             <span className={styles.facility}><MdiIcon path={mdiClockOutline} className="fa-fw" /> Today</span>
                                             <br /><span className={styles.sectionStatisticNumber}>
                                                 avg: {avg(today(stats!.daily!))}, change: {getChange(parseInt(avg(today(stats!.daily!))), parseInt(avgOf(stats!.weekly!)))}{" "}
-                                                trend: {getTrend(data!, today(stats!.daily!))}
+                                                trend: {getTrend(value!, today(stats!.daily!.filter(v => moment(getDateFromTime(v.time)).isBefore(new Date()))))}
                                             </span>
                                         </div>
                                         <div className="col-md-12 mb-2">

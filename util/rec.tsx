@@ -28,8 +28,7 @@ const Weekdays = [1, 2, 3, 4, 5];
 const Weekends = [0, 6];
 const AllDays = [...Weekdays, ...Weekends];
 
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const START_DATES = ["1/31/2022", "2/1/2022", "2/2/2022", "2/3/2022", "2/4/2022", "2/5/2022", "2/6/2022"];
+const START_DATES = ["2/6/2022", "1/31/2022", "2/1/2022", "2/2/2022", "2/3/2022", "2/4/2022", "2/5/2022"];
 
 export const SUMMER_HOURS = true;
 

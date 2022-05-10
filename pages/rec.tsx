@@ -62,8 +62,8 @@ const RecCenterPage = () => {
                                     <RecOccupancyCard />
                                     <RecCapacityCard />
                                     <RecMetricsCard />
+                                    <RecInsightsCard />
                                 </RecOccupancyProvider>
-                                <RecInsightsCard />
                                 <RecStatusCard />
                             </div>
                             <div className="col-md-8">

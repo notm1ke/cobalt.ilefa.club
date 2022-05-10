@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import moment from 'moment';
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/section.module.css';
 
@@ -95,7 +96,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
                 label: 'live',
                 data: data!
                     .daily!
-                    .slice(0, data!.daily!.length - 1)
+                    .slice(0, data!.daily!.length - 1) // get rid of the averages row
                     .map(ent => ({
                         ...ent,
                         values: ent.values.length === data!.daily!.slice(0, data!.daily!.length - 1)[0].values.length
@@ -103,6 +104,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
                             : undefined,
                     }))
                     .filter(({ values }) => values !== undefined)
+                    .filter(ent => moment(getDateFromTime(ent.time)).isBefore(new Date()))
                     .map(({ values }) => values),
                 borderColor: 'rgba(101, 184, 104, 1.0)',
                 backgroundColor: 'rgba(101, 184, 104, 0.5)',
@@ -112,7 +114,6 @@ export const RecHistoricalDailyCard: React.FC = () => {
     };
 
     let dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
-    // let delta = data!.daily!.slice(-1)[0].average - data!.daily!.slice(-1)[0].values.slice(-1)[0];
 
     return (
         <div className="card shadow shadow-lg--hover mt-5 mb-4 mb-xl-0">
