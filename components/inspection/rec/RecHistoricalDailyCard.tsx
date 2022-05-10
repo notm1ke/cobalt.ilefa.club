@@ -127,7 +127,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
                             : undefined,
                     }))
                     .filter(({ values }) => values !== undefined)
-                    .filter(ent => moment(getDateFromTime(ent.time)).isBefore(moment(new Date()).add(1, 'minute')))
+                    .filter(ent => moment(getDateFromTime(ent.time)).isBefore(moment(new Date()).subtract(1, 'minute')))
                     .map(({ values }) => values),
                 borderColor: 'rgba(101, 184, 104, 1.0)',
                 backgroundColor: 'rgba(101, 184, 104, 0.5)',
