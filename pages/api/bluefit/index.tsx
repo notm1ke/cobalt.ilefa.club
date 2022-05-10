@@ -11,8 +11,9 @@
 import axios from 'axios';
 
 import { getOccupancy } from '@ilefa/bluefit';
-import { isValidRecQueryMode } from '../../../util';
+import { getRecDayOffset, isValidRecQueryMode } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { BluefitDailyRecord } from '../../../hooks';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -89,7 +90,7 @@ const getDailyOccupancy = async (day: number) => {
     if (!data)
         return null;
 
-    let result = data.map(d => {
+    let result: BluefitDailyRecord[] = data.map(d => {
         let [time, ...raw] = d;
         let values = raw
             .map(v => parseInt(v))
@@ -100,6 +101,14 @@ const getDailyOccupancy = async (day: number) => {
             average: values.reduce((a, b) => a + b, 0) / values.length
         };
     });
+
+    let offset = getRecDayOffset(new Date());
+    if (result.some(r => !r.values[offset]))
+        result = result.map(res => {
+            if (!res.values[offset])
+                res.values[offset] = 0;
+            return res;
+        });
 
     return result;
 }

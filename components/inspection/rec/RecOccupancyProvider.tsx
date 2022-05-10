@@ -18,5 +18,5 @@ export interface RecOccupancyProviderProps {
 
 export const RecOccupancyProvider: React.FC<RecOccupancyProviderProps> = ({ pollTime, children }) => {
     const [occupancy, _req, loading, error] = useBluefit(pollTime, 'occupants');
-    return <>{children.map(child => cloneElement(child, { ...child.props, data: loading || error ? -1 : occupancy!.occupants }))}</>;
+    return <>{children.map(child => cloneElement(child, { ...child.props, data: loading || error ? -1 : occupancy!.occupants, timings: loading || error ? -1 : occupancy!.timings }))}</>;
 }

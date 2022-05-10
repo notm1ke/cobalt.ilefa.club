@@ -358,7 +358,7 @@ export const DiningHallSiteCard: React.FC<DiningHallSiteCardProps> = ({ favorite
                         <p className={`text-dark ${cardStyles.cardSectionText}`}>
                             { diningHallsOpen.length === 1 && <><span className="text-dark"><b>{diningHallsOpen[0]}</b> is the only dining hall currently serving food.</span></> }
                             { diningHallsOpen.length > 1 && <><b>{diningHallsOpen.length}</b> dining halls are currently serving food.</> }
-                            { diningHallsOpen.length === 0 && <span>No dining halls currently serve food.</span> }
+                            { diningHallsOpen.length === 0 && <span>No dining halls are currently serving any food.</span> }
                         </p>
                     </div>
                 </div>

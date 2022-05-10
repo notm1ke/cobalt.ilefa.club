@@ -57,3 +57,21 @@
 .facilityStatus {
     font-size: 0.85rem !important;
 }
+
+.sectionPercentBadge {
+    font-size: 0.65rem !important;
+}
+
+.sectionStatisticNumber {
+    font-family: 'Roboto Mono', monospace !important;
+    font-size: 0.85rem !important;
+    letter-spacing: -0.09rem !important;
+}
+
+.subsectionListText {
+    font-size: 0.85rem !important;
+}
+
+.subsectionListSpacing {
+    margin-left: 2rem !important;
+}

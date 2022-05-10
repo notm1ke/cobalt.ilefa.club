@@ -11,10 +11,10 @@
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/section.module.css';
 
-import { Badge } from 'reactstrap';
+import { RecStatusCollapsible } from '.';
 import { mdiListStatus } from '@mdi/js';
-import { Fragment, useEffect, useState } from 'react';
-import { getAllStatuses, RecFacility } from '../../../util';
+import { useEffect, useState } from 'react';
+import { getAllStatuses } from '../../../util';
 
 export const RecStatusCard: React.FC = () => {
     const [reload, setReload] = useState(false);
@@ -34,14 +34,12 @@ export const RecStatusCard: React.FC = () => {
                 <div className="row">
                     <div className="col">
                         <div className={`card-title text-lowercase font-weight-600 text-muted mb-1 ${styles.cardTitle}`}>facility status</div>
+                        <div className="mt--2 mb-2">
+                            <small>hover for hours</small>
+                        </div>
                         {
                             Object.keys(status).map(key => (
-                                <Fragment key={key}>
-                                    <span className={styles.facility}>
-                                        <Badge color={status[key] ? 'success' : 'danger'}>{status[key] ? <i className="fa fa-check fa-fw"></i> : <i className="fa fa-times fa-fw"></i>}</Badge> {RecFacility[key]}
-                                    </span>
-                                    <br />
-                                </Fragment>
+                                <RecStatusCollapsible key={key} facility={key as any} status={status[key]} />
                             ))
                         }
                     </div>
