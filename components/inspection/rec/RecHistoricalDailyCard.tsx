@@ -13,12 +13,12 @@ import moment from 'moment';
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/section.module.css';
 
-import { useState } from 'react';
 import { Badge } from 'reactstrap';
 import { Line } from 'react-chartjs-2';
-import { useBluefit } from '../../../hooks';
+import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { mdiChartBellCurve, mdiRadioTower } from '@mdi/js';
+import { BluefitResponseShape, useBluefit } from '../../../hooks';
 import { getDateFromTime, preventAnd, SUMMER_HOURS } from '../../../util';
 
 import {
@@ -64,16 +64,39 @@ const options: any = {
 };
 
 export const RecHistoricalDailyCard: React.FC = () => {
+    const [result, setResult] = useState<BluefitResponseShape>(null as any);
     const [average, setAverage] = useState(true);
     const [live, setLive] = useState(true);
 
     const [data, _req, loading, error] = useBluefit(30000, 'daily');
-    if (loading) return <></>;
-    if (error || !data?.daily) return <></>;
+
+    useEffect(() => {
+        if (data && data!.daily)
+            setResult(data!);
+    }, [data]);
+
+    if (error) return (
+        <div className="card shadow shadow-lg--hover mt-3 mb-4 mb-xl-0">
+            <div className="card-body">
+                <div className="text-center text-danger">
+                    <i className="fa fa-triangle-exclamation fa-fw"></i> An error occurred while retrieving data from the web.
+                </div>
+            </div>
+        </div>
+    );
+
+    if (loading || !result || !result.daily) return (
+        <div className="card shadow shadow-lg--hover mt-3 mb-4 mb-xl-0">
+            <div className="card-body">
+                <div className="text-center">
+                    <i className="fa fa-spinner fa-spin fa-fw"></i> Loading..
+                </div>
+            </div>
+        </div>
+    )
 
     let dataset: ChartData<'line', (number | undefined)[]> = {
-        
-        labels: data!
+        labels: result!
             .daily!
             .map(({ time }) => time)
             .filter(time => !SUMMER_HOURS
@@ -84,9 +107,9 @@ export const RecHistoricalDailyCard: React.FC = () => {
         datasets: [
             {
                 label: 'average',
-                data: data!
+                data: result
                     .daily!
-                    .slice(0, data!.daily!.length - 1)
+                    .slice(0, result!.daily!.length - 1)
                     .map(({ average }) => Math.round(average)),
                 borderColor: 'rgb(53, 162, 235)',
                 backgroundColor: 'rgba(53, 162, 235, 0.5)',
@@ -94,17 +117,17 @@ export const RecHistoricalDailyCard: React.FC = () => {
             },
             {
                 label: 'live',
-                data: data!
+                data: result
                     .daily!
-                    .slice(0, data!.daily!.length - 1) // get rid of the averages row
+                    .slice(0, result!.daily!.length - 1) // get rid of the averages row
                     .map(ent => ({
                         ...ent,
-                        values: ent.values.length === data!.daily!.slice(0, data!.daily!.length - 1)[0].values.length
+                        values: ent.values.length === result!.daily!.slice(0, result!.daily!.length - 1)[0].values.length
                             ? ent.values.slice(-1)[0]
                             : undefined,
                     }))
                     .filter(({ values }) => values !== undefined)
-                    .filter(ent => moment(getDateFromTime(ent.time)).isBefore(new Date()))
+                    .filter(ent => moment(getDateFromTime(ent.time)).isBefore(moment(new Date()).add(1, 'minute')))
                     .map(({ values }) => values),
                 borderColor: 'rgba(101, 184, 104, 1.0)',
                 backgroundColor: 'rgba(101, 184, 104, 0.5)',
