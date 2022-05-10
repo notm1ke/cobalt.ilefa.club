@@ -42,13 +42,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({ message: 'Invalid query mode' });
             
     let payload = {} as any;
-    for (let m of modes) {
-        if (m === 'occupants')
-            payload[m] = (await getOccupancy() as any).occupants ?? await getLatestOccupancy();
-        if (m === 'daily')
-            payload[m] = await getDailyOccupancy(new Date().getDay());
-        if (m === 'weekly')
-            payload[m] = await getWeeklyOccupancy();
+    for (let mode of modes) {
+        if (mode === 'occupants') {
+            let occupants = (await getOccupancy() as any).occupants;
+            payload[mode] = (!occupants || occupants === -1)
+                ? await getLatestOccupancy()
+                : occupants;
+        }
+        if (mode === 'daily')
+            payload[mode] = await getDailyOccupancy(new Date().getDay());
+        if (mode === 'weekly')
+            payload[mode] = await getWeeklyOccupancy();
     }
 
     return res
