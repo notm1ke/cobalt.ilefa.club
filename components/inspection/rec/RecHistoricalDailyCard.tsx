@@ -67,7 +67,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
     const [average, setAverage] = useState(true);
     const [live, setLive] = useState(true);
 
-    const [data, _req, loading, error] = useBluefit(undefined, 'daily');
+    const [data, _req, loading, error] = useBluefit(30000, 'daily');
     if (loading) return <></>;
     if (error || !data?.daily) return <></>;
 

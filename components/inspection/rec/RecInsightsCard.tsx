@@ -88,13 +88,13 @@ const getTrend = (current: number, historic: number[]) => {
     )
 
     let percent = current / avg;
-    if (percent === 1) return (
+    if (percent > 0.95 && percent < 1.05) return (
         <span className="text-warning">
-            <i className="fa fa-arrow-right fa-fw"></i> stagnating
+            <i className="fa fa-arrow-right fa-fw ml--1 mr--1"></i> stagnant
         </span>
     );
 
-    if (percent < 1) return (
+    if (percent < 0.95) return (
         <span className="text-danger">
             <i className="fa fa-arrow-trend-down fa-fw"></i> falling (-{((1 - percent) * 100).toFixed(1)}%)
         </span>
