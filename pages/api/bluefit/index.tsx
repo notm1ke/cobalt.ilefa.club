@@ -11,9 +11,9 @@
 import axios from 'axios';
 
 import { getOccupancy } from '@ilefa/bluefit';
-import { getRecDayOffset, isValidRecQueryMode } from '../../../util';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { BluefitDailyRecord } from '../../../hooks';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getRecDayOffset, isValidRecQueryMode } from '../../../util';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -65,7 +65,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 const getLatestOccupancy = async () => {
     let dayName = DAYS[new Date().getDay()];
-    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:Z1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:AV1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)
         .then(res => res.data)
@@ -84,7 +84,7 @@ const getLatestOccupancy = async () => {
 
 const getDailyOccupancy = async (day: number) => {
     let dayName = DAYS[day];
-    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:Z1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:AV1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)
         .then(res => res.data)
