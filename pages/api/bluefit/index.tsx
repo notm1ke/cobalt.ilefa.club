@@ -12,8 +12,8 @@ import axios from 'axios';
 
 import { getOccupancy } from '@ilefa/bluefit';
 import { BluefitDailyRecord } from '../../../hooks';
+import { isValidRecQueryMode } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getRecDayOffset, isValidRecQueryMode } from '../../../util';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
