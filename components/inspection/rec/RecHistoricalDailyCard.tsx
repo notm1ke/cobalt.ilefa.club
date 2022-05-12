@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { mdiChartBellCurve, mdiRadioTower } from '@mdi/js';
 import { BluefitResponseShape, useBluefit } from '../../../hooks';
-import { getDateFromTime, preventAnd, SUMMER_HOURS } from '../../../util';
+import { getDateFromTime, getRecDayOffset, preventAnd, SUMMER_HOURS } from '../../../util';
 
 import {
     Chart as ChartJS,
@@ -71,8 +71,18 @@ export const RecHistoricalDailyCard: React.FC = () => {
     const [data, _req, loading, error] = useBluefit(30000, 'daily');
 
     useEffect(() => {
-        if (data && data!.daily)
-            setResult(data!);
+        if (data && data!.daily) {
+            let offset = getRecDayOffset(new Date());
+            let res = structuredClone(data!);
+            let daily = res.daily!.map(ent => {
+                if (offset === ent.values.length)
+                    ent.values[offset] = 0;
+                return ent;
+            });
+
+            res.daily = daily;
+            setResult(res);
+        }
     }, [data]);
 
     if (error) return (

@@ -106,12 +106,7 @@ const getDailyOccupancy = async (day: number) => {
         };
     });
 
-    let offset = getRecDayOffset(new Date());
-    return result.map(res => {
-        if (offset === res.values.length)
-            res.values[offset] = 0;
-        return res;
-    });
+    return result;
 }
 
 const getWeeklyOccupancy = async () => {
