@@ -73,7 +73,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
     useEffect(() => {
         if (data && data!.daily) {
             let offset = getRecDayOffset(new Date());
-            let res = structuredClone(data!);
+            let res = { ...data! };
             let daily = res.daily!.map(ent => {
                 if (offset === ent.values.length)
                     ent.values[offset] = 0;
