@@ -135,7 +135,7 @@ export const RecInsightsCard: React.FC<RecInsightsCardProps> = ({ data }) => {
             setValue(data);
     }, [data]);
 
-    const [stats, _url, loading, error] = useBluefit(0, 'daily', 'weekly');
+    const [stats, _url, loading, error] = useBluefit(0, new Date().getDay(), 'daily', 'weekly');
     let enabled = stats && !loading && !error;
 
     return (

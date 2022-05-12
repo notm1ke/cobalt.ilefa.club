@@ -29,8 +29,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({ message: 'Method not allowed' });
 
     let start = Date.now();
-    let { mode } = req.query;
-    if (!mode || mode instanceof Array)
+    let { mode, day } = req.query;
+    if (!mode || !day || mode instanceof Array || day instanceof Array)
         return res
             .status(400)
             .json({ message: 'Bad Request' });
@@ -42,15 +42,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .json({ message: 'Invalid query mode' });
             
     let payload = {} as any;
+    let target = parseInt(day);
+
+    if (isNaN(target)) 
+        return res
+            .status(400)
+            .json({ message: 'Non-numeric day' });
+
     for (let mode of modes) {
         if (mode === 'occupants') {
             let occupants = (await getOccupancy() as any).occupants;
             payload[mode] = (!occupants || occupants === -1)
-                ? await getLatestOccupancy()
+                ? await getLatestOccupancy(target)
                 : occupants;
         }
         if (mode === 'daily')
-            payload[mode] = await getDailyOccupancy(new Date().getDay());
+            payload[mode] = await getDailyOccupancy(target);
         if (mode === 'weekly')
             payload[mode] = await getWeeklyOccupancy();
     }
@@ -63,8 +70,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
 };
 
-const getLatestOccupancy = async () => {
-    let dayName = DAYS[new Date().getDay()];
+const getLatestOccupancy = async (day: number) => {
+    let dayName = DAYS[day];
     let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:AV1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)

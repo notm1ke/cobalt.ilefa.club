@@ -40,8 +40,8 @@ type TimeOccupancyKeyPair = {
     occupants: number;
 }
 
-export const useBluefit = (pollTime: number | undefined, ...mode: RecQueryMode[]): DefaultShapedHook<BluefitResponseShape> =>
-    createRemoteHook<BluefitResponseShape, DefaultShapedHook<BluefitResponseShape>>('Bluefit', `/api/bluefit?mode=${mode.join(',')}`,
+export const useBluefit = (pollTime: number | undefined, day: number, ...mode: RecQueryMode[]): DefaultShapedHook<BluefitResponseShape> =>
+    createRemoteHook<BluefitResponseShape, DefaultShapedHook<BluefitResponseShape>>('Bluefit', `/api/bluefit?mode=${mode.join(',')}&day=${day}`,
         (type, data, _err, url) => {
             switch (type) {
                 case ApiResponseType.ERROR:

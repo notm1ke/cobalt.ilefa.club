@@ -84,7 +84,7 @@ const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 const colors = ['danger', 'warning', 'yellow', 'success', 'primary-light', 'primary', 'purple'];
 
 export const RecHistoricalWeeklyCard: React.FC = () => {
-    const [data, _req, loading, error] = useBluefit(undefined, 'weekly');
+    const [data, _req, loading, error] = useBluefit(undefined, new Date().getDay(), 'weekly');
     const [monday, setMonday] = useState(true);
     const [tuesday, setTuesday] = useState(true);
     const [wednesday, setWednesday] = useState(true);
