@@ -678,6 +678,22 @@ export const getRealRoomCode = (room: string, buildingCode: string) => {
 }
 
 /**
+ * Converts a readable building code into a Bluesign
+ * compatible building code.
+ * 
+ * @param buildingCode the building code to convert
+ */
+export const getBluesignCode = (buildingCode: string) => {
+    let code = buildingCode;
+    if (buildingCode === 'CHEM')      code = 'CHM';
+    if (buildingCode === 'STRSWW')    code = 'STRSWW';
+    if (buildingCode === 'WH')        code = 'WH';
+    if (buildingCode === 'WTBY')      code = 'Waterbury';
+    
+    return code;
+}
+
+/**
  * Returns the term code for a given term.
  * @param term the term to get a code for
  */
@@ -760,7 +776,7 @@ export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.tes
  * @param target the target enum
  * @param value the value to search by
  */
-export function getEnumKeyByEnumValue<T>(target: T, value: string, caseSensitive = true): keyof T | undefined {
+export function getEnumKeyByEnumValue<T extends Object>(target: T, value: string, caseSensitive = true): keyof T | undefined {
     let keys = Object
         .keys(target)
         .filter(x => caseSensitive

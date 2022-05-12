@@ -12,17 +12,18 @@ import React from 'react';
 import Head from 'next/head';
 import MdiIcon from '@mdi/react';
 
-import styles from '../components/styling/building.module.css';
-import globalStyles from '../components/styling/home.module.css';
-import searchStyles from '../components/styling/search.module.css';
+import styles from '../../components/styling/building.module.css';
+import globalStyles from '../../components/styling/home.module.css';
+import searchStyles from '../../components/styling/search.module.css';
 
 import { useEffect, useState } from 'react';
-import { BuildingPayload, useBuildings } from '../hooks';
-import { BuildingRoomCard, Footer, Nav } from '../components';
+import { BuildingPayload, useBuildings } from '../../hooks';
+import { BuildingRoomCard, Footer, Nav } from '../../components';
 import { InputGroupAddon, InputGroupText, UncontrolledTooltip } from 'reactstrap';
 
 import {
     mdiAlert,
+    mdiFeatureSearch,
     mdiInformation,
     mdiLoading,
     mdiMagnify,
@@ -36,7 +37,7 @@ import {
     CampusSorting,
     getIconForBuilding,
     intToWords
-} from '../util';
+} from '../../util';
 
 const BuildingsPage = () => {
     const [buildings, loading, error] = useBuildings();
@@ -166,12 +167,16 @@ const BuildingsPage = () => {
                                                 <br/>
                                                 {BuildingDescriptions[building.code] || 'This building does not have a description.'}
                                                 <br/>
+                                                <a href={`/buildings/${building.code}`} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
+                                                    <span className="btn-inner--icon vaTextBottom"><MdiIcon path={mdiFeatureSearch} size="20px" /></span>
+                                                    <span className="btn-inner--text">Building Directory</span>
+                                                </a>
                                                 <a href={BuildingMaps[building.code]} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
-                                                    <span className="btn-inner--icon"><MdiIcon path={mdiMapSearch} size="20px" /></span>
+                                                    <span className="btn-inner--icon vaTextBottom"><MdiIcon path={mdiMapSearch} size="20px" /></span>
                                                     <span className="btn-inner--text">View on Google Maps</span>
                                                 </a>
                                                 <a href={`https://maps.uconn.edu/m/info/${building.code}`} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
-                                                    <span className="btn-inner--icon"><MdiIcon path={mdiInformation} size="20px" /></span>
+                                                    <span className="btn-inner--icon vaTextBottom"><MdiIcon path={mdiInformation} size="20px" /></span>
                                                     <span className="btn-inner--text">Information</span>
                                                 </a>
                                                 <div className="row">

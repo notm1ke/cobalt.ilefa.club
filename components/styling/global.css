@@ -35,6 +35,10 @@
     vertical-align: revert !important;
 }
 
+.vaTextBottom {
+    vertical-align: text-bottom !important;
+}
+
 .noBorder {
     border: none !important;
 }
