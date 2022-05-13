@@ -526,6 +526,19 @@ export const joinWithAnd = (arr: any[], delimiter: string = ', ') => {
 
 /**
  * Shortens an inputted string to a specified length
+ * by trimming at the max length.
+ * 
+ * @param input the input string
+ * @param maxLen the maximum allowed length
+ */
+ export const shorten = (input: string, maxLen: number) => {
+    if (input.length <= maxLen)
+        return input;
+    return input.slice(0, maxLen);
+}
+
+/**
+ * Shortens an inputted string to a specified length
  * by trimming at the max length and adding ellipses.
  * 
  * @param input the input string
@@ -548,6 +561,7 @@ export const shortenWithEllipses = (input: string, maxLen: number) => {
 export const shortenName = (input: string, maxLen: number, trailingDot: boolean = true) => {
     if (input.length <= maxLen)
         return input;
+
     return input
         .split(' ')
         .map((part, i, arr) => i !== arr.length - 1

@@ -15,19 +15,22 @@ import styles from '../styling/building.module.css';
 import cardStyles from '../styling/card.module.css';
 import inspectionStyles from '../styling/inspection.module.css';
 
-import { mdiGoogleClassroom } from '@mdi/js';
+import { useState } from 'react';
+import { useRoom } from '../../hooks';
+import { mdiGoogleClassroom, mdiPresentationPlay } from '@mdi/js';
 import { ScheduleEntry } from '@ilefa/bluesign';
 
 import {
     capitalizeFirst,
-    CompleteRoomPayload,
     getDateFromTime,
+    getIconForCourse,
     getIconForRoom,
     getLatestTimeValue,
 } from '../../util';
+import { Modal } from '../Modal';
+import { BuildingCode } from '@ilefa/husky';
 
 export interface BuildingDirectoryCardProps {
-    data?: CompleteRoomPayload;
     name: string;
     room: ScheduleEntry[];
 }
@@ -73,36 +76,96 @@ const getRoomStatus = (name: string, schedule: ScheduleEntry[]) => {
             </span>;
 }
 
-export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ room, name, data }) => {
-    let icon = data
-        ? getIconForRoom(data, '', 20)
+interface RoomScheduleModalProps {
+    name: string;
+    schedule: ScheduleEntry[];
+    open: boolean;
+    setOpen: (open: boolean) => void;
+}
+
+const RoomScheduleModal: React.FC<RoomScheduleModalProps> = ({ name, schedule, open, setOpen }) => (
+    <Modal
+        open={open}
+        setOpen={() => setOpen(false)}
+        width="850px"
+        title={<span><b>{BuildingCode[name.split(' ')[0].toUpperCase()]}</b> ➜ {name}</span>}>
+            <span>
+                <pre className={`${inspectionStyles.sectionTitle} text-primary mt-3`}><i className="fa fa-tags fa-fw"></i> Room Status</pre>
+                <p className={inspectionStyles.description}>
+                    {getRoomStatus(name, schedule)}
+                </p>
+                <pre className={`${inspectionStyles.sectionTitle} text-primary`}><i className="fa fa-stream fa-fw"></i> What's Next</pre>
+                <ul className={inspectionStyles.roomSchedule}>
+                    {
+                        schedule.length > 0 && schedule.map(ent => (
+                            <li key={`${ent.event}-${ent.section ?? 'NO_SECTION'}`}>
+                                {
+                                    ent.section && <span>
+                                        {getIconForCourse(ent.event.replace(/\s/, ''), 'text-warp fa-fw')} <a className="text-warp font-weight-bold shine" href={`/course/${ent.event.replace(/\s/, '')}`}>{ent.event} ({ent.section})</a> from <b>{ent.start} - {ent.end}</b>
+                                    </span>
+                                }
+        
+                                {
+                                    ent.independent && <span>
+                                        <MdiIcon path={mdiPresentationPlay} className="text-warp fa-fw" size="16px" /> <span className="text-warp font-weight-bold">{ent.event}</span> from <b>{ent.start} - {ent.end}</b>
+                                    </span>
+                                }
+                            </li>
+                        ))
+                    }
+        
+                    { schedule.length === 0 && <li><b>{name}</b> has nothing scheduled.</li> }
+                </ul>
+            </span>
+    </Modal>
+);
+
+export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ room, name }) => {
+    const [data, _url, loading, error] = useRoom({ name: name.replace(/\s/g, '') });
+    const [open, setOpen] = useState(false);
+
+    if (loading) return <></>;
+
+    let managed = data && !error;
+    let icon = managed
+        ? getIconForRoom(data!, '', 20)
         : <MdiIcon path={mdiGoogleClassroom} className="fa-fw" size="$20px" />;
 
     return (
         <div className={`card shadow shadow-lg--hover mt-5 ${cardStyles.rgCardSm}`}>
             <div className="card-body">
-                <div className="d-flex">
-                    <div>
-                        <h5>
-                            <Link href={`/room/${name.replace(/\s/g, '')}`}>
-                                <a className={`${cardStyles.cardSectionTitle} text-primary-light`}>
-                                    {icon ?? ''} {name}
-                                </a>
-                            </Link>
-                        </h5>
+                <div>
+                    <h5>
+                        <a className={`${cardStyles.cardSectionTitle} text-primary-light pointer`} onClick={() => setOpen(true)}>
+                            {icon ?? ''} {name}
+                        </a>
+                    </h5>
 
-                        <p className="text-dark">
-                            {getRoomStatus(name, room)}
-                        </p>
-                       
-                        <div className={styles.projectCardLink}>
-                            <a className="btn btn-dark btn-sm text-lowercase shine">
-                                <i className="fa fa-search fa-fw mr-1"></i> view schedule
-                            </a>
-                        </div>
+                    <p className="text-dark">
+                        {getRoomStatus(name, room)}
+                    </p>
+                    
+                    <div className={styles.projectCardLink}>
+                        {
+                            managed && (
+                                <a className="btn btn-warp btn-sm text-lowercase shine">
+                                    <i className="fa fa-compass fa-fw mr-1"></i> explore
+                                </a>
+                            )
+                        }
+
+                        <a className="btn btn-dark btn-sm text-lowercase shine" onClick={() => setOpen(true)}>
+                            <i className="fa fa-calendar-week fa-fw mr-1"></i> view schedule
+                        </a>
                     </div>
                 </div>
             </div>
+            <RoomScheduleModal
+                name={name}
+                schedule={room}
+                open={open}
+                setOpen={setOpen}
+            />
         </div>
     )
 }

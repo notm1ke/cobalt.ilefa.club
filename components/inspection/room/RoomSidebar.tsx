@@ -12,8 +12,8 @@ import moment from 'moment';
 import styles from '../../styling/inspection.module.css';
 
 import { DataView } from '../../';
+import { isMobile } from 'react-device-detect';
 import { ScheduleEntry } from '@ilefa/bluesign';
-import { COURSE_IDENTIFIER } from '@ilefa/husky';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { BluesignResponsePayload, useBluesign } from '../../../hooks';
 
@@ -21,7 +21,8 @@ import {
     capitalizeFirst,
     CompleteRoomPayload,
     getDateFromTime,
-    getLatestTimeValue
+    getLatestTimeValue,
+    shorten
 } from '../../../util';
 
 export interface RoomSidebarProps {
@@ -86,8 +87,7 @@ const getRoomStatus = (room: CompleteRoomPayload, schedule: BluesignResponsePayl
 }
 
 const getCurrentAndNextEvents = (schedule?: BluesignResponsePayload): CurrentAndNextEvents => {
-    if (!schedule)
-        return [undefined, undefined, false];
+    if (!schedule) return [undefined, undefined, false];
 
     let events = schedule
         .entries
@@ -137,13 +137,12 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
         },
         {
             icon: 'fa fa-calendar-day',
-            name: 'Class Schedule',
+            name: 'Event Schedule',
             marginTop: '0',
             contents: state === 'loaded'
                 ? schedule && schedule.entries.length
                     ? schedule
                         .entries
-                        .filter(entry => entry.section && COURSE_IDENTIFIER.test(entry.event.replace(/\s/, '')))
                         .map(entry => ({
                             ...entry,
                             startDate: getDateFromTime(entry.start),
@@ -151,11 +150,24 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                         }))
                         .map(entry => ({
                             name: <>
-                                <a href={`/course/${entry.event.replace(/\s/g, '')}`} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>{entry.event}</a>
-                                <UncontrolledTooltip target={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>
-                                    <b>{entry.event} ({entry.section})</b>
-                                    <br />Click to view information about this course.
-                                </UncontrolledTooltip>
+                                <a href={entry.section ? `/course/${entry.event.replace(/\s/g, '')}` : '#'} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>{isMobile ? entry.event : shorten(entry.event, 18)}</a>
+                                {
+                                    !entry.section && (
+                                        <UncontrolledTooltip target={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>
+                                            <b>{entry.event}</b>
+                                            <br />This event will occupy {data.name} for <b>{getLatestTimeValue(entry.endDate.getTime() - entry.startDate.getTime())}</b>.
+                                        </UncontrolledTooltip>
+                                    )
+                                }
+
+                                {
+                                    entry.section && (
+                                        <UncontrolledTooltip target={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>
+                                            <b>{entry.event} ({entry.section})</b>
+                                            <br />Click to view information about this course.
+                                        </UncontrolledTooltip>
+                                    )
+                                }
                             </>,
                             key: entry.event,
                             value: `${entry.start} - ${entry.end}`     

@@ -92,7 +92,6 @@ const ClassroomInspection = () => {
                                     <div className="col-lg-9">
                                         <Card className="shadow border-0">
                                             <CardBody className="pt-0">
-                                                {/* add `shadow` class to give back shadow to the below node */}
                                                 <div className={styles.tabBody}>
                                                     <RoomOverviewTab
                                                         room={room}

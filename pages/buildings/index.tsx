@@ -16,26 +16,17 @@ import styles from '../../components/styling/building.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 import searchStyles from '../../components/styling/search.module.css';
 
+import { CampusType } from '@ilefa/husky';
 import { useEffect, useState } from 'react';
-import { BuildingPayload, useBuildings } from '../../hooks';
-import { BuildingRoomCard, Footer, Nav } from '../../components';
+import { BuildingCard, Footer, Nav } from '../../components';
+import { mdiAlert, mdiLoading, mdiMagnify } from '@mdi/js';
+import { BuildingCodeKey, BuildingPayload, useBuildings } from '../../hooks';
 import { InputGroupAddon, InputGroupText, UncontrolledTooltip } from 'reactstrap';
-
-import {
-    mdiAlert,
-    mdiFeatureSearch,
-    mdiInformation,
-    mdiLoading,
-    mdiMagnify,
-    mdiMapSearch
-} from '@mdi/js';
 
 import {
     BuildingAddresses,
     BuildingDescriptions,
-    BuildingMaps,
     CampusSorting,
-    getIconForBuilding,
     intToWords
 } from '../../util';
 
@@ -145,54 +136,22 @@ const BuildingsPage = () => {
                 </div>
                 <section className={`section ${styles.buildingSection} background-circuits`}>
                     <div className="container" id="body">
-                        {
-                            enabled && results
-                                .filter(({ rooms }) => {
-                                    if (hideNoRooms)
-                                        return rooms.length > 0;
-                                    return true;
-                                })
-                                .sort((a, b) => CampusSorting[a.rooms[0]?.building.campus] - CampusSorting[b.rooms[0]?.building.campus])
-                                .map(building => {
-                                    let name = building.name;
-                                    let addr = BuildingAddresses[building.code];
-                                    if (!addr) addr = 'NONE';
-
-                                    let atOn = isNaN(parseFloat(addr.substring(0, 1))) ? 'on' : 'at';
-                                    return (
-                                        <h4 className={`text-white ${styles.buildingSectionTitle} mb-7`} id={building.code} key={building.code}>
-                                            { getIconForBuilding(building.code as any, styles.buildingIcon, 24) } {building.name} ({building.code})
-                                            <br/><span className={`text-white ${styles.buildingSectionBody}`}>
-                                                The <b>{name.endsWith('Building') ? name : name + ' Building'}</b> {addr === 'NONE' ? 'does not have an address' : <>is located {atOn} <a href={BuildingMaps[building.code]} className={`text-light ${styles.buildingLink} shine`} target="_blank" rel="noopener noreferrer">{BuildingAddresses[building.code]}</a></>}.
-                                                <br/>
-                                                {BuildingDescriptions[building.code] || 'This building does not have a description.'}
-                                                <br/>
-                                                <a href={`/buildings/${building.code}`} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
-                                                    <span className="btn-inner--icon vaTextBottom"><MdiIcon path={mdiFeatureSearch} size="20px" /></span>
-                                                    <span className="btn-inner--text">Building Directory</span>
-                                                </a>
-                                                <a href={BuildingMaps[building.code]} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
-                                                    <span className="btn-inner--icon vaTextBottom"><MdiIcon path={mdiMapSearch} size="20px" /></span>
-                                                    <span className="btn-inner--text">View on Google Maps</span>
-                                                </a>
-                                                <a href={`https://maps.uconn.edu/m/info/${building.code}`} className="btn btn-dark bg-ilefa-dark shine btn-icon mt-4 mb-2 text-lowercase" target="_blank" rel="noopener noreferrer">
-                                                    <span className="btn-inner--icon vaTextBottom"><MdiIcon path={mdiInformation} size="20px" /></span>
-                                                    <span className="btn-inner--text">Information</span>
-                                                </a>
-                                                <div className="row">
-                                                    {
-                                                        building.rooms.map(room => (
-                                                            <div className="col-md-4" key={room.name}>
-                                                                <BuildingRoomCard room={room} key={room.name} />
-                                                            </div>
-                                                        ))
-                                                    }
-                                                </div>
-                                            </span>
-                                        </h4>
-                                    )
-                                })
-                        }
+                        <div className="row">
+                            {
+                                enabled && results
+                                    .filter(({ rooms }) => {
+                                        if (hideNoRooms)
+                                            return rooms.length > 0;
+                                        return true;
+                                    })
+                                    .sort((a, b) => CampusSorting[a.rooms[0]?.building.campus] - CampusSorting[b.rooms[0]?.building.campus])
+                                    .map(building => (
+                                        <div className="col-md-6 d-flex align-items-stretch">
+                                            <BuildingCard buildingType={building.code as BuildingCodeKey} campus={building.rooms[0]?.building.campus as CampusType} key={building.code} />
+                                        </div>
+                                    ))
+                            }
+                        </div>
                     </div>
                 </section>
                 <Footer className="background-circuits" white />

@@ -19,7 +19,7 @@ import globalStyles from '../../components/styling/home.module.css';
 import { useRouter } from 'next/router';
 import { BuildingCode } from '@ilefa/husky';
 import { mdiInformation, mdiMapSearch } from '@mdi/js';
-import { BuildingCodeKey, useManagedSite } from '../../hooks';
+import { BuildingCodeKey, useManagedSite, useRoom } from '../../hooks';
 import { BuildingDirectoryCard, Footer, Nav } from '../../components';
 
 import {
@@ -37,6 +37,7 @@ const BuildingInspectionPage = () => {
         return <Error404 />;
     
     let buildingCode = (name as string).toUpperCase();
+    let buildingName = BuildingCode[buildingCode];
 
     const [site, _url, loading, error] = useManagedSite({ sites: [buildingCode] as BuildingCodeKey[] });
     const enabled = !loading && !error && site;
@@ -47,7 +48,7 @@ const BuildingInspectionPage = () => {
     return (
         <main>
             <Head>
-                <title>Cobalt » {enabled ? '' : BuildingCode[name]}</title>
+                <title>Cobalt » {BuildingCode[buildingCode]}</title>
                 <meta name="description" content={`Explore rooms, schedules, and more for ${BuildingCode[buildingCode]}`} />
             </Head>
             <Nav/>
@@ -74,7 +75,7 @@ const BuildingInspectionPage = () => {
                         <h4 className={`text-white ${styles.buildingSectionTitle} mb-7`}>
                             { getIconForBuilding(buildingCode as any, styles.buildingIcon, 24) } {BuildingCode[buildingCode]} ({buildingCode})
                             <br/><span className={`text-white ${styles.buildingSectionBody}`}>
-                                The <b>{name.endsWith('Building') ? name : name + ' Building'}</b> {addr === 'NONE' ? 'does not have an address' : <>is located {atOn} <a href={BuildingMaps[buildingCode]} className={`text-light ${styles.buildingLink} shine`} target="_blank" rel="noopener noreferrer">{BuildingAddresses[buildingCode]}</a></>}.
+                                The <b>{buildingName.endsWith('Building') ? buildingName : buildingName + ' Building'}</b> {addr === 'NONE' ? 'does not have an address' : <>is located {atOn} <a href={BuildingMaps[buildingCode]} className={`text-light ${styles.buildingLink} shine`} target="_blank" rel="noopener noreferrer">{BuildingAddresses[buildingCode]}</a></>}.
                                 <br/>
                                 {BuildingDescriptions[buildingCode] || 'This building does not have a description.'}
                                 <br/>
@@ -98,7 +99,7 @@ const BuildingInspectionPage = () => {
                                             .map(ent => {
                                                 console.log('a');
                                                 return (
-                                                    <div className="col-md-4 d-flex align-items-stretch w-100" key={(ent as any).title}>
+                                                    <div className="col-md-4 align-items-stretch" key={(ent as any).title}>
                                                         <BuildingDirectoryCard name={(ent as any).title} room={ent.entries} />
                                                     </div>
                                                 )
