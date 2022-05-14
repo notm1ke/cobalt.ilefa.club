@@ -147,7 +147,7 @@ export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ ro
                     <div className={styles.projectCardLink}>
                         {
                             managed && (
-                                <a className="btn btn-warp btn-sm text-lowercase shine">
+                                <a href={`/room/${data!.name}`} className="btn btn-warp btn-sm text-lowercase shine">
                                     <i className="fa fa-compass fa-fw mr-1"></i> explore
                                 </a>
                             )
