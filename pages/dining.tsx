@@ -59,7 +59,7 @@ const DiningHallsPage = () => {
                                             { enabled &&
                                                 (
                                                     <>
-                                                        <span>Explore {data.halls ? intToWords(data.halls!.length) + ' different' : ''} dining halls at Storrs.</span>
+                                                        <span>Explore {intToWords(data.halls!.length)} different dining halls at Storrs.</span>
                                                         <div className="mt-2"><small className={styles.proTip}><b>Protip:</b> Click on food items to favorite them</small></div>
                                                     </>
                                                 )
