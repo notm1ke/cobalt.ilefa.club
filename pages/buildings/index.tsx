@@ -34,10 +34,8 @@ const BuildingsPage = () => {
     const [buildings, loading, error] = useBuildings();
 
     const [search, setSearch] = useState('');
-    const [hideNoRooms, setHideNoRooms] = useState(true);
     const [results, setResults] = useState<BuildingPayload[]>([]);
 
-    const toggleNoRooms = () => setHideNoRooms(!hideNoRooms);
     const resetResults = () => setResults(buildings!);
 
     const predicates: ((input: string, building: BuildingPayload) => boolean)[] = [
@@ -100,7 +98,7 @@ const BuildingsPage = () => {
                                         <div className="input-group-alternative mb-4 input-group">
                                             <InputGroupAddon addonType="prepend">
                                                 <InputGroupText>
-                                                    <span className={enabled ? 'cursor-pointer shine' : ''} onClick={() => toggleNoRooms()} id="tooltip-adv-filter">
+                                                    <span className={enabled ? 'cursor-pointer shine' : ''}>
                                                         <MdiIcon
                                                             size="20px"
                                                             className={error ? 'text-danger' : 'text-gray'}
@@ -112,9 +110,6 @@ const BuildingsPage = () => {
                                                                     : mdiMagnify}
                                                         />
                                                     </span>
-                                                    <UncontrolledTooltip delay={0} placement="top" target="tooltip-adv-filter">
-                                                        Click to {hideNoRooms ? 'show' : 'hide'} buildings with no rooms
-                                                    </UncontrolledTooltip>
                                                 </InputGroupText>
                                             </InputGroupAddon>
                                             <div className={searchStyles.inputBoxRadius}>
@@ -139,11 +134,6 @@ const BuildingsPage = () => {
                         <div className="row">
                             {
                                 enabled && results
-                                    .filter(({ rooms }) => {
-                                        if (hideNoRooms)
-                                            return rooms.length > 0;
-                                        return true;
-                                    })
                                     .sort((a, b) => CampusSorting[a.rooms[0]?.building.campus] - CampusSorting[b.rooms[0]?.building.campus])
                                     .map(building => (
                                         <div className="col-md-6 d-flex align-items-stretch">
