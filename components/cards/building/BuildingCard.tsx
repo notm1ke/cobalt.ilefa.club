@@ -30,25 +30,23 @@ export interface BuildingCardProps {
     campus: CampusType | undefined;
 }
 
-const getCampusBadge = (campusType: CampusType | undefined) => {
+const getCampusBadge = (buildingType: BuildingCodeKey, campusType: CampusType | undefined) => {
     let temp = campusType?.toLowerCase();
+    let maps = BuildingAddresses[buildingType]?.toLowerCase();
 
-    if (!campusType || !temp)
+    if (!campusType && !maps)
         return <Badge color="dark" className="vaTextBottom" pill>N/A</Badge>;
 
-    if (temp === 'storrs')
-        return <Badge color="primary" className="vaTextBottom text-capitalize" pill>Storrs</Badge>
-
-    if (temp === 'hartford')
+    if (temp === 'hartford' || maps.includes('hartford'))
         return <Badge color="success" className="vaTextBottom text-capitalize" pill>Hartford</Badge>
 
-    if (temp === 'stamford')
+    if (temp === 'stamford' || maps.includes('stamford'))
         return <Badge color="yellow" className="vaTextBottom text-capitalize" pill>Stamford</Badge>
 
-    if (temp === 'avery_point')
+    if (temp === 'avery_point' || maps.includes('avery point'))
         return <Badge color="warning" className="vaTextBottom text-capitalize" pill>Avery Point</Badge>
 
-    if (temp === 'waterbury')
+    if (temp === 'waterbury' || maps.includes('waterbury'))
         return <Badge color="purple" className="vaTextBottom text-capitalize" pill>Waterbury</Badge>
 }
 
@@ -75,7 +73,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = ({ buildingType, campus
                         <h5>
                             <Link href={`/buildings/${buildingType}`}>
                                 <a className={`${cardStyles.cardSectionTitle} text-primary-light`}>
-                                    {icon ?? ''} {name} {getCampusBadge(campus?.toLowerCase() as CampusType)}
+                                    {icon ?? ''} {name} {getCampusBadge(buildingType, campus?.toLowerCase() as CampusType)}
                                 </a>
                             </Link>
                         </h5>
@@ -89,7 +87,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = ({ buildingType, campus
                                     </a>
                                 </Link>
 
-                                <Link href={BuildingMaps[buildingType]}>
+                                <Link href={BuildingMaps[buildingType] ?? '#'}>
                                     <a className="btn btn-dark btn-sm text-lowercase shine">
                                         <MdiIcon path={mdiMap} size="17px" className="fa-fw vaMiddle" /> maps
                                     </a>

@@ -16,7 +16,7 @@ import styles from '../../components/styling/building.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 import searchStyles from '../../components/styling/search.module.css';
 
-import { CampusType } from '@ilefa/husky';
+import { BuildingCode } from '@ilefa/husky';
 import { useEffect, useState } from 'react';
 import { BuildingCard, Footer, Nav } from '../../components';
 import { InputGroupAddon, InputGroupText } from 'reactstrap';
@@ -27,6 +27,8 @@ import {
     BuildingAddresses,
     BuildingDescriptions,
     CampusSorting,
+    EXCLUDED_BUILDINGS,
+    getCampusFromAddress,
     intToWords
 } from '../../util';
 
@@ -65,9 +67,7 @@ const BuildingsPage = () => {
         .filter(building => predicates
             .some(predicate => predicate(query, building))));
 
-    const enabled = !loading
-        && !error
-        && buildings;
+    const enabled = !loading && !error && buildings;
 
     useEffect(() => {
         if (!enabled)
@@ -98,7 +98,7 @@ const BuildingsPage = () => {
                                         <div className="input-group-alternative mb-4 input-group">
                                             <InputGroupAddon addonType="prepend">
                                                 <InputGroupText>
-                                                    <span className={enabled ? 'cursor-pointer shine' : ''}>
+                                                    <span>
                                                         <MdiIcon
                                                             size="20px"
                                                             className={error ? 'text-danger' : 'text-gray'}
@@ -134,10 +134,16 @@ const BuildingsPage = () => {
                         <div className="row">
                             {
                                 enabled && results
-                                    .sort((a, b) => CampusSorting[a.rooms[0]?.building.campus] - CampusSorting[b.rooms[0]?.building.campus])
+                                    .filter(building => !EXCLUDED_BUILDINGS.includes(building.code))
+                                    .sort((a, b) => BuildingCode[a.code].localeCompare(BuildingCode[b.code]))
+                                    .sort((a, b) => CampusSorting[getCampusFromAddress(a.code as BuildingCodeKey).toUpperCase()] - CampusSorting[getCampusFromAddress(b.code as BuildingCodeKey).toUpperCase()])
                                     .map(building => (
                                         <div className="col-md-6 d-flex align-items-stretch">
-                                            <BuildingCard buildingType={building.code as BuildingCodeKey} campus={building.rooms[0]?.building.campus as CampusType} key={building.code} />
+                                            <BuildingCard
+                                                buildingType={building.code as BuildingCodeKey}
+                                                campus={getCampusFromAddress(building.code as BuildingCodeKey)}
+                                                key={building.code}
+                                            />
                                         </div>
                                     ))
                             }

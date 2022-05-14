@@ -8,6 +8,19 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
+import { CampusType } from '@ilefa/husky';
+import { BuildingCodeKey } from '../hooks'
+
+export const EXCLUDED_BUILDINGS = [
+    'GN',
+    'GC',
+    'GANT',
+    'HH',
+    'LH',
+    'MSB',
+    'PB'
+]
+
 export enum BuildingAddresses {
     ABL = '1376 Storrs Road, U-4163, Storrs, CT 06269',
     ACD = '1084 Shennecossett Rd, Groton, CT 06340',
@@ -298,4 +311,17 @@ export enum BuildingMaps {
     WSRH = 'https://www.google.com/maps/place/Nellie+Louise+Wilson+Residence+Hall,+Storrs,+CT+06269/@41.8048368,-72.2494434,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a232519ae45:0x9b4d4d877e73787c!8m2!3d41.8048328!4d-72.2472494',
     WTBY = 'https://www.google.com/maps/place/UConn+Waterbury/@41.5556878,-73.0407838,17z/data=!3m2!4b1!5s0x89e7c10049574865:0x8fc21328f06903b8!4m5!3m4!1s0x89e7c10036940b05:0x664b6276ac19291c!8m2!3d41.5556838!4d-73.0385898',
     YNG = 'https://www.google.com/maps/place/Wilfred+B.Young+Bldg,+Storrs,+CT+06269/@41.8121557,-72.2504963,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3002f0b9c5:0x86e6604eb51a5236!8m2!3d41.8121517!4d-72.2483023'
+}
+
+export const getCampusFromAddress = (buildingType: BuildingCodeKey): CampusType => {
+    let addr = BuildingAddresses[buildingType];
+    
+    if (!addr) return 'any';
+    if (addr.includes('Storrs')) return 'storrs';
+    if (addr.includes('Hartford')) return 'hartford';
+    if (addr.includes('Waterbury')) return 'waterbury';
+    if (addr.includes('Stamford')) return 'stamford';
+    if (addr.includes('Groton')) return 'avery_point';
+
+    return 'any';
 }
