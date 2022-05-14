@@ -19,9 +19,9 @@ import searchStyles from '../../components/styling/search.module.css';
 import { CampusType } from '@ilefa/husky';
 import { useEffect, useState } from 'react';
 import { BuildingCard, Footer, Nav } from '../../components';
+import { InputGroupAddon, InputGroupText } from 'reactstrap';
 import { mdiAlert, mdiLoading, mdiMagnify } from '@mdi/js';
 import { BuildingCodeKey, BuildingPayload, useBuildings } from '../../hooks';
-import { InputGroupAddon, InputGroupText, UncontrolledTooltip } from 'reactstrap';
 
 import {
     BuildingAddresses,
