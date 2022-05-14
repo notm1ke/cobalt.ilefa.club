@@ -10,7 +10,7 @@
 
 export enum BuildingAddresses {
     ABL = '1376 Storrs Road, U-4163, Storrs, CT 06269',
-    ACD = 'Avery Point Campus, 1084 Shennecossett Rd, Groton, CT 06340',
+    ACD = '1084 Shennecossett Rd, Groton, CT 06340',
     ACS = '2021 Hillside Road, Storrs CT 06269',
     ADC = '830 Bolton Rd, Storrs, CT 06269',
     AES = '830 Bolton Rd, Storrs, CT 06269',
@@ -39,8 +39,8 @@ export enum BuildingAddresses {
     FG = '1395 Storrs Road, Unit 4067, Storrs CT 06269',
     FSB = '348 Mansfield Road, Unit 2058, Storrs CT 06269',
     GAMP = '2095 Hillside Road, Unit 1173, Storrs CT 06269',
-    GANT = 'Edward V. Gant Science Complex, Storrs, CT 06269',
-    GC = 'Edward V. Gant Science Complex, Storrs, CT 06269',
+    GANT = '196 Auditorium Drive, Storrs, CT 06269',
+    GC = '196 Auditorium Drive, Storrs, CT 06269',
     GENT = '249 Glenbrook Road, Unit 2064, Storrs CT 06269',
     GN = '97 N. Eagleville Road, Unit 3137, Storrs CT 06269',
     GRE = '2111 Hillside Road, Unit 3078, Storrs CT 06269',

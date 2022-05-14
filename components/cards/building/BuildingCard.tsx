@@ -85,19 +85,19 @@ export const BuildingCard: React.FC<BuildingCardProps> = ({ buildingType, campus
                             <div className={`${styles.projectCardLink} mt-3 mb-4`}>
                                 <Link href={`/buildings/${buildingType}`}>
                                     <a className="btn btn-dark btn-sm text-lowercase shine">
-                                        <MdiIcon path={mdiFeatureSearch} size="20px" className="fa-fw vaTextBottom" /> directory
+                                        <MdiIcon path={mdiFeatureSearch} size="17px" className="fa-fw vaSub" /> directory
                                     </a>
                                 </Link>
 
                                 <Link href={BuildingMaps[buildingType]}>
                                     <a className="btn btn-dark btn-sm text-lowercase shine">
-                                        <MdiIcon path={mdiMap} size="20px" className="fa-fw vaTextBottom" /> maps
+                                        <MdiIcon path={mdiMap} size="17px" className="fa-fw vaMiddle" /> maps
                                     </a>
                                 </Link>
                                 
                                 <Link href={`https://maps.uconn.edu/m/info/${buildingType}`}>
                                     <a className="btn btn-dark btn-sm text-lowercase shine">
-                                        <MdiIcon path={mdiInformation} size="20px" className="fa-fw vaTextBottom" /> info
+                                        <MdiIcon path={mdiInformation} size="17px" className="fa-fw vaSub" /> info
                                     </a>
                                 </Link>
                             </div>

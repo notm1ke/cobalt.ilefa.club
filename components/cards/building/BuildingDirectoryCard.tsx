@@ -123,7 +123,15 @@ export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ ro
     const [data, _url, loading, error] = useRoom({ name: name.replace(/\s/g, '') });
     const [open, setOpen] = useState(false);
 
-    if (loading) return <></>;
+    if (loading) return (
+        <div className={`card shadow shadow-lg--hover mt-5 ${cardStyles.rgCardSm}`}>
+            <div className="card-body text-center">
+                <span className="text-dark">
+                    <i className="fa fa-spinner fa-spin fa-fw"></i>
+                </span>
+            </div>
+        </div>
+    );
 
     let managed = data && !error;
     let icon = managed

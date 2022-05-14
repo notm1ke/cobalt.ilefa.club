@@ -95,6 +95,7 @@ const BuildingInspectionPage = () => {
                                         enabled && site!
                                             .sites[0]
                                             .schedules
+                                            .filter(item => (item as any).title)
                                             .sort((a, b) => (a as any).title.localeCompare((b as any).title))
                                             .map(ent => {
                                                 console.log('a');
