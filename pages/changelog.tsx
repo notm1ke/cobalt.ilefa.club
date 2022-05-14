@@ -40,6 +40,7 @@ const CHANGELOG = [
     "Updated dining hall hours to reflect new Spring 2022 hours",
     "Updated dorms payload target",
     "Updated the way section locations are handled using the new SectionLocationData system",
+    "Updated the buildings page and split it into buildings (/buildings) and rooms (/buildings/:building)",
     "[In Progress] Added Cobalt Maps, and currently expanding functionality",
     "[Planned] CMD + K command pallette",
     "[Planned] Global search shortcut in navbar",

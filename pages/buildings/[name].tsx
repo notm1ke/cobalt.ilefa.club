@@ -92,7 +92,7 @@ const BuildingInspectionPage = () => {
                                 
                                 <div className="row">
                                     {
-                                        enabled && site
+                                        enabled && site!
                                             .sites[0]
                                             .schedules
                                             .sort((a, b) => (a as any).title.localeCompare((b as any).title))
