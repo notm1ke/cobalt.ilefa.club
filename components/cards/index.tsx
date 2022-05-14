@@ -8,15 +8,16 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-export * from './BuildingCard';
-export * from './BuildingDirectoryCard';
-export * from './BuildingRoomCard';
 export * from './DormHallCard';
 export * from './IconCard';
 export * from './IconCardContainer';
 export * from './IconCardGlyph';
 export * from './IconCardXl';
 export * from './StatusCard';
+
+export * from './building/BuildingCard';
+export * from './building/BuildingDirectoryCard';
+export * from './building/BuildingRoomCard';
 
 export * from './dining/DiningHallCard';
 export * from './dining/DiningHallSiteCard';

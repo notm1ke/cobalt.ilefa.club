@@ -9,8 +9,8 @@
  */
 
 import Link from 'next/link';
-import styles from '../styling/building.module.css';
-import cardStyles from '../styling/card.module.css';
+import styles from '../../styling/building.module.css';
+import cardStyles from '../../styling/card.module.css';
 
 import {
     BoardType,
@@ -25,7 +25,7 @@ import {
     getRealRoomCode,
     getRoomNumber,
     ShortenedSeatingType
-} from '../../util';
+} from '../../../util';
 
 export interface BuildingRoomCardProps {
     room: Classroom;

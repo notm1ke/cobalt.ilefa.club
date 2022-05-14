@@ -9,16 +9,17 @@
  */
 
 import moment from 'moment';
-import Link from 'next/link';
 import MdiIcon from '@mdi/react';
-import styles from '../styling/building.module.css';
-import cardStyles from '../styling/card.module.css';
-import inspectionStyles from '../styling/inspection.module.css';
+import styles from '../../styling/building.module.css';
+import cardStyles from '../../styling/card.module.css';
+import inspectionStyles from '../../styling/inspection.module.css';
 
+import { Modal } from '../../';
 import { useState } from 'react';
-import { useRoom } from '../../hooks';
-import { mdiGoogleClassroom, mdiPresentationPlay } from '@mdi/js';
+import { useRoom } from '../../../hooks';
+import { BuildingCode } from '@ilefa/husky';
 import { ScheduleEntry } from '@ilefa/bluesign';
+import { mdiGoogleClassroom, mdiPresentationPlay } from '@mdi/js';
 
 import {
     capitalizeFirst,
@@ -26,9 +27,7 @@ import {
     getIconForCourse,
     getIconForRoom,
     getLatestTimeValue,
-} from '../../util';
-import { Modal } from '../Modal';
-import { BuildingCode } from '@ilefa/husky';
+} from '../../../util';
 
 export interface BuildingDirectoryCardProps {
     name: string;

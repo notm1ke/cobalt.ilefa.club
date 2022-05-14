@@ -19,7 +19,7 @@ import globalStyles from '../../components/styling/home.module.css';
 import { useRouter } from 'next/router';
 import { BuildingCode } from '@ilefa/husky';
 import { mdiInformation, mdiMapSearch } from '@mdi/js';
-import { BuildingCodeKey, useManagedSite, useRoom } from '../../hooks';
+import { BuildingCodeKey, useManagedSite } from '../../hooks';
 import { BuildingDirectoryCard, Footer, Nav } from '../../components';
 
 import {

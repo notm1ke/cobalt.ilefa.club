@@ -10,20 +10,20 @@
 
 import Link from 'next/link';
 import MdiIcon from '@mdi/react';
-import styles from '../styling/building.module.css';
-import cardStyles from '../styling/card.module.css';
+import styles from '../../styling/building.module.css';
+import cardStyles from '../../styling/card.module.css';
 
 import { Badge } from 'reactstrap';
-import { BuildingCodeKey } from '../../hooks';
+import { BuildingCodeKey } from '../../../hooks';
 import { BuildingCode, CampusType } from '@ilefa/husky';
-import { mdiFeatureSearch, mdiInformation, mdiMapSearch } from '@mdi/js';
+import { mdiFeatureSearch, mdiInformation, mdiMap } from '@mdi/js';
 
 import {
     BuildingAddresses,
     BuildingDescriptions,
     BuildingMaps,
     getIconForBuilding
-} from '../../util';
+} from '../../../util';
 
 export interface BuildingCardProps {
     buildingType: BuildingCodeKey;
@@ -34,26 +34,26 @@ const getCampusBadge = (campusType: CampusType | undefined) => {
     let temp = campusType?.toLowerCase();
 
     if (!campusType || !temp)
-        return <Badge color="dark" className="vaTextBottom text-lowercase" pill>n/a</Badge>;
+        return <Badge color="dark" className="vaTextBottom" pill>N/A</Badge>;
 
     if (temp === 'storrs')
-        return <Badge color="primary" className="vaTextBottom text-lowercase" pill>Storrs</Badge>
+        return <Badge color="primary" className="vaTextBottom text-capitalize" pill>Storrs</Badge>
 
     if (temp === 'hartford')
-        return <Badge color="success" className="vaTextBottom text-lowercase" pill>Hartford</Badge>
+        return <Badge color="success" className="vaTextBottom text-capitalize" pill>Hartford</Badge>
 
     if (temp === 'stamford')
-        return <Badge color="yellow" className="vaTextBottom text-lowercase" pill>Stamford</Badge>
+        return <Badge color="yellow" className="vaTextBottom text-capitalize" pill>Stamford</Badge>
 
     if (temp === 'avery_point')
-        return <Badge color="warning" className="vaTextBottom text-lowercase" pill>Avery Point</Badge>
+        return <Badge color="warning" className="vaTextBottom text-capitalize" pill>Avery Point</Badge>
 
     if (temp === 'waterbury')
-        return <Badge color="magenta" className="vaTextBottom text-lowercase" pill>Waterbury</Badge>
+        return <Badge color="purple" className="vaTextBottom text-capitalize" pill>Waterbury</Badge>
 }
 
 export const BuildingCard: React.FC<BuildingCardProps> = ({ buildingType, campus }) => {
-    let icon = getIconForBuilding(buildingType, '', 20);
+    let icon = getIconForBuilding(buildingType, 'vaSub', 22);
     let name = BuildingCode[buildingType];
     let addr = BuildingAddresses[buildingType];
     if (!addr) addr = 'NONE';
@@ -81,23 +81,23 @@ export const BuildingCard: React.FC<BuildingCardProps> = ({ buildingType, campus
                         </h5>
 
                         <p>
-                            <b>{addr === 'NONE' ? <>The <b>{name.endsWith('Building') ? name : name + ' Building'}</b> does not have an address.</> : <>Located {atOn} <a href={BuildingMaps[buildingType]} className="shine" target="_blank" rel="noopener noreferrer">{BuildingAddresses[buildingType]}</a></>}.</b>
+                            <b>{addr === 'NONE' ? <>The <b>{name.endsWith('Building') ? name : name + ' Building'}</b> does not have an address.</> : <>Located {atOn} <a href={BuildingMaps[buildingType]} className="text-primary shine" target="_blank" rel="noopener noreferrer">{BuildingAddresses[buildingType]}</a></>}.</b>
                             <div className={`${styles.projectCardLink} mt-3 mb-4`}>
                                 <Link href={`/buildings/${buildingType}`}>
                                     <a className="btn btn-dark btn-sm text-lowercase shine">
-                                        <MdiIcon path={mdiFeatureSearch} size="20px" className="fa-fw" /> directory
+                                        <MdiIcon path={mdiFeatureSearch} size="20px" className="fa-fw vaTextBottom" /> directory
                                     </a>
                                 </Link>
 
                                 <Link href={BuildingMaps[buildingType]}>
                                     <a className="btn btn-dark btn-sm text-lowercase shine">
-                                        <MdiIcon path={mdiMapSearch} size="20px" className="fa-fw" /> google maps
+                                        <MdiIcon path={mdiMap} size="20px" className="fa-fw vaTextBottom" /> maps
                                     </a>
                                 </Link>
                                 
                                 <Link href={`https://maps.uconn.edu/m/info/${buildingType}`}>
                                     <a className="btn btn-dark btn-sm text-lowercase shine">
-                                        <MdiIcon path={mdiInformation} size="20px" className="fa-fw" /> info
+                                        <MdiIcon path={mdiInformation} size="20px" className="fa-fw vaTextBottom" /> info
                                     </a>
                                 </Link>
                             </div>
