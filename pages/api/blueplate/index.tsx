@@ -46,6 +46,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: 'Must specify dining hall to use historical lookup' });
 
+    let start = Date.now();
     let now = new Date();
     let validatedDate = date
         ? new Date(date)
@@ -70,9 +71,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                         
                     return {
                         ...DiningHalls[type.toUpperCase()],
-                        meals: data.meals, status
-                    };
-                }))
+                        meals: data.meals, status,
+                    }
+                })),
+            timings: Date.now() - start
         })
 
     // fetch all statuses, but do not include meals
@@ -91,8 +93,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                         ...DiningHalls[type.toUpperCase()],
                         hasMeals: data.meals.length > 0 && data.meals.some(meal => meal.stations.length > 0),
                         status
-                    };
-                }))
+                    }
+                })),
+            timings: Date.now() - start
         });
 
     let data = await getMenu(DiningHallType[hall.toUpperCase()], validatedDate);
@@ -122,5 +125,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .json({
             ...data,
             status,
+            timings: Date.now() - start
         });
 }

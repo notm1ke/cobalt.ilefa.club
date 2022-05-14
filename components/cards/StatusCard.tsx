@@ -34,16 +34,11 @@ type StatusDisplayComponent = {
 
 const getStatusDisplayComponent = ({ status }: CustomUConnServiceReport): StatusDisplayComponent => {
     switch (status) {
-        case UConnServiceStatus.OPERATIONAL:
-            return { color: 'success', icon: mdiCheck };
-        case UConnServiceStatus.DEGRADED:
-            return { color: 'warning', icon: mdiReloadAlert };
-        case UConnServiceStatus.REPORTING:
-            return { color: 'primary-light', icon: mdiEyeCheck };
-        case UConnServiceStatus.OUTAGE:
-            return { color: 'danger', icon: mdiAlertCircle };
-        default:
-            return { color: 'purple', icon: mdiHelpCircle }
+        case UConnServiceStatus.OPERATIONAL: return { color: 'success', icon: mdiCheck };
+        case UConnServiceStatus.DEGRADED:    return { color: 'warning', icon: mdiReloadAlert };
+        case UConnServiceStatus.REPORTING:   return { color: 'primary-light', icon: mdiEyeCheck };
+        case UConnServiceStatus.OUTAGE:      return { color: 'danger', icon: mdiAlertCircle };
+        default:                             return { color: 'purple', icon: mdiHelpCircle };
     }
 }
 

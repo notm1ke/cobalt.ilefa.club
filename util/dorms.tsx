@@ -143,7 +143,7 @@ export const DormsByType: Record<keyof typeof DormType, DormHallType[]> = {
         DormHallType.HILLTOP_APTS_DOUBLE,
         DormHallType.NORTHWOOD_APTS
     ]
-};
+}
 
 export enum DormHallCategory {
     TRADITIONAL = 'Traditional Dorms',

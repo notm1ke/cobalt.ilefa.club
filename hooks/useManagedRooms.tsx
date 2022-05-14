@@ -18,7 +18,7 @@ import {
 
 export type BluesignRoomsResponsePayload = TimedRequest & UnshapedApiResponse & {
     rooms: string[]
-};
+}
 
 export const useManagedRooms = (): DefaultShapedHook<BluesignRoomsResponsePayload> =>
     createRemoteHook<BluesignRoomsResponsePayload, DefaultShapedHook<BluesignRoomsResponsePayload>>('Bluesign', `/api/bluesign`,

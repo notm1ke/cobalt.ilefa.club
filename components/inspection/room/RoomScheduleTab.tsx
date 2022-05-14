@@ -90,4 +90,4 @@ export const RoomScheduleTab: React.FC<RoomScheduleTabProps> = ({ room }) => {
             <pre className="text-primary">{JSON.stringify(data, null, 3)}</pre>
         </div>
     )
-};
+}

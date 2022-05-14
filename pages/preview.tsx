@@ -97,6 +97,6 @@ const PreviewGuidelinesPage = () => {
             </main>
         </PreviewPage>
     )
-};
+}
 
 export default PreviewGuidelinesPage;

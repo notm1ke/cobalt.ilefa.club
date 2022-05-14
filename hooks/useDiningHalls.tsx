@@ -12,6 +12,7 @@ import {
     ApiResponseType,
     createRemoteHook,
     DiningHallPayload,
+    TimedRequest,
     UnshapedApiResponse,
 } from '../util';
 
@@ -19,16 +20,16 @@ type BlueplateProps = {
     poll?: number;
 }
 
-type CustomDiningHallPayload = DiningHallPayload & {
+type CustomDiningHallPayload = DiningHallPayload &  {
     hasMeals: boolean;
-};
+}
 
-type BlueplateResponse = UnshapedApiResponse & {
+type BlueplateResponse = TimedRequest & UnshapedApiResponse & {
     halls: CustomDiningHallPayload[];
-};
+}
 
 type BlueplateShapedResponse = [
-    CustomDiningHallPayload[] | null,
+    BlueplateResponse | null,
     boolean,
     boolean
 ];
@@ -42,6 +43,6 @@ export const useDiningHalls = ({ poll }: BlueplateProps): BlueplateShapedRespons
                 case ApiResponseType.LOADING:
                     return [null, true, false];
                 case ApiResponseType.SUCCESS:
-                    return [data!.halls, false, false];
+                    return [data!, false, false];
             }
         }, poll);

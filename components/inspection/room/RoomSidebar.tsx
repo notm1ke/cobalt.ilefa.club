@@ -256,7 +256,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
             ]
         },
     ]
-};
+}
 
 const generateAmenityBadge = (bool: boolean | undefined) => (
     <Badge color={bool === undefined ? 'dark' : bool ? 'success' : 'danger'} pill>

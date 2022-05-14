@@ -68,7 +68,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ...payload,
             timings: Date.now() - start
         });
-};
+}
 
 const getLatestOccupancy = async (day: number) => {
     let dayName = DAYS[day];
@@ -110,7 +110,7 @@ const getDailyOccupancy = async (day: number) => {
         return {
             time, values,
             average: values.reduce((a, b) => a + b, 0) / values.length
-        };
+        }
     });
 
     return result;

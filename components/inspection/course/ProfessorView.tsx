@@ -273,4 +273,4 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, s
             </li>
         </div>
     )
-};
+}

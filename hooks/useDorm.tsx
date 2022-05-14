@@ -24,7 +24,7 @@ export interface DormLookupProps {
 
 export type DormInspectionPayload = Dorm & TimedRequest & UnshapedApiResponse & {
     ratings: DormRatings;
-};
+}
 
 type DormShapedResponse = [
     DormInspectionPayload | null,

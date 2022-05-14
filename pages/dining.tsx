@@ -18,7 +18,15 @@ import globalStyles from '../components/styling/home.module.css';
 import { intToWords } from '../util';
 import { mdiAlert, mdiLoading } from '@mdi/js';
 import { useDiningHalls, useLocalStorage } from '../hooks';
-import { DiningHallCard, DiningHallSiteCard, Footer, Nav } from '../components';
+
+import {
+    DevElement,
+    DiningHallCard,
+    DiningHallMetricsCard,
+    DiningHallSiteCard,
+    Footer,
+    Nav
+} from '../components';
 
 const DiningHallsPage = () => {
     const [data, loading, error] = useDiningHalls({ poll: 10000 });
@@ -50,7 +58,7 @@ const DiningHallsPage = () => {
                                             { enabled &&
                                                 (
                                                     <>
-                                                        <span>Explore {data?.length ? intToWords(data.length) + ' different' : ''} dining halls at Storrs.</span>
+                                                        <span>Explore {data.halls?.length ? intToWords(data.halls.length) + ' different' : ''} dining halls at Storrs.</span>
                                                         <div className="mt-2"><small className={styles.proTip}><b>Protip:</b> Click on food items to favorite them</small></div>
                                                     </>
                                                 )
@@ -66,14 +74,25 @@ const DiningHallsPage = () => {
                     <div className="container mt--3" id="body">
                         <div className="row">
                             {
-                                enabled && <div className="col-md-4">
-                                    <DiningHallSiteCard favorites={favorites} setFavorites={setFavorites} />
-                                </div>
+                                enabled && (
+                                    <>
+                                        <div className="col-md-4">
+                                            <DiningHallSiteCard favorites={favorites} setFavorites={setFavorites} />
+                                        </div>
+                                    </>
+                                )
                             }
+
+                            <DevElement>
+                                <div className="col-md-4">
+                                    <DiningHallMetricsCard loading={loading} error={error} timings={data?.timings} />
+                                </div>
+                            </DevElement>
                             
                             {
                                 enabled &&
-                                    data! 
+                                    data
+                                        .halls!
                                         .sort((a, b) => a.name.localeCompare(b.name))
                                         .map(hall => (
                                             <div className="col-md-4" key={hall.name}>

@@ -21,7 +21,7 @@ export type BluefitResponseShape = TimedRequest & UnshapedApiResponse & {
     occupants?: number;
     daily?: BluefitDailyRecord[];
     weekly?: BluefitWeeklyRecord[];
-};
+}
 
 export type BluefitDailyRecord = {
     time: string;

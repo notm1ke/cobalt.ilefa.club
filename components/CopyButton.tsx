@@ -31,7 +31,7 @@ export const CopyButton: React.FC<CopyButton> = ({ contentToCopy, className, hre
             setCopied(false);
             onCopyRecharged();
         }, cooldown || 1000);
-    };
+    }
 
     return (
         <a
@@ -42,4 +42,4 @@ export const CopyButton: React.FC<CopyButton> = ({ contentToCopy, className, hre
             {children}
         </a>
     );
-};
+}

@@ -58,7 +58,7 @@ const options: any = {
             mode: 'index',
         }
     }
-};
+}
 
 const DAY_COLORS = [
     "rgba(231, 76, 60, 1.0)",
@@ -100,7 +100,7 @@ export const RecHistoricalWeeklyCard: React.FC = () => {
     const setters = [setSunday, setMonday, setTuesday, setWednesday, setThursday, setFriday, setSaturday];
 
     let labels = [...new Set(Array<string>().concat.apply([], data!.weekly.map(day => day.values.map(val => val.time))))];
-    let dataset: ChartData<'line', (number | undefined)[]>  = {
+    let dataset: ChartData<'line', (number | undefined)[]> = {
         labels: labels.filter(time => !SUMMER_HOURS
             || (SUMMER_HOURS
                 && (getDateFromTime(time).getHours() < 18
@@ -113,7 +113,7 @@ export const RecHistoricalWeeklyCard: React.FC = () => {
             backgroundColor: DAY_COLORS[i],
             hidden: !getters[i],
         }))
-    };
+    }
 
     return (
         <div className="card shadow shadow-lg--hover mt-5 mb-4 mb-xl-0">

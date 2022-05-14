@@ -24,7 +24,7 @@ export interface BluetradeQueryProps {
 
 export type BluetradeResponsePayload = TimedRequest & UnshapedApiResponse & {
     transferable: SimpleExternalCourse[];
-};
+}
 
 export const useBluetrade = ({ course }: BluetradeQueryProps): DefaultShapedHook<BluetradeResponsePayload> =>
     createRemoteHook<BluetradeResponsePayload, DefaultShapedHook<BluetradeResponsePayload>>('Bluetrade', `/api/bluetrade/${course}`,

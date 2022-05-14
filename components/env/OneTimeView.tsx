@@ -35,4 +35,4 @@ export const OneTimeView: React.FC<OneTimeViewProps> = ({ target, children }) =>
         return <></>;
 
     return <>{children}</>;
-};
+}

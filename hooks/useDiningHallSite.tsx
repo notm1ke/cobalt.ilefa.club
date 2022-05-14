@@ -15,6 +15,7 @@ import { DiningHallResponse } from '@ilefa/blueplate';
 import {
     ApiResponseType,
     createRemoteHook,
+    TimedRequest,
     UnshapedApiResponse,
 } from '../util';
 
@@ -23,9 +24,9 @@ export interface DiningHallSiteLookupProps {
     now?: boolean;
 }
 
-type BlueplateSiteResponse = UnshapedApiResponse & {
+type BlueplateSiteResponse = TimedRequest & UnshapedApiResponse & {
     halls: DiningHallResponse[];
-};
+}
 
 type BlueplateSiteShapedResponse = [
     DiningHallResponse[] | null,

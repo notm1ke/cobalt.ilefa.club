@@ -18,6 +18,7 @@ import {
 import {
     ApiResponseType,
     createRemoteHook,
+    TimedRequest,
     UnshapedApiResponse
 } from '../util';
 
@@ -28,9 +29,9 @@ export interface DiningHallLookupProps {
     pollTime?: number;
 }
 
-export type DiningHallPayload = DiningHallResponse & UnshapedApiResponse & {
+export type DiningHallPayload = DiningHallResponse & TimedRequest & UnshapedApiResponse & {
     hasMeals: boolean;
-};
+}
 
 type DiningHallShapedResponse = [
     DiningHallPayload | null,

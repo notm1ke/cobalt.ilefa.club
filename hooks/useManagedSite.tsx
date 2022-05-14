@@ -25,7 +25,7 @@ export interface ManagedSiteQueryProps {
 
 export type ManagedSiteResponsePayload = TimedRequest & UnshapedApiResponse & {
     sites: BluesignSiteResponse[];
-};
+}
 
 export type BuildingCodeKey = keyof typeof BuildingCode;
 

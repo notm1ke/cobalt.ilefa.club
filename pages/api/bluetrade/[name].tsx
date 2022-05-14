@@ -37,4 +37,4 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             transferable: equiv.map(equiv => equiv.external),
             timings: Date.now() - start
         });
-};
+}

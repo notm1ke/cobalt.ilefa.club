@@ -26,7 +26,7 @@ export interface ProfessorsLookupProps extends IMetricsComponent {
 
 export type ProfessorsPayload = UnshapedApiResponse & TimedRequest & {
     professors: ProfessorData[] | null;
-};
+}
 
 export const useProfessors = ({ course, campus, recordMetric }: ProfessorsLookupProps): DefaultShapedHook<ProfessorsPayload> => 
     createRemoteHook<ProfessorsPayload, DefaultShapedHook<ProfessorsPayload>>('Professors', `/api/professors/${course + (campus ? `?campus=${campus}` : '')}`,

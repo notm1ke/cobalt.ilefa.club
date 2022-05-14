@@ -29,7 +29,7 @@ export type BuildingPayload = {
     code: string;
     name: string;
     rooms: CompleteRoomPayload[];
-};
+}
 
 export const useBuildings = (): BuildingShapedResponse =>
     createRemoteHook<BuildingResponse, BuildingShapedResponse>('Buildings', `/api/buildings`,

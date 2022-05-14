@@ -125,7 +125,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, hours
     const allCollapsed = () => meals.every(meal => meal.state);
     const toggleAll = (state = !allCollapsed()) => setMeals(meals.map(meal => ({ ...meal, state })));
 
-    const dayDiff = selectedDate.getDate() - new Date().getDate();
+    const dayDiff = moment(selectedDate).diff(new Date(), 'days');
     const hallKey = getEnumKeyByEnumValue(DiningHallType, hall.name) as keyof typeof DiningHallType;
     
     if (!hallKey) return <></>;

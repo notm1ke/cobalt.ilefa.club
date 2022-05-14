@@ -61,7 +61,7 @@ const options: any = {
             mode: 'index',
         }
     },
-};
+}
 
 export const RecHistoricalDailyCard: React.FC = () => {
     const [result, setResult] = useState<BluefitResponseShape>(null as any);
@@ -144,7 +144,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
                 hidden: !live
             }
         ],
-    };
+    }
 
     let dayName = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
 

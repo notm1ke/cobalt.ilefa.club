@@ -107,6 +107,8 @@ export type CustomUConnServiceReport = {
     time: number;
 }
 
+export type LoadingColorThreshold = [number, number];
+
 export const CustomUConnServices = [
     ...Object
         .keys(UConnService)
@@ -1004,6 +1006,20 @@ export const getDateFromTime = (time: string, date = new Date()) => {
                     hours,
                     parseInt(time.substring(offset + 1, offset + 3)),
                     0, 0);
+}
+
+/**
+ * Returns a color for a given timing duration.
+ * @param time the recorded timings data
+ */
+export const getColorForTiming = (time: number, green: LoadingColorThreshold = [0, 450], orange: LoadingColorThreshold = [450, 1000]) => {
+    if (isNaN(time) || time <= 0 || time > Infinity)
+        return 'text-purple';
+    if (time > green[0] && time <= green[1])
+        return 'text-success';
+    if (time > orange[0] && time < orange[1])
+        return 'text-warning';
+    return 'text-danger';
 }
 
 /**

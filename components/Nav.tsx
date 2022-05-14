@@ -55,7 +55,7 @@ type NavElement = {
     dropdown?: {
         mode: DropdownMode;
         items: NavDropdown[];
-    };
+    }
 }
 
 const ELEMENTS: NavElement[] = [
