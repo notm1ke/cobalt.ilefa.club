@@ -34,7 +34,8 @@ const DiningHallsPage = () => {
     
     const enabled = !loading
         && !error
-        && data;
+        && data
+        && data.halls;
 
     return (
         <main>
