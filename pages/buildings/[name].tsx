@@ -14,6 +14,7 @@ import Error404 from '../404';
 import MdiIcon from '@mdi/react';
 
 import styles from '../../components/styling/building.module.css';
+import cardStyles from '../../components/styling/card.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 
 import { useRouter } from 'next/router';
@@ -105,6 +106,20 @@ const BuildingInspectionPage = () => {
                                                     </div>
                                                 )
                                             })
+                                    }
+
+                                    {
+                                        (enabled && site.sites[0].schedules.length === 0 || error) && (
+                                            <div className="col-md-12 text-center">
+                                                <div className={`card shadow shadow-lg--hover mt-5 pb-2 ${cardStyles.rgCard}`}>
+                                                    <div className="card-body">
+                                                        <p className="text-danger">
+                                                            <i className="fa fa-exclamation-triangle fa-fw"></i> There are no rooms with schedules for <b>{BuildingCode[buildingCode]}</b>.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
                                     }
                                 </div>
                             </span>
