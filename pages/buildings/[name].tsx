@@ -109,7 +109,7 @@ const BuildingInspectionPage = () => {
                                     }
 
                                     {
-                                        (enabled && site.sites[0].schedules.length === 0 || error) && (
+                                        (enabled && site!.sites[0].schedules.length === 0 || error) && (
                                             <div className="col-md-12 text-center">
                                                 <div className={`card shadow shadow-lg--hover mt-5 pb-2 ${cardStyles.rgCard}`}>
                                                     <div className="card-body">
