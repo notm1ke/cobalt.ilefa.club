@@ -92,8 +92,8 @@ const DiningHallsPage = () => {
                             
                             {
                                 enabled &&
-                                    data
-                                        .halls!
+                                    data!
+                                        .halls
                                         .sort((a, b) => a.name.localeCompare(b.name))
                                         .map(hall => (
                                             <div className="col-md-4" key={hall.name}>
