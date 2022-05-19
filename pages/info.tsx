@@ -1,10 +1,20 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import Head from 'next/head';
 
 import styles from '../components/styling/info.module.css';
 import globalStyles from '../components/styling/home.module.css';
 
-import { useStatistics } from '../hooks';
+import { useSnapshotRecords, useStatistics } from '../hooks';
 import { ContentAreaNames } from '../util';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -81,7 +91,20 @@ const modifiers = [
                     <br/>Environmental Literacy (E)
                 </>
     },
-    
+    {
+        name: 'g',
+        tooltip: <>
+                    <b>Course Level</b>
+                    <br/>Graduate Courses
+                </>
+    },
+    {
+        name: 'ug',
+        tooltip: <>
+                    <b>Course Level</b>
+                    <br/>Undergraduate Courses
+                </>
+    }
 ];
 
 const statMarkers = [
@@ -125,6 +148,7 @@ const statMarkers = [
 
 const InfoPage = () => {
     const [stats, loading, error] = useStatistics('full');
+    const [records, _loading, _error] = useSnapshotRecords();
 
     return (
         <main>
@@ -212,7 +236,7 @@ const InfoPage = () => {
                                 }
 
                                 {
-                                    stats && (
+                                    stats && records && (
                                         <StatisticSection
                                             className="background-circuits"
                                             section={false}
@@ -221,7 +245,9 @@ const InfoPage = () => {
                                                     ...marker,
                                                     amount: stats[marker.key ?? marker.name.toLowerCase()],
                                                     loading: false,
-                                                    change: 0
+                                                    change: !['buildings', 'assets'].includes(marker.name.toLowerCase())
+                                                        ? stats![marker.key ?? marker.name.toLowerCase()] - records[marker.name.toLowerCase()]
+                                                        : 0                                               
                                                 }))
                                             }
                                         />

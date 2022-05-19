@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import CountUp from 'react-countup';
 import styles from '../styling/section.module.css';
@@ -44,7 +54,7 @@ export const StatisticCard: React.FC<Statistic> = ({ name, amount, icon, iconCol
                 numberProvided(change) && (
                     <p className="mt-3 mb-0 text-muted text-sm">
                         <span className={`text-${change! > 0 ? 'success' : change === 0 ? 'warning' : 'danger'} mr-2`}>
-                            <i className={`fa fa-arrow-${change! > 0 ? 'up' : change === 0 ? 'right' : 'down'}`} /> {change}%
+                            <i className={`fa fa-arrow-${change! > 0 ? 'up' : change === 0 ? 'right' : 'down'}`} /> {change?.toLocaleString()}%
                         </span>{" "}
                         <span className="text-nowrap">{changePeriod ?? `since ${getLastSemester()}`}</span>
                     </p>

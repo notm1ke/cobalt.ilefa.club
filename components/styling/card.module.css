@@ -58,3 +58,70 @@
 .cardModalInlineIcon {
     vertical-align: bottom !important;
 }
+
+.popoverCardTitle {
+    font-family: 'Roboto Mono', monospace !important;         
+    font-size: 0.90rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.045em !important;
+}
+
+.separator {
+    margin: 30px;
+    border-top: 1px solid #e9ecef;
+    margin-left: -25px;
+    margin-right: -25px;
+}
+
+.dataEntryList {
+    list-style: none !important;
+    margin-left: -20px;
+}
+
+.dataEntry {
+    width: 90%;
+    margin-bottom: 0;
+    display: flex;
+    min-height: 15px;
+}
+
+.dataEntry .head {
+    white-space: nowrap;
+}
+
+.dataEntry .divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    border-bottom: 1px dotted #ccc;
+    margin-left: 5px;
+    margin-right: 5px;
+    position: relative;
+    top: -18px;
+}
+
+.dataEntry .value {
+    font-size: 18px;
+    margin-top: 0px;
+    text-align: right;
+    -webkit-font-feature-settings: "tnum" 1;
+    font-feature-settings: "tnum" 1;
+}
+
+.liShift {
+    margin-left: -20px;
+}
+
+.quickLinks {
+    list-style: none !important;
+    margin-left: -40px;
+}
+
+.quickLinks > li > a > svg {
+    vertical-align: bottom !important;
+}
+
+.ml--10 {
+    margin-left: -15rem !important;
+}

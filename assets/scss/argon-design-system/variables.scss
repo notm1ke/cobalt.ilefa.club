@@ -75,6 +75,7 @@ $secondary:     #f4f5f7 !default;
 $success:       $green !default;
 $info:          #50a9e0 !default;
 $warning:       $orange !default;
+$gold:         #e5b73b !default;
 $danger:        $red !default;
 $purple:        $purple !default;
 $light:         $gray-500 !default;
@@ -97,6 +98,7 @@ $theme-colors: map-merge((
   "primary":       $primary,
   "primary-light": $primaryLight,
   "warp":          $warp,
+  "gold":          $gold,
   "red":           $google-plus,
   "dark-red":      $youtube,
   "blue":          $facebook,
@@ -253,7 +255,7 @@ $container-max-widths: (
   sm: 540px,
   md: 720px,
   lg: 960px,
-  xl: 1040px
+  xl: 1092px
 );
 
 @include _assert-ascending($container-max-widths, "$container-max-widths");

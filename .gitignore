@@ -27,13 +27,14 @@ yarn-error.log*
 # local env files
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.development
+.env.staging
+.env.production
+.env.test
 
 # vercel
 .vercel
 .vscode
 
-# build infi
+# build info
 build_info.json

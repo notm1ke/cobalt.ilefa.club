@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import CourseMappings from '@ilefa/husky/courses.json';
 
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -46,16 +56,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(404)
             .json({ message: 'Course not found' });
 
-    // TODO: Figure out a better way to do this, times out almost all requests.    // let patchedSections = await Promise.all(course.sections.map(async section => {
+    // TODO: Figure out a better way to do this, times out almost all requests.
+    // let patchedSections = await Promise.all(course.sections.map(async section => {
     //     let enrollment = await getRawEnrollment(section.internal.termCode, section.internal.classNumber, section.internal.classSection);
 
     //     return {
     //         ...section,
     //         enrollment: {
-    //             max: enrollment.total,
-    //             current: enrollment.available,
+    //             max: enrollment?.total ?? 0,
+    //             current: enrollment?.available ?? 0,
     //             waitlist: section.enrollment.waitlist,
-    //             full: enrollment.overfill,
+    //             full: enrollment?.overfill ?? false,
     //         }
     //     }
     // }));

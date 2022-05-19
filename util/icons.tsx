@@ -1,9 +1,19 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import MdiIcon from '@mdi/react';
 
 import { DiningHallStatus, DiningHallType } from '@ilefa/blueplate';
-import { CompleteRoomPayload, DormHallType, DormsByType } from '.';
 import { BuildingCode, Classroom, SeatingType } from '@ilefa/husky';
+import { CompleteRoomPayload, DormHallType, DormsByType } from '.';
 
 import {
     mdiAbacus,
@@ -40,7 +50,6 @@ import {
     mdiCoffee,
     mdiCogs,
     mdiCommaCircleOutline,
-    mdiCookie,
     mdiCow,
     mdiCurrencyUsd,
     mdiDiamondStone,
@@ -107,6 +116,7 @@ import {
     mdiPrescription,
     mdiQuadcopter,
     mdiResistor,
+    mdiRice,
     mdiRun,
     mdiSafetyGoggles,
     mdiSchool,
@@ -127,6 +137,7 @@ import {
     mdiVote,
     mdiWaterPump,
     mdiWaves,
+    mdiWeatherNight,
     mdiWeightLifter,
     mdiWrench
 } from '@mdi/js';
@@ -428,6 +439,9 @@ export const getIconForResHallType = (type: keyof typeof DormsByType, classes = 
  * @param size    [optional] the size of the icon
  */
 export const getIconForRoom = (room: CompleteRoomPayload | Classroom, classes = '', size = 16) => {
+    if (!room || !room.seatingType)
+        return <MdiIcon path={mdiGoogleClassroom} className={`fa-fw ${classes}`} size={`${size}px`} />
+
     switch (SeatingType[room.seatingType]) {
         case SeatingType.TABLES:
         case SeatingType.TABLES_AND_ARMCHAIRS:
@@ -462,7 +476,7 @@ export const getIconForDiningHall = (hall: keyof typeof DiningHallType, classes 
         case 'PUTNAM': return <MdiIcon path={mdiBlender} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'SOUTH': return <MdiIcon path={mdiFoodSteak} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'TOWERS': return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case 'WHITNEY': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'WHITNEY': return <MdiIcon path={mdiRice} className={`fa-fw ${classes}`} size={`${size}px`} />;
         default: return <MdiIcon path={mdiFood} className={`fa-fw ${classes}`} size={`${size}px`} />;
     }
 }
@@ -475,14 +489,14 @@ export const getIconForDiningHall = (hall: keyof typeof DiningHallType, classes 
  * @param size    [optional] the size of the icon
  */
 export const getIconForDiningStatus = (status: keyof typeof DiningHallStatus, classes = '', size = 16) => {
-    switch (status) {
+    switch (status.toUpperCase().replace(/\s/g, '_')) {
         case 'BETWEEN_MEALS':
         case 'CLOSED':
             return <MdiIcon path={mdiFoodOff} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'BREAKFAST': return <MdiIcon path={mdiCoffee} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'BRUNCH': return <MdiIcon path={mdiBowlMix} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'DINNER': return <MdiIcon path={mdiFoodSteak} className={`fa-fw ${classes}`} size={`${size}px`} />;
-        case 'LATE_NIGHT': return <MdiIcon path={mdiCookie} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'LATE_NIGHT': return <MdiIcon path={mdiWeatherNight} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case 'LUNCH': return <MdiIcon path={mdiFoodForkDrink} className={`fa-fw ${classes}`} size={`${size}px`} />;
         default: <MdiIcon path={mdiFoodOff} className={`fa-fw ${classes}`} size={`${size}px`} />;
     }

@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import axios from 'axios';
 
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -15,6 +25,11 @@ export const ValidCustomServices = [
         name: 'Catalog',
         token: 'catalog',
         url: 'https://catalog.uconn.edu/directory-of-courses'
+    },
+    {
+        name: 'Dining',
+        token: 'dining',
+        url: 'http://nutritionanalysis.dds.uconn.edu/shortmenu.aspx?sName=UCONN+Dining+Services&locationNum=01&locationName=Whitney+Dining+Hall&naFlag=1'
     },
     {
         name: 'Phonebook',

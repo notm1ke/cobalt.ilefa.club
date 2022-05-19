@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 
 import { ErrorTab, LoaderTab } from '.';
@@ -29,6 +39,8 @@ export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetr
         <ErrorTab message="There aren't any professors teaching this course." color="text-gray" />
     )
 
+    let showTerm = true; // data.professors!.some(prof => prof.sections.some(sec => sec.term !== prof.sections[0].term));
+
     return (
         <>
             {
@@ -41,6 +53,7 @@ export const ProfessorsTab: React.FC<ProfessorsTabProps> = ({ course, recordMetr
                             key={professor.name}
                             rmp={professor.rmpIds.length > 0}
                             show={distinct.length === 1}
+                            showTerm={showTerm}
                             recordMetric={recordMetric}
                         />)
             }

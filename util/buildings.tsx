@@ -1,6 +1,29 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
+import { CampusType } from '@ilefa/husky';
+import { BuildingCodeKey } from '../hooks'
+
+export const EXCLUDED_BUILDINGS = [
+    'GN',
+    'GC',
+    'GANT',
+    'HH',
+    'LH',
+    'MSB',
+    'PB'
+]
+
 export enum BuildingAddresses {
     ABL = '1376 Storrs Road, U-4163, Storrs, CT 06269',
-    ACD = 'Avery Point Campus, 1084 Shennecossett Rd, Groton, CT 06340',
+    ACD = '1084 Shennecossett Rd, Groton, CT 06340',
     ACS = '2021 Hillside Road, Storrs CT 06269',
     ADC = '830 Bolton Rd, Storrs, CT 06269',
     AES = '830 Bolton Rd, Storrs, CT 06269',
@@ -29,12 +52,13 @@ export enum BuildingAddresses {
     FG = '1395 Storrs Road, Unit 4067, Storrs CT 06269',
     FSB = '348 Mansfield Road, Unit 2058, Storrs CT 06269',
     GAMP = '2095 Hillside Road, Unit 1173, Storrs CT 06269',
-    GANT = 'Edward V. Gant Science Complex, Storrs, CT 06269',
-    GC = 'Edward V. Gant Science Complex, Storrs, CT 06269',
+    GANT = '196 Auditorium Drive, Storrs, CT 06269',
+    GC = '196 Auditorium Drive, Storrs, CT 06269',
     GENT = '249 Glenbrook Road, Unit 2064, Storrs CT 06269',
     GN = '97 N. Eagleville Road, Unit 3137, Storrs CT 06269',
     GRE = '2111 Hillside Road, Unit 3078, Storrs CT 06269',
     GS = '196 Auditorium Road, Unit 3009, Storrs CT 06269',
+    GP = '196 Auditorium Road, Unit 3009, Storrs CT 06269',
     GW = '2152 Hillside Road, Unit 3046, Storrs CT 06269',
     HALL = '362 Fairfield Way, Storrs CT 06269',
     HAWL = '359 Mansfield Road, Unit 2101, Storrs CT 06269',
@@ -131,6 +155,7 @@ export enum BuildingDescriptions {
     GENT = 'Home of the Neag School of Education, the Gentry Building (GENT) houses the School’s innovative combined bachelor’s/master’s teacher education degree program as well as programs in such areas as sport management, school administration, counseling psychology, and educational technology. The building is named after former Acting President Charles Burt Gentry.',
     GN = 'The Gant North Building (GN) was formerly the Institute of Materials Sciences.',
     GRE = 'Part of the Student Recreation Facility (SRF), the Field House (GRE) features an indoor full-size track and multipurpose courts for basketball and volleyball. recreation.uconn.edu',
+    GP = 'The Gant Plaza Building (GP) was formerly the Edward V. Gant Science Complex.',
     GS = 'The Gant South Building (GS) was formerly the Math-Science Building.',
     GW = 'The Gant West Building (GW) was formerly the Physics Building.',
     HALL = 'There is no description for this building.',
@@ -224,6 +249,7 @@ export enum BuildingMaps {
     GENT = 'https://www.google.com/maps/place/Charles+B.+Gentry+Bldg,+249+Glenbrook+Rd,+Storrs,+CT+06269/@41.8096304,-72.2574926,19z/data=!4m5!3m4!1s0x89e68a3be6aa9917:0xfa1c602d9c8bb3b6!8m2!3d41.8085708!4d-72.2538791',
     GN = 'https://www.google.com/maps/place/The+Institute+of+Materials+Science/@41.8094306,-72.2572221,18.75z/data=!4m13!1m7!3m6!1s0x89e68a3be6aa9917:0xfa1c602d9c8bb3b6!2sCharles+B.+Gentry+Bldg,+249+Glenbrook+Rd,+Storrs,+CT+06269!3b1!8m2!3d41.8085708!4d-72.2538791!3m4!1s0x89e68a38fd33675b:0x1638f8b81122e0f1!8m2!3d41.8097948!4d-72.2576801',
     GRE = 'https://www.google.com/maps/place/Hillside+Rd+Hugh+S.+Greer+Field+House,+Storrs,+CT+06269/@41.8069713,-72.2583886,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3ec2f71b03:0x6400253ac65c7b0!8m2!3d41.8069673!4d-72.2561946',
+    GP = 'https://www.google.com/maps/place/41%C2%B048\'34.4%22N+72%C2%B015\'25.8%22W/@41.8092789,-72.2575277,19.05z/data=!4m6!3m5!1s0x89e68a391e347941:0x858760d414435db6!7e2!8m2!3d41.8095617!4d-72.2571564',
     GS = 'https://www.google.com/maps/place/Math-Science+Bldg,+Storrs,+CT+06269/@41.8094306,-72.2572221,18.75z/data=!4m5!3m4!1s0x89e68a3922793eb5:0xa00b2a6a7518ef04!8m2!3d41.8092558!4d-72.256732',
     GW = 'https://www.google.com/maps/place/Physics+Bldg,+Storrs,+CT+06269/@41.809257,-72.2573843,18z/data=!4m5!3m4!1s0x89e68a38dfb090b7:0x9737382e5e735ad1!8m2!3d41.8093224!4d-72.2574084',
     HALL = 'https://www.google.com/maps/place/William+H.+Hall+Building,+362+Fairfield+Way,+Storrs,+CT+06269/@41.808151,-72.2518944,21z/data=!4m5!3m4!1s0x89e68a3b9a7a51c3:0xedd341439bc6b006!8m2!3d41.8081356!4d-72.2519522?hl=en-US',
@@ -285,4 +311,17 @@ export enum BuildingMaps {
     WSRH = 'https://www.google.com/maps/place/Nellie+Louise+Wilson+Residence+Hall,+Storrs,+CT+06269/@41.8048368,-72.2494434,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a232519ae45:0x9b4d4d877e73787c!8m2!3d41.8048328!4d-72.2472494',
     WTBY = 'https://www.google.com/maps/place/UConn+Waterbury/@41.5556878,-73.0407838,17z/data=!3m2!4b1!5s0x89e7c10049574865:0x8fc21328f06903b8!4m5!3m4!1s0x89e7c10036940b05:0x664b6276ac19291c!8m2!3d41.5556838!4d-73.0385898',
     YNG = 'https://www.google.com/maps/place/Wilfred+B.Young+Bldg,+Storrs,+CT+06269/@41.8121557,-72.2504963,17z/data=!3m1!4b1!4m5!3m4!1s0x89e68a3002f0b9c5:0x86e6604eb51a5236!8m2!3d41.8121517!4d-72.2483023'
+}
+
+export const getCampusFromAddress = (buildingType: BuildingCodeKey): CampusType => {
+    let addr = BuildingAddresses[buildingType];
+    
+    if (!addr) return 'any';
+    if (addr.includes('Storrs')) return 'storrs';
+    if (addr.includes('Hartford')) return 'hartford';
+    if (addr.includes('Waterbury')) return 'waterbury';
+    if (addr.includes('Stamford')) return 'stamford';
+    if (addr.includes('Groton')) return 'avery_point';
+
+    return 'any';
 }

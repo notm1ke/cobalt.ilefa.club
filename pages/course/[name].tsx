@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import Head from 'next/head';
 import classnames from 'classnames';
@@ -31,6 +41,7 @@ import {
 import {
     DataView,
     DevElement,
+    EquivTab,
     ErrorTab,
     ErrorView,
     Footer,
@@ -145,10 +156,16 @@ const TABS = [
         idInt: 2,
     },
     {
+        icon: 'fa fa-arrow-right-arrow-left',
+        name: 'Transfer',
+        id: 'transfer',
+        idInt: 3,
+    },
+    {
         icon: 'fa fa-broadcast-tower',
         name: 'Metrics',
         id: 'metrics',
-        idInt: 3,
+        idInt: 4,
         devOnly: true
     }
 ];
@@ -175,7 +192,7 @@ const CourseInspection = () => {
     }
 
     const recordMetric = (event: MetricsEvent) => metrics.push(event);
-    recordMetric({ request, success: true, time: course.timings });
+    recordMetric({ request, success: true, data: course, time: course.timings });
     
     const info = getSidebarInfo(course, setActiveTab);
     const icon = getIconForCourse(name, styles.courseIcon, 40);
@@ -259,12 +276,12 @@ const CourseInspection = () => {
                                                     </Navbar>
                                                 </div>
                                                 {/* add `shadow` class to give back shadow to the below node */}
-                                                <div className={styles.tabBody}>
+                                                <div className={activeTab === 'sections' ? styles.tabBodyDataTable : styles.tabBody}>
                                                     <TabContent activeTab={activeTab} id="tab">
                                                         <TabPane tabId="overview">
                                                             <OverviewTab data={course} />
                                                         </TabPane>
-                                                        <TabPane tabId="sections">
+                                                        <TabPane tabId="sections" className={styles.tabBodyDataTable}>
                                                             <SectionsTab data={course} />
                                                         </TabPane>
                                                         <TabPane tabId="professors">
@@ -273,12 +290,12 @@ const CourseInspection = () => {
                                                                     <ProfessorsTab course={course} recordMetric={recordMetric} />
                                                                 )
                                                             }
-                                                            {
-                                                                loading && <LoaderTab />
-                                                            }
-                                                            {
-                                                                error && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" />
-                                                            }
+                                                            
+                                                            { loading && <LoaderTab /> }
+                                                            { error && <ErrorTab message="Something went wrong while fetching the professors for this course." color="text-gray" /> }
+                                                        </TabPane>
+                                                        <TabPane tabId="transfer">
+                                                            <EquivTab data={course} recordMetric={recordMetric} />
                                                         </TabPane>
                                                         <DevElement>
                                                             <TabPane tabId="metrics">

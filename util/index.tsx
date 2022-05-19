@@ -1,14 +1,27 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import useSWR from 'swr';
 import * as Logger from './logger';
 
+import { MutatorCallback } from 'swr/dist/types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
     CampusType,
     Classroom,
     COURSE_IDENTIFIER,
+    EnrollmentPayload,
     ProfessorData,
     SectionData,
+    SectionLocationData,
     UConnService,
     UConnServiceStatus
 } from '@ilefa/husky';
@@ -16,6 +29,7 @@ import {
 export * from './dorms';
 export * from './icons';
 export * from './dining';
+export * from './rec';
 export * from './buildings';
 
 export type Color = 'blue'
@@ -93,13 +107,16 @@ export type CustomUConnServiceReport = {
     time: number;
 }
 
+export type LoadingColorThreshold = [number, number];
+
 export const CustomUConnServices = [
     ...Object
         .keys(UConnService)
         .map(key => key.toLowerCase())
         .filter(key => key !== 'unknown'),
     'catalog',
-    'phonebook',
+    'dining',
+    'phonebook'
 ];
 
 export type CustomUConnServiceString = 'aurora'
@@ -111,7 +128,8 @@ export type CustomUConnServiceString = 'aurora'
                                      | 'student_admin'
                                      | 'webex'
                                      | 'catalog'
-                                     | 'phonebook';
+                                     | 'phonebook'
+                                     | 'dining';
 
 export type CompleteCoursePayload = {
     name: string;
@@ -134,6 +152,13 @@ export type CourseAttributes = {
     contentAreas: ContentArea[];
 }
 
+export type HuskyEnrollmentPayload = {
+    max: number;
+    current: number;
+    waitlist?: number;
+    full: boolean;
+}
+
 export enum ContentArea {
     CA1 = 'CA1',
     CA2 = 'CA2',
@@ -150,6 +175,17 @@ export enum ContentAreaNames {
     CA4INT = 'Diversity and Multiculturalism (International)'
 }
 
+export enum SessionNames {
+    MAY = 'May Session',
+    SS1 = 'Summer Session 1',
+    SS2 = 'Summer Session 2',
+    SSP = 'Summer Spanning',
+    SDE = 'Summer Divergent (Early)',
+    SDL = 'Summer Divergent (Late)',
+    AS1 = 'Alternate Session 1',
+    AS2 = 'Alternate Session 2',
+}
+
 export enum GradingTypeNames {
     GRADED = 'Graded',
     SATISFACTORY_UNSATISFACTORY = 'S/U',
@@ -163,6 +199,13 @@ export enum CampusSorting {
     STAMFORD,
     WATERBURY,
     AVERY_POINT
+}
+
+export enum SemesterSorting {
+    SPRING,
+    SUMMER,
+    FALL,
+    WINTER
 }
 
 export enum RoomImageMode {
@@ -198,6 +241,7 @@ export const RMP_TAG_CONS = [
 ];
 
 export const ROOM_NAME_REGEX = /^[a-zA-Z]{1,}\d{2,}[a-zA-Z]*$/;
+export const TERM_REGEX = /^(spring|Spring|summer|Summer|fall|Fall|winter|Winter)\d{4}$/;
 export const URL_REGEX = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
 export const NO_PROTOCOL_URL_REGEX = /([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?/;
 
@@ -217,6 +261,8 @@ export type CompleteRoomPayload = Classroom & {
         mapUrl: string;
     }
 }
+
+export type RecQueryMode = 'occupants' | 'daily' | 'weekly';
 
 export enum Modalities {
     WW = 'These classes never meet in person, nor are you expected to be available at any particular time for classroom instruction. These courses are taught asynchronously with no pre-assigned meeting times.',
@@ -244,6 +290,7 @@ export enum ShortenedSeatingType {
 export enum ServiceUrls {
     AURORA = 'https://aurora.uconn.edu',
     CATALOG = 'https://catalog.uconn.edu',
+    DINING = 'http://nutritionanalysis.dds.uconn.edu/shortmenu.aspx?sName=UCONN+Dining+Services&locationNum=01&locationName=Whitney+Dining+Hall&naFlag=1',
     EMAIL = '#',
     HUSKYCT = 'https://huskyct.uconn.edu',
     KFS = '#',
@@ -265,12 +312,10 @@ export const getDisplayNameForService = (custom: CustomUConnServiceString) => {
         return UConnService[custom];
 
     switch (custom.toLowerCase()) {
-        case 'catalog':
-            return 'Course Catalog';
-        case 'phonebook':
-            return 'Phonebook';
-        default:
-            return capitalizeFirst(custom.toLowerCase());
+        case 'catalog': return 'Course Catalog';
+        case 'dining': return 'Dining Menus';
+        case 'phonebook': return 'Phonebook';
+        default: return capitalizeFirst(custom.toLowerCase());
     }
 }
 
@@ -309,6 +354,17 @@ export const isValidStatisticsQueryMode = (input: string): input is StatisticsQu
         || lower === 'rooms'
         || lower === 'buildings'
         || lower === 'assets';
+}
+
+/**
+ * Typeguard to verify that a string is a valid {@link RecQueryMode}.
+ * @param input the string to verify
+ */
+export const isValidRecQueryMode = (input: string): input is RecQueryMode => {
+    let lower = input.toLowerCase();
+    return lower === 'occupants'
+        || lower === 'daily'
+        || lower === 'weekly';
 }
 
 /**
@@ -377,6 +433,56 @@ export const getCurrentSemester = (date = new Date()) => {
     return 'fall ' + year;
 }
 
+/**
+ * Converts a Husky {@link SectionData} enrollment object
+ * to an {@link EnrollmentPayload} object.
+ * 
+ * @param section the section to parse
+ */
+export const convertFromHuskyEnrollment = (section: SectionData): EnrollmentPayload => ({
+    course: {
+        classNumber: section.internal.classNumber,
+        section: section.internal.classSection,
+        term: section.internal.termCode
+    },
+    available: section.enrollment.current,
+    total: section.enrollment.max,
+    overfill: section.enrollment.current >= section.enrollment.max,
+    percent: section.enrollment.current / section.enrollment.max
+});
+
+/**
+ * Converts an {@link EnrollmentPayload} object
+ * to a Husky {@link SectionData} enrollment payload.
+ * 
+ * @param payload the payload to convert
+ * @param section the section associated with the payload
+ */
+export const convertToHuskyEnrollment = (payload: EnrollmentPayload, section: SectionData): HuskyEnrollmentPayload => ({
+    current: payload.available,
+    max: payload.total,
+    full: payload.available >= payload.total,
+    waitlist: section.enrollment.waitlist
+});
+
+
+/**
+ * Compares two semesters.
+ * 
+ * @param a the first term
+ * @param b the second term
+ */
+export const semesterComparator = (a: string, b: string) => {
+    let [aSemester, aYear] = a.split(' ');
+    let [bSemester, bYear] = b.split(' ');
+
+    let aY = parseInt(aYear);
+    let bY = parseInt(bYear);
+    if (aY !== bY)
+        return aY - bY;
+
+    return SemesterSorting[aSemester.toUpperCase()] - SemesterSorting[bSemester.toUpperCase()];
+}
 
 /**
  * Ensures a number exists, since simply doing ``!!int`` or ``int``
@@ -384,9 +490,10 @@ export const getCurrentSemester = (date = new Date()) => {
  * 
  * @param int the number to check
  */
-export const numberProvided = (int: number | undefined | null) => {
-    return int !== null && int !== undefined && int !== NaN;
-}
+export const numberProvided = (int: number | undefined | null) =>
+    int !== null
+        && int !== undefined
+        && int !== NaN;
 
 /**
  * Adds a trailing decimal to the end of a number
@@ -398,11 +505,73 @@ export const numberProvided = (int: number | undefined | null) => {
 export const addTrailingDecimal = (int: number) => {
     if (!int)
         return null;
-
     if (!int.toString().includes('.'))
         return int.toString() + '.0';
-
     return int.toString();
+}
+
+/**
+ * Joins an array and places 'and' between the last two items.
+ * 
+ * @param arr the array to join
+ * @param delimiter the delimiter to use
+ */
+export const joinWithAnd = (arr: any[], delimiter: string = ', ') => {
+    if (arr.length === 0)
+        return '';
+    if (arr.length === 1)
+        return arr[0];
+    if (arr.length === 2)
+        return arr.join(' and ');
+    return arr.slice(0, -1).join(delimiter) + ' and ' + arr.slice(-1);
+}
+
+/**
+ * Shortens an inputted string to a specified length
+ * by trimming at the max length.
+ * 
+ * @param input the input string
+ * @param maxLen the maximum allowed length
+ */
+ export const shorten = (input: string, maxLen: number) => {
+    if (input.length <= maxLen)
+        return input;
+    return input.slice(0, maxLen);
+}
+
+/**
+ * Shortens an inputted string to a specified length
+ * by trimming at the max length and adding ellipses.
+ * 
+ * @param input the input string
+ * @param maxLen the maximum allowed length
+ */
+export const shortenWithEllipses = (input: string, maxLen: number) => {
+    if (input.length <= maxLen)
+        return input;
+    return input.slice(0, maxLen - 2) + '..';
+}
+
+/**
+ * Shortens an inputted name by substituting
+ * the last name with it's initial.
+ * 
+ * @param input the inputted name
+ * @param maxLen the maximum allowed length before shortening
+ * @param trailingDot whether to add a trailing dot to the last name
+ */
+export const shortenName = (input: string, maxLen: number, trailingDot: boolean = true) => {
+    if (input.length <= maxLen)
+        return input;
+
+    return input
+        .split(' ')
+        .map((part, i, arr) => i !== arr.length - 1
+            ? part
+            : part[0] + (trailingDot 
+                ? '.'
+                : ''))
+        .join(' ');
 }
 
 /**
@@ -413,7 +582,7 @@ export const addTrailingDecimal = (int: number) => {
  * @param showFirst [optional] only show the first meeting time
  * @param showFirstChar [optional] character to display if showFirst is true
  */
-export const getMeetingTime = (schedule: string, location: { name: string }, showFirst?: boolean, showFirstChar?: string, asArray?: boolean): string | string[] => {
+export const getMeetingTime = (schedule: string, location: SectionLocationData[], showFirst?: boolean, showFirstChar?: string, asArray?: boolean): string | string[] => {
     if (schedule === '12:00am‑12:00am')
         return asArray
             ? ['No Meeting Time']
@@ -447,7 +616,7 @@ export const getMeetingTime = (schedule: string, location: { name: string }, sho
         return copy;
     }
 
-    if (location.name === 'No Room Required - Online')
+    if (location.every(ent => ent.name === 'No Room Required - Online'))
         return asArray
             ? ['No Meeting Time']
             : 'No Meeting Time';
@@ -456,21 +625,6 @@ export const getMeetingTime = (schedule: string, location: { name: string }, sho
         ? ['Unknown']
         : 'Unknown';
 }
-
-/**
- * Returns the meeting room(s) for a given string.
- * 
- * For example, rooms are sometimes given as "GP 104GP 107"
- * or simply as "ITE 134" depending on the course. This function
- * returns an array of all the rooms it finds, even if there is
- * only one room in the target string.
- * 
- * @param room the provided room string
- */
-export const getMeetingRoom = (room: string) =>
-    room
-        .split(/([A-Z]{2,4}\s\d{1,4}[a-zA-Z]{0,1})/)
-        .filter(str => !!str);
 
 /**
  * Returns the room number for a given string.
@@ -486,8 +640,37 @@ export const getRoomNumber = (room: string, buildingCode: string) => {
     let roomCode = getRealRoomCode(room, buildingCode);
     if (room.startsWith('Waterbury'))
         roomCode = 'Waterbury';
-
     return room.split(roomCode)[1].trim();
+}
+
+/**
+ * Returns the display name for a given room.
+ * @param row the section row to parse
+ */
+export const getRoomDisplayName = (row: SectionData): string | JSX.Element => {
+    let rowData = { ...row, location: row.location.filter(ent => ent.name) };
+    if (!rowData.location.length || (rowData.location.length === 1 && rowData.location[0].name === 'No Room Required - Online')) {
+        if (rowData.mode === 'Online' || rowData.mode === 'Distance Learning')
+            return 'None';
+        return 'Unknown';
+    }
+
+    // special case for some wrongly formatted courses (for example ECE2001 offered in Hartford) :/
+    let locations: string[] = [];
+    rowData.location.forEach(ent => ent.name.split(/<br\/*>/).forEach(e => locations.push(e)));
+
+    if (locations.length === 1 && locations[0].startsWith('No Room Required -'))
+        return rowData.location[0].name.split(' - ')[1];
+
+    if (rowData.schedule.includes('12:00am-12:00am'))
+        return 'None';
+
+    if (rowData.location.length === 1)
+        return locations[0];
+
+    return locations
+        .map(name => getRealRoomCode(name, name.split(' ')[0]) + ' ' + name.split(' ')[1])
+        .join(', ');
 }
 
 /**
@@ -502,19 +685,57 @@ export const getRoomNumber = (room: string, buildingCode: string) => {
  */
 export const getRealRoomCode = (room: string, buildingCode: string) => {
     let code = buildingCode;
-    if (room.startsWith('CHM'))
-        code = 'CHEM';
-
-    if (room.startsWith('STRSWW'))
-        code = 'STRSWW';
-
-    if (room.startsWith('WH'))
-        code = 'WH';
-
-    if (room.startsWith('Waterbury'))
-        code = 'WTBY';
+    if (room.startsWith('CHM'))       code = 'CHEM';
+    if (room.startsWith('STRSWW'))    code = 'STRSWW';
+    if (room.startsWith('WH'))        code = 'WH';
+    if (room.startsWith('Waterbury')) code = 'WTBY';
 
     return code;
+}
+
+/**
+ * Converts a readable building code into a Bluesign
+ * compatible building code.
+ * 
+ * @param buildingCode the building code to convert
+ */
+export const getBluesignCode = (buildingCode: string) => {
+    let code = buildingCode;
+    if (buildingCode === 'CHEM')      code = 'CHM';
+    if (buildingCode === 'STRSWW')    code = 'STRSWW';
+    if (buildingCode === 'WH')        code = 'WH';
+    if (buildingCode === 'WTBY')      code = 'Waterbury';
+    
+    return code;
+}
+
+/**
+ * Returns the term code for a given term.
+ * @param term the term to get a code for
+ */
+export const getTermCode = (term: string) => {
+    let season = term.split(' ')[0].toLowerCase();
+    if (season === 'spring') return 'S';
+    if (season === 'summer') return 'J';
+    if (season === 'fall') return 'F';
+    if (season === 'winter') return 'W';
+    return term.substring(0, 1);
+}
+
+export const getEnrollmentColor = (enrollment: HuskyEnrollmentPayload): string => {
+    let current = parseInt(enrollment.current as any);
+    let max = parseInt(enrollment.max as any);
+
+    if (isNaN(current) || isNaN(max))
+        return 'text-gray';
+    
+    if (current >= max)
+        return 'text-danger';
+
+    if (current >= max * 0.75)
+        return 'text-warning';
+
+    return 'text-success';
 }
 
 /**
@@ -534,6 +755,32 @@ export const getInstructorName = (instructor: string) => {
 }
 
 /**
+ * Generates a change string for stock prices.
+ * 
+ * @param input the input value
+ * @param seperator the seperator to place between the prepended +/- and the value
+ * @param digits the amount of digits to fix the resulting value to
+ * @param prependPlus whether or not to prepend a plus sign if the change is positive
+ */
+ export const getChangeString = (input: string | number, seperator: string, digits: number, prependPlus?: boolean) => {
+    return (Number(input) > 0 
+        ? prependPlus 
+            ? '+' 
+            : '' 
+        : '-') 
+        + seperator 
+        + Math
+            .abs(Number(input))
+            .toFixed(digits);
+}
+
+/**
+ * Removes duplicates from a primitive array.
+ * @param arr the array to remove duplicates from
+ */
+export const prunePrimitiveDuplicates = (arr: any[]) => arr.filter((item, i, arr) => arr.indexOf(item) === i);
+
+/**
  * Returns whether a given string is a valid course name.
  * @param input the string to test
  */
@@ -545,7 +792,7 @@ export const isValidCourseName = (name: string) => name && COURSE_IDENTIFIER.tes
  * @param target the target enum
  * @param value the value to search by
  */
-export const getEnumKeyByEnumValue = (target: any, value: string, caseSensitive = true) => {
+export function getEnumKeyByEnumValue<T extends Object>(target: T, value: string, caseSensitive = true): keyof T | undefined {
     let keys = Object
         .keys(target)
         .filter(x => caseSensitive
@@ -553,7 +800,7 @@ export const getEnumKeyByEnumValue = (target: any, value: string, caseSensitive 
             : target[x].toLowerCase() == value.toLowerCase());
 
     return keys.length > 0
-        ? keys[0]
+        ? keys[0] as keyof T
         : undefined;
 }
 
@@ -603,6 +850,30 @@ export const sum = (arr: number[]) => arr
  * @param int the integer to format
  */
 export const prependZero = (int: number) => int < 10 ? `0${int}` : `${int}`;
+
+/**
+ * Returns whether a given course name
+ * should be a grad-level course.
+ * 
+ * @param prefix the prefix of the course
+ * @param number the course catalog number
+ */
+export const isGradLevel = (prefix: string, number: number) => {
+    if (prefix === 'PHRX' && number < 5199)
+        return false;
+    return number > 5000;
+}
+
+/**
+ * Event#preventDefault() + call function (shorthand code for event handlers)
+ * 
+ * @param event the event to preventDefault on
+ * @param func the function to execute alongside the preventDefault
+ */
+export const preventAnd = (event: React.MouseEvent<HTMLElement>, func: any) => {
+    event.preventDefault();
+    func();
+}
 
 /**
  * Replaces all occurances of a given
@@ -681,6 +952,9 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
  * @see https://gist.github.com/ForbesLindesay/5467742
  */
  export const intToWords = (int: number) => {
+    if (isNaN(int))
+        return 'unknown';
+
     let ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
                 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
                 'seventeen', 'eighteen', 'nineteen'];
@@ -723,7 +997,7 @@ export const replaceAll = (input: string, search: string | RegExp, replace: stri
 export const getDateFromTime = (time: string, date = new Date()) => {
     let offset = time.split(':')[0].length;
     let hours = parseInt(time.substring(0, offset));
-    if (hours !== 12 && time.includes('PM'))
+    if (hours !== 12 && time.toLowerCase().includes('pm'))
         hours += 12;
 
     return new Date(date.getFullYear(),
@@ -735,6 +1009,20 @@ export const getDateFromTime = (time: string, date = new Date()) => {
 }
 
 /**
+ * Returns a color for a given timing duration.
+ * @param time the recorded timings data
+ */
+export const getColorForTiming = (time: number, green: LoadingColorThreshold = [0, 450], orange: LoadingColorThreshold = [450, 1000]) => {
+    if (isNaN(time) || time <= 0 || time > Infinity)
+        return 'text-purple';
+    if (time > green[0] && time <= green[1])
+        return 'text-success';
+    if (time > orange[0] && time < orange[1])
+        return 'text-warning';
+    return 'text-danger';
+}
+
+/**
  * Creates a request to the target ``req`` url
  * and then generates a hook response based on the
  * ``Response`` and ``Return`` passed to the function.
@@ -743,40 +1031,60 @@ export const getDateFromTime = (time: string, date = new Date()) => {
  * @param name the name of the hook for debug logging
  * @param transform how to transform the result into a Return shaped object
  * @param pollTime [optional] millis to wait before fetching new data (disabled by default)
+ * @param method [optional] the method to use for the request
+ * @param body [optional] the body to send with the request
+ * @param retryCount [optional] the number of times to retry the request
+ * @param retryDelay [optional] the number of millis to wait before retrying the request
  */
 export const createRemoteHook = <Response extends UnshapedApiResponse, Return extends GenericShapedHook>(
     name: string,
     req: string,
-    transform: (type: ApiResponseType, data: Response | null | undefined, error: boolean, url: string) => Return,
-    pollTime?: number
+    transform: (type: ApiResponseType,
+                data: Response | null | undefined,
+                error: boolean,
+                url: string,
+                revalidate?: () => void,
+                mutate?: (data?: Response | Promise<Response> | MutatorCallback<Response> | undefined, shouldRevalidate?: boolean) => Promise<Response | undefined>
+               ) => Return,
+    pollTime?: number,
+    method: 'GET' | 'POST' = 'GET',
+    body: any = {},
+    retryCount?: number,
+    retryInterval?: number
 ): Return => {
     const start = Date.now();
-    const fetcher = (url: string) => fetch(url)
+    const props: any = { method };
+    if (body && method === 'POST')
+        props.body = JSON.stringify(body);
+
+    const fetcher = (url: string) => fetch(url, props)
         .then(res => res.json())
         .then(res => res as Response);
 
-    const { data, error } = useSWR(req, fetcher, {
-        refreshInterval: pollTime || 0
+    const { data, error, revalidate, mutate } = useSWR(req, fetcher, {
+        refreshInterval: pollTime || 0,
+        errorRetryCount: retryCount,
+        errorRetryInterval: retryInterval
     });
 
     if (!data && !error)
-        return transform(ApiResponseType.LOADING, null, false, req);
+        return transform(ApiResponseType.LOADING, null, false, req, revalidate, mutate);
     
     if (error) {
         Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
         Logger.debug(`use${name}`, `The server responded with an unknown error.`, Logger.LogLevelColor.ERROR);
-        return transform(ApiResponseType.ERROR, null, true, req);
+        return transform(ApiResponseType.ERROR, null, true, req, revalidate, mutate);
     }
 
     if (data && data.message) {
         Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
         Logger.debug(`use${name}`, `The server responded with: ${data.message}`, Logger.LogLevelColor.ERROR);
-        return transform(ApiResponseType.ERROR, null, true, req);
+        return transform(ApiResponseType.ERROR, null, true, req, revalidate, mutate);
     }
 
     Logger.timings(`use${name}`, 'Fetch', start);
     Logger.debug(`use${name}`, 'Server response:', undefined, undefined, data);
-    return transform(ApiResponseType.SUCCESS, data, false, req);
+    return transform(ApiResponseType.SUCCESS, data!, false, req, revalidate, mutate);
 }
 
 /**

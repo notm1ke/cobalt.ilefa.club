@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import CourseMappings from '@ilefa/husky/courses.json';
 import RmpMappings from '@ilefa/husky/rmpIds.json';
 import Classrooms from '@ilefa/husky/classrooms.json';
@@ -54,7 +64,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const getStatistic = (mode: StatisticsQueryMode) => {
-    if (mode === 'courses') return CourseMappings.length;
+    if (mode === 'courses') return (CourseMappings as any).length;
     if (mode === 'professors') return RmpMappings.length;
     if (mode === 'rooms') return Classrooms.length;
     if (mode === 'buildings') return Object.keys(BuildingCode).length;

@@ -64,3 +64,26 @@
 .titleLineHeight {
     line-height: 3.5rem !important;
 }
+
+.roomList {
+    list-style-type: none !important;
+    margin-left: -39px !important;
+}
+
+.buildingDirectory {
+    margin-left: -20px !important;
+}
+
+.proTip {
+    font-size: 0.85rem !important;
+}
+
+.proTip b {
+    /* text-transform: uppercase; */
+    font-variant: normal;
+    color: #498ac6 !important;
+}
+
+.pulsatingCircleSpacing {
+    margin-top: 8px !important;
+}

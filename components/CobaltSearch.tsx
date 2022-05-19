@@ -1,14 +1,24 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import MdiIcon from '@mdi/react';
 import Autosuggest from 'react-autosuggest';
 import styling from './styling/search.module.css';
 import IsolatedScroll from 'react-isolated-scroll';
 
-import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { CoursePayload, useCourseList } from '../hooks';
-import { ContentArea, getIconForCourse, isValidCourseName } from '../util';
+import { useEffect, useState } from 'react';
+import { CoursePayload, useDebounce } from '../hooks';
 import { ChangeEvent, SuggestionSelectedEventData } from 'react-autosuggest';
+import { ContentArea, getIconForCourse, isGradLevel, isValidCourseName } from '../util';
 
 import {
     FormGroup,
@@ -19,9 +29,11 @@ import {
 
 import {
     mdiAlert,
+    mdiAlphaGBox,
     mdiAlphaHBox,
     mdiBackspace,
     mdiBeakerOutline,
+    mdiFileChartOutline,
     mdiFileDocumentEditOutline,
     mdiHammerWrench,
     mdiLoading,
@@ -68,9 +80,9 @@ const icons = {
     ca3: mdiNumeric3Box,
     ca4: mdiNumeric4Box,
     ca4int: mdiNumeric4BoxMultiple,
-    lab: mdiSprout,
-    w: mdiHammerWrench,
-    q: mdiFileDocumentEditOutline,
+    lab: mdiHammerWrench,
+    w: mdiFileDocumentEditOutline,
+    q: mdiFileChartOutline,
     e: mdiSprout
 }
 
@@ -121,18 +133,20 @@ const AdvancedSearchComponent: React.FC<AdvancedSearchComponentProps> = ({ show,
 )
 
 export interface CobaltSearchProps {
-    feelingLucky?: boolean;
+    feelingSilly?: boolean;
 }
 
-export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
+export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
     const router = useRouter();
 
     const [query, setQuery] = useState('');
+    const [suggestions, setSuggestions] = useState<CoursePayload[]>([]);
     const [loading, setLoading] = useState(false);
     const [errored, setErrored] = useState(false);
-    const [suggestions, setSuggestions] = useState([] as CoursePayload[]);
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [advancedOpts, setAdvancedOpts] = useState(defaultAdvancedProps);
+
+    const debouncedQuery = useDebounce(query, 250);
 
     const hasAdvanced = (opt: Modifiers) => advancedOpts[opt];
     const clearAdvanced = () => setAdvancedOpts(defaultAdvancedProps);
@@ -142,66 +156,39 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
             ...advancedOpts,
             [opt]: !advancedOpts[opt]
         });
-
-        setSuggestions(suggestFor(query));
     }
 
-    const [data, isLoading, isError] = useCourseList();
-    
+    useEffect(() => {
+        fetch(`/api/search`, {
+            method: 'POST',
+            body: JSON.stringify({
+                input: debouncedQuery,
+                advancedOpts,
+                limit: -1
+            })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.error) {
+                setErrored(true);
+                setSuggestions([]);
+                return;
+            }
+
+            setErrored(false);
+            setSuggestions(res.courses);
+        });
+    }, [debouncedQuery, advancedOpts]);
+
     const onClear = () => setSuggestions([]);
     const onChange = (_: any, { newValue }: ChangeEvent) => setQuery(newValue);
-    const onRequest = ({ value }: { value: string }) => {
+    const onRequest = (_: any) => {
         setShowAdvanced(false);
-        setSuggestions(suggestFor(value));
     }
 
     const onSelect = (_: any, { suggestionValue }: SuggestionSelectedEventData<CoursePayload>) => {
         setLoading(true);
         router.push(`/course/${suggestionValue}`);
-    }
-
-    const enabled = !isLoading && !isError;
-    const predicates: ((input: string, course: CoursePayload) => boolean)[] = [
-        (input, { name, catalogName }) => name.toLowerCase().slice(0, input.length) === input.toLowerCase()
-                                       || catalogName.toLowerCase().slice(0, input.length) === input.toLowerCase(),
-        (input, { name, catalogName }) => name.toLowerCase().includes(input)
-                                       || catalogName.toLowerCase().includes(input)
-    ];
-
-    const suggestFor = (input: string) => {
-        let modifiers = [
-            ...input
-                .split(' ')
-                .filter(input => input.startsWith('+'))
-                .map(token => token.substring(1))
-                .filter(isValidModifier),
-            ...Object
-                .keys(advancedOpts)
-                .filter(opt => advancedOpts[opt])
-                .filter(isValidModifier)
-        ];
-
-        if (!data)
-            return [];
-            
-        let res = data
-            .filter(course => predicates.some(predicate => predicate(input.split(' ').filter(token => !token.startsWith('+')).join(' '), course)))
-            .sort((a, b) => {
-                let aStart = a.name.toLowerCase().slice(0, input.length) === input.toLowerCase();
-                let bStart = b.name.toLowerCase().slice(0, input.length) === input.toLowerCase();
-                if (aStart && bStart)
-                    return a.name.localeCompare(b.name);
-
-                if (aStart && !bStart)
-                    return -1;
-
-                if (bStart && !aStart)
-                    return 1;
-
-                return a.name.localeCompare(b.name);
-            });
-
-        return processModifiers(modifiers, res);
     }
 
     const renderSymbols = (course: CoursePayload, element = true) => {
@@ -230,6 +217,9 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
         if (hasContentArea(course, ContentArea.CA4INT))
             symbols.push({ icon: mdiNumeric4BoxMultiple });
 
+        if (isGradLevel(course.name.split(/\d/)[0], parseInt(course.name.split(/(\d{3,4})/)[1])))
+            symbols.push({ icon: mdiAlphaGBox, color: 'text-success' });
+
         if (!element)
             return symbols;
 
@@ -242,56 +232,6 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
             .contentAreas
             .some(ca => ca === area);
             
-    const isValidModifier = (input: string): input is Modifiers => {
-        let lower = input.toLowerCase();
-        return lower === 'ca1'
-            || lower === 'ca2'
-            || lower === 'ca3'
-            || lower === 'ca4'
-            || lower === 'ca4int'
-            || lower === 'lab'
-            || lower === 'w'
-            || lower === 'q'
-            || lower === 'e' 
-    }
-
-    const processModifiers = (modifiers: Modifiers[], data: CoursePayload[]) => {
-        let copy = [...data];
-
-        if (hasModifier(modifiers, 'ca1'))
-            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA1))
-            
-        if (hasModifier(modifiers, 'ca2'))
-            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA2))
-            
-        if (hasModifier(modifiers, 'ca3'))
-            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA3))
-            
-        if (hasModifier(modifiers, 'ca4'))
-            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA4))
-            
-        if (hasModifier(modifiers, 'ca4int'))
-            copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA4INT))
-            
-        if (hasModifier(modifiers, 'lab'))
-            copy = copy.filter(ent => ent.attributes.lab)
-            
-        if (hasModifier(modifiers, 'w'))
-            copy = copy.filter(ent => ent.attributes.writing)
-            
-        if (hasModifier(modifiers, 'q'))
-            copy = copy.filter(ent => ent.attributes.quantitative)
-            
-        if (hasModifier(modifiers, 'e'))
-            copy = copy.filter(ent => ent.attributes.environmental);
-
-        return copy;
-    }
-
-    const hasModifier = (modifiers: Modifiers[], target: Modifiers) => {
-        return modifiers.some(modifier => modifier === target);
-    }
-
     const onKeyUp = (e: any, suggestions: CoursePayload[]) => {
         if (showAdvanced)
             setShowAdvanced(false);
@@ -313,19 +253,20 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
         router.push(`/course/${current.toUpperCase()}`);
     }
 
-    const pickSillyCourse = () => {
-        if (!data)
-            return;
+    const pickSillyCourse = () => fetch('/api/courses')
+        .then(res => res.json())
+        .then(res => {
+            if (res.error)
+                return;
 
-        setLoading(true);
-        let lucky = data[Math.floor(Math.random() * data.length)];
-        router.push(`/course/${lucky.name.toUpperCase()}`);
-    }
+            const random = Math.floor(Math.random() * res.courses.length);
+            router.push(`/course/${res.courses[random].name}`);
+        });
 
     return (
         <FormGroup>
             <Autosuggest
-                suggestions={suggestions}
+                suggestions={suggestions ?? []}
                 onSuggestionsFetchRequested={onRequest}
                 onSuggestionsClearRequested={onClear}
                 onSuggestionSelected={onSelect}
@@ -350,24 +291,24 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
                                 </span>
                             </InputGroupText>
                         </InputGroupAddon>
-                        <div className={feelingLucky ? styling.inputBoxRadiusEgg : styling.inputBoxRadius}>
+                        <div className={feelingSilly ? styling.inputBoxRadiusEgg : styling.inputBoxRadius}>
                             <input {...inputProps} />
                             <AdvancedSearchComponent
                                 show={showAdvanced}
                                 has={hasAdvanced}
                                 toggle={toggleAdvanced}
                                 clear={clearAdvanced}
-                                />
+                            />
                         </div>
                         { 
-                            feelingLucky && (
+                            feelingSilly && (
                                 <>
-                                    <span id="feeling-lucky" className={`btn btn-primary btn-link btn-sm ${styling.feelingLuckyButton}`} onClick={() => pickSillyCourse()}>
-                                        <i className="fa fa-egg fa-fw text-white"></i>
+                                    <span id="feeling-silly" className={`btn btn-primary btn-link btn-sm ${styling.feelingSillyButton}`} onClick={() => pickSillyCourse()}>
+                                        <i className="fa fa-dice fa-fw text-white"></i>
                                     </span>
-                                    <UncontrolledTooltip target="feeling-lucky" placement="bottom">
-                                        <b>I'm feeling lucky!</b>
-                                        <br/>Take me to a random course.
+                                    <UncontrolledTooltip target="feeling-silly" placement="bottom">
+                                        <b>I'm feeling silly</b>
+                                        <br/>Take me to a completely random extremely silly course.
                                     </UncontrolledTooltip>
                                 </>
                             )
@@ -402,12 +343,12 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingLucky }) => {
                 }}
                 inputProps={{
                     value: query,
-                    disabled: !enabled,
+                    // disabled: !enabled,
                     type: 'text',
                     placeholder: 'Search for any course..',
-                    className: `${feelingLucky ? styling.noRadiusFormGroup : 'form-control-alternative'} form-control`,
+                    className: `${feelingSilly ? styling.noRadiusFormGroup : 'form-control-alternative'} form-control`,
                     onChange,
-                    onKeyUp: e => onKeyUp(e, suggestions),
+                    onKeyUp: e => onKeyUp(e, suggestions!),
                 }}
                 theme={styling}
                 id="cobalt-search"

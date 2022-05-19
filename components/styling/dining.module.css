@@ -31,3 +31,63 @@
     font-size: 1.05rem !important;
     vertical-align: text-bottom !important;
 }
+
+.diningSeparator {
+    margin: 30px;
+    border-top: 1px solid #e9ecef;
+    margin-left: -25px;
+    margin-right: -25px;
+}
+
+.standardMealTime {
+    list-style: none !important;
+    margin-left: -20px;
+}
+
+.mealTime {
+    width: 90%;
+    margin-bottom: 0;
+    display: flex;
+    min-height: 15px;
+}
+
+.mealTime .head {
+    white-space: nowrap;
+}
+
+.mealTime .divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    border-bottom: 1px dotted #ccc;
+    margin-left: 5px;
+    margin-right: 5px;
+    position: relative;
+    top: -18px;
+}
+
+.mealTime .value {
+    font-size: 18px;
+    margin-top: 0px;
+    text-align: right;
+    -webkit-font-feature-settings: "tnum" 1;
+    font-feature-settings: "tnum" 1;
+}
+
+.liShift {
+    margin-left: -20px;
+}
+
+.quickLinks {
+    list-style: none !important;
+    margin-left: -40px;
+}
+
+.quickLinks > li > a > svg {
+    vertical-align: bottom !important;
+}
+
+.ml--10 {
+    margin-left: -15rem !important;
+}

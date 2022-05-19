@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/inspection.module.css';
@@ -8,21 +18,25 @@ import { useState } from 'react';
 import { Badge, Collapse } from 'reactstrap';
 import { ProfessorData } from '@ilefa/husky';
 import { BluepagesRecord } from '@ilefa/bluepages';
+import { decode as decodeEntities } from 'html-entities';
 import { useBluepages, useProfessor } from '../../../hooks';
 
 import {
     addTrailingDecimal,
     capitalizeFirst,
     getCampusIndicator,
+    getTermCode,
     IMetricsComponent,
     RMP_TAG_CONS,
-    RMP_TAG_PROS
+    RMP_TAG_PROS,
+    semesterComparator
 } from '../../../util';
 
 export interface ProfessorViewProps extends IMetricsComponent {
     professor: ProfessorData;
     rmp: boolean;
     show: boolean;
+    showTerm: boolean;
 }
 
 enum RmpTag {
@@ -114,7 +128,7 @@ const proOrConSorting = (tag: string) => {
     return RmpTagOrdinal.UNKNOWN;
 }
 
-export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, recordMetric }) => {
+export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, showTerm, recordMetric }) => {
     const [active, setActive] = useState(show);
     const toggle = () => setActive(!active);
     
@@ -141,7 +155,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                 <p><b>Bluepages Report:</b></p>
                                 <ul className={styles.ratingTags}>
                                     { bLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
-                                    { bError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+                                    { bError && <li>Report for <b>{professor.name}</b> is not available.</li> }
 
                                     {
                                         bluepages && !bLoading && (
@@ -150,7 +164,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                                 <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />
                                                 <BluepagesAttribute data={bluepages} attribute="building" display="Building:" />
                                                 <BluepagesAttribute data={bluepages} attribute="department" display="Dept:" />
-                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => capitalizeFirst(title.toLowerCase())} />
+                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => decodeEntities(capitalizeFirst(title.toLowerCase()))} />
                                             </>
                                         )
                                     }
@@ -161,10 +175,10 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                     {
                                         professor
                                             .sections
-                                            .sort((a, b) => getCampusIndicator(a.campus).localeCompare(getCampusIndicator(b.campus)))
+                                            .sort((a, b) => semesterComparator(a.term, b.term))
                                             .map(ent => (
                                                 <li key={ent.section}>
-                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light mr-1 fa-fw" /><b>[{ent.campus}{showTerm ? ` - ${getTermCode(ent.term) + ent.term.split(/(\d{2,4})/)[1].substring(2)}` : ''}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
                                                 </li>
                                             ))
                                     }
@@ -224,7 +238,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                 <p><b>Bluepages Report:</b></p>
                                 <ul className={styles.ratingTags}>
                                     { bLoading && <li><i className="fa fa-spinner fa-spin fa-fw"></i> Loading..</li> }
-                                    { bError && <li>Information is not available about <b>{professor.name}</b>.</li> }
+                                    { bError && <li>Report for <b>{professor.name}</b> is not available.</li> }
 
                                     {
                                         bluepages && !bLoading && (
@@ -233,7 +247,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                                 <BluepagesAttribute data={bluepages} attribute="netId" display="NetID:" />
                                                 <BluepagesAttribute data={bluepages} attribute="building" display="Building:" />
                                                 <BluepagesAttribute data={bluepages} attribute="department" display="Dept:" />
-                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => capitalizeFirst(title.toLowerCase())} />
+                                                <BluepagesAttribute data={bluepages} attribute="title" display="Title:" transform={title => decodeEntities(capitalizeFirst(title.toLowerCase()))} />
                                             </>
                                         )
                                     }
@@ -247,7 +261,7 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
                                             .sort((a, b) => getCampusIndicator(a.campus).localeCompare(getCampusIndicator(b.campus)))
                                             .map(ent => (
                                                 <li key={ent.section}>
-                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
+                                                    <MdiIcon path={getLetterIcon(getCampusIndicator(ent.campus), Icons.mdiHelpCircle)} size={'21px'} className="text-primary-light" /> <b>[{ent.campus}{showTerm ? ` - ${ent.term.substring(0, 1) + ent.term.split(/(\d{2,4})/)[1].substring(2)}` : ''}] {ent.section}</b> <span className={ent.enrollment.current === ent.enrollment.max ? 'text-danger' : 'text-success'}>({ent.enrollment.current}/{ent.enrollment.max})</span>
                                                 </li>
                                             ))
                                     }
@@ -259,4 +273,4 @@ export const ProfessorView: React.FC<ProfessorViewProps> = ({ professor, show, r
             </li>
         </div>
     )
-};
+}

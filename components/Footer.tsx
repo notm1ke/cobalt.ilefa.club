@@ -1,9 +1,19 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import Link from 'next/link';
 import styles from './styling/footer.module.css';
 
 import { capitalizeFirst } from '../util';
 import { COMMIT_HASH } from '../util/build';
-import { DevElement, PreviewElement } from '.';
+import { DevElement, PreviewElement, ProdElement } from '.';
 
 import {
     Container,
@@ -42,6 +52,13 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }
                                 <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt Preview {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} <i className="fa fa-hands-helping fa-fw"></i></a>
                             </Link>
                         </PreviewElement>
+
+                        <ProdElement>
+                            <br />
+                            <Link href="/">
+                                <a className={`text-primary-light ${styles.envWarning} shine`}><b>The Cobalt Project</b> (4.0, {COMMIT_HASH?.substring(0, 7) ?? 'no_git_id'}, stable)</a>
+                            </Link>
+                        </ProdElement>
                     </div>
                 </div>
                 <div className="col-4 ml--2">

@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -45,7 +55,7 @@ type NavElement = {
     dropdown?: {
         mode: DropdownMode;
         items: NavDropdown[];
-    };
+    }
 }
 
 const ELEMENTS: NavElement[] = [
@@ -54,13 +64,6 @@ const ELEMENTS: NavElement[] = [
         icon: 'fa fa-home',
         href: '/',
         key: 'home',
-    },
-    {
-        name: 'courses',
-        icon: 'fa fa-shapes',
-        href: '/course',
-        key: 'courses',
-        devOnly: true,
     },
     {
         name: 'campus',
@@ -85,6 +88,13 @@ const ELEMENTS: NavElement[] = [
                     content: 'Explore res halls and see their rooms.',
                 },
                 {
+                    name: 'recreational',
+                    href: '/rec',
+                    icon: <i className="fa fa-dumbbell fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore traffic insights for the SRC.',
+                },
+                {
                     name: 'dining',
                     href: '/dining',
                     icon: <i className="fa fa-utensils fa-fw"></i>,
@@ -94,6 +104,14 @@ const ELEMENTS: NavElement[] = [
             ]
         },
         stagingOnly: true,
+        devOnly: true,
+    },
+    {
+        name: 'maps',
+        icon: 'fa fa-map-marked-alt',
+        href: '/maps',
+        key: 'maps',
+        devOnly: true,
     },
     {
         name: 'buildings',
@@ -110,19 +128,19 @@ const ELEMENTS: NavElement[] = [
         prodOnly: true,
     },
     {
+        name: 'recreation',
+        icon: 'fa fa-dumbbell',
+        href: '/rec',
+        key: 'rec',
+        prodOnly: true,
+    },
+    {
         name: 'residential',
         icon: 'fa fa-bed',
         href: '/dorms',
         key: 'dorms',
         prodOnly: true,
     },
-    // {
-    //     name: 'routing',
-    //     icon: 'fa fa-route',
-    //     href: '/routing',
-    //     key: 'routing',
-    //     devOnly: true,
-    // },
     {
         name: 'snapshots',
         icon: 'fa fa-history',
@@ -198,7 +216,7 @@ export const Nav = () => {
     
     const iconMode = isMobile
         ? false
-        : renderableElements.length > 7;
+        : renderableElements.length > 8;
 
     return (
         <header className="header-global">

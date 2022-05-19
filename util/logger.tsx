@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import { getEnumKeyByEnumValue, isDevelopment } from '.';
 
 export enum LogLevel {
@@ -24,7 +34,7 @@ export enum LogLevelColor {
  */
 export const log = (level: LogLevel, module: string | null, text: string, ...opts: string[]) => {
     let header = module ?? level;
-    let color = LogLevelColor[getEnumKeyByEnumValue(LogLevel, level) as string];
+    let color = LogLevelColor[getEnumKeyByEnumValue(LogLevel, level)!];
     console.log(`%c ${header.toUpperCase()} %c ${text}`, `background: ${color}; color: #fff;`, 'color: inherit;', opts);
 }
 

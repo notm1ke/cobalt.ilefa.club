@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import Head from 'next/head';
 
@@ -10,25 +20,30 @@ import { Footer, InlineLink, Nav, PreviewPage } from '../components';
 import { COMMIT_HASH, INSTANCE_HOST, RELEASE_CHANNEL } from '../util/build';
 
 const CHANGELOG = [
-    "Introduced dorms integration (with special thanks to the r/UConnDorms team)",
-    "Introduced dining halls integration", 
-    "Added section identifier to SectionsTab extra info (since mobile browser likes to cut it off in the table-view)",
-    "Added new hooks and API routes for dorms & dining halls services",
-    "Added new standard buttons (i.e. ContributorButton)",
-    "Added honors warning to OverviewTab + ExpandedSectionsTab + Search",
-    "Added room icons to SectionsTab",
-    "Added new preview changelogs",
-    "Added new preview utility components, much like dev components",
-    "Added more in-depth inline metrics viewer",
-    "Added room schedules to Room Inspection UI",
-    "Added utility hooks such as useToggle and useLocalStorage",
-    "Added semester markers to SectionsTab section view if multiple different semesters are displayed",
-    "Added click-to-copy component & implemented it with Class Number and Term Code in SectionsTab",
-    "Changed the way build info is retrieved, now using a build_info.json file that is generated on build",
-    "Split massive utility file into multiple different files under the util folder",
-    "Fixed mobile browser zooming in when clicking input fields",
-    "Fixed some broken mobile responsiveness / styling",
-    "Fixed navigation dropdowns looking weird on mobile (now forced to switch to non-icon view)"
+    "Expanded capabilities and adaptability of the course viewer",
+    "Greatly improved CobaltSearch performance by using server-side query processing",
+    "Greatly improved course endpoint responsiveness by removing per-section enrollment fetch",
+    "DiningHallCard now shows as \"closed\" if no menu items are available",
+    "DiningHallCard schedule / menu timezone fixes",
+    "Added support for graduate courses",
+    "Added warning for courses not currently being offered",
+    "Added \"all food\" button to dining page",
+    "Added food favorites to dining page",
+    "Added room schedules to the room inspection UI",
+    "Added realtime room status to the room inspection UI",
+    "Added the \"I'm feeling silly\" button to CobaltSearch",
+    "Added full support for summer courses w/ Session Indicators",
+    "Added summer sections notice in OverviewTab",
+    "Added Bluetrade integration to add course equivalency data",
+    "Added Bluefit integration to add rec center realtime traffic data",
+    "Updated UI to have a wider renderable space to allow more viewable content",
+    "Updated dining hall hours to reflect new Spring 2022 hours",
+    "Updated dorms payload target",
+    "Updated the way section locations are handled using the new SectionLocationData system",
+    "Updated the buildings page and split it into buildings (/buildings) and rooms (/buildings/:building)",
+    "[In Progress] Added Cobalt Maps, and currently expanding functionality",
+    "[Planned] CMD + K command pallette",
+    "[Planned] Global search shortcut in navbar",
 ]
 
 const ChangelogPage = () => (
@@ -62,7 +77,12 @@ const ChangelogPage = () => (
                             <i className="fa fa-stream fa-fw mb-3"></i> Changes in this Preview
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
                                 {
-                                    CHANGELOG.map(ent => (
+                                    CHANGELOG.length === 0 && (
+                                        <>There are no listed changes for this deployment.</>
+                                    )
+                                }
+                                {
+                                    CHANGELOG.length !== 0 && CHANGELOG.map(ent => (
                                         <li key={Math.random()} className={previewStyles.changelogItem}>
                                             - {ent}
                                         </li>

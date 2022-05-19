@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import styles from '../../styling/inspection.module.css';
 
@@ -39,20 +49,23 @@ export const MetricsTab: React.FC<MetricsTabProps> = ({ metrics }) => (
                             ? <span className={timeColor(event.time)}>({event.time}ms)</span>
                             : ''}
                     </span><br/>
-                    {event.data && (
-                        <UncontrolledCollapse toggler={`toggle-${event.time}`}>
-                            <div className="card shadow mt-3 mb-5">
-                                <div className="card-body">
-                                    <pre className="text-dark mb--1">HTTP 2.0 | <span className={event.success ? 'text-success' : 'text-danger'}>{event.success ? '200 OK' : 'XXX Error'}</span></pre>
-                                    <pre className="text-dark mb--1">Roundtrip Time: <span className={timeColor(event.time)}>{event.time}ms</span></pre>
-                                    <pre className="text-dark mb-2">Response Body:</pre>
-                                    <pre className="text-primary mt-2">
-                                        {JSON.stringify(event.data, null, 3)}
-                                    </pre>
+
+                    {
+                        event.data && (
+                            <UncontrolledCollapse toggler={`toggle-${event.time}`}>
+                                <div className="card shadow mt-3 mb-5">
+                                    <div className="card-body">
+                                        <pre className="text-dark mb--1">HTTP 2.0 | <span className={event.success ? 'text-success' : 'text-danger'}>{event.success ? '200 OK' : 'XXX Error'}</span></pre>
+                                        <pre className="text-dark mb--1">Roundtrip Time: <span className={timeColor(event.time)}>{event.time}ms</span></pre>
+                                        <pre className="text-dark mb-2">Response Body:</pre>
+                                        <pre className="text-primary mt-2">
+                                            {JSON.stringify(event.data, null, 3)}
+                                        </pre>
+                                    </div>
                                 </div>
-                            </div>
-                        </UncontrolledCollapse>
-                    )}
+                            </UncontrolledCollapse>
+                        )
+                    }
                 </>
             ))
         }

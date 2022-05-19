@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import moment from 'moment';
 import MdiIcon from '@mdi/react';
 import styles from '../styling/card.module.css';
@@ -24,16 +34,11 @@ type StatusDisplayComponent = {
 
 const getStatusDisplayComponent = ({ status }: CustomUConnServiceReport): StatusDisplayComponent => {
     switch (status) {
-        case UConnServiceStatus.OPERATIONAL:
-            return { color: 'success', icon: mdiCheck };
-        case UConnServiceStatus.DEGRADED:
-            return { color: 'warning', icon: mdiReloadAlert };
-        case UConnServiceStatus.REPORTING:
-            return { color: 'primary-light', icon: mdiEyeCheck };
-        case UConnServiceStatus.OUTAGE:
-            return { color: 'danger', icon: mdiAlertCircle };
-        default:
-            return { color: 'purple', icon: mdiHelpCircle }
+        case UConnServiceStatus.OPERATIONAL: return { color: 'success', icon: mdiCheck };
+        case UConnServiceStatus.DEGRADED:    return { color: 'warning', icon: mdiReloadAlert };
+        case UConnServiceStatus.REPORTING:   return { color: 'primary-light', icon: mdiEyeCheck };
+        case UConnServiceStatus.OUTAGE:      return { color: 'danger', icon: mdiAlertCircle };
+        default:                             return { color: 'purple', icon: mdiHelpCircle };
     }
 }
 

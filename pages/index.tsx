@@ -1,12 +1,22 @@
+/*
+ * Copyright (c) 2020-2022 ILEFA Labs
+ * All Rights Reserved.
+ * 
+ * Cobalt in it's entirety is proprietary property owned and maintained by ILEFA Labs.
+ * Under no circumstances should any should code, assets, resources, or other materials
+ * herein be transmitted, replicated, or otherwise released, in part, or in whole, to any
+ * persons or organizations without the full and explicit permission of ILEFA Labs.
+ */
+
 import React from 'react';
 import moment from 'moment';
 import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
 import { mdiFlask } from '@mdi/js';
+import { getCurrentSemester } from '../util';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
-import { capitalizeFirst, getCurrentSemester, intToWords } from '../util';
 
 import {
     CobaltSearch,
@@ -20,8 +30,8 @@ import {
 } from '../components';
 
 const HomePage = () => {
-    let rawDays = moment('2022-01-19').diff(moment(), 'days');
-    let breakOver = rawDays <= 0;
+    let rawDays = moment('2022-05-7').diff(moment(), 'days');
+    let semOver = rawDays <= 0;
     
     return (
         <main>
@@ -54,14 +64,14 @@ const HomePage = () => {
                                         <h2 className={`${styles.tagline} display-4 font-weight-normal text-white mb-5`}>
                                             An intelligent suite of tools built by UConn students, for UConn students.
                                         </h2>
-                                        <CobaltSearch />
+                                        <CobaltSearch feelingSilly />
                                         <small className="text-secondary">
-                                            <i className={'fa ' + (breakOver ? 'fas fa-chalkboard-teacher text-warning' : 'fa-clock text-success') + ' fa-fw mr-1'}></i>
+                                            <i className={'fa ' + (semOver ? 'fas fa-umbrella-beach text-success' : 'fas fa-sun text-warning') + ' fa-fw mr-1'}></i>
                                             <i>
                                                 {
-                                                    breakOver
-                                                        ? `The ${getCurrentSemester()} semester has started, good luck!`
-                                                        : `There are ${intToWords(rawDays)} day${rawDays === 1 ? '' : 's'} left until the ${capitalizeFirst(getCurrentSemester())} semester starts.`
+                                                    semOver
+                                                        ? `The ${getCurrentSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!`
+                                                        : `Enjoy the weather & good luck on finals!`
                                                 }
                                             </i>
                                         </small>
@@ -91,29 +101,61 @@ const HomePage = () => {
                     tags={[
                         {
                             icon: <i className="fa fa-search fa-fw"></i>,
-                            color: 'primary',
+                            color: 'primary-light',
                             display: 'Powerful Search'
                         },
                         {
                             icon: <i className="fa fa-book fa-fw"></i>,
-                            color: 'primary',
+                            color: 'primary-light',
                             display: 'Practical Course Information'
                         },
                         {
                             icon: <i className="fa fa fa-quote-right fa-fw"></i>,
-                            color: 'primary',
+                            color: 'primary-light',
                             display: 'RateMyProfessors Integration'
                         }
                     ]}
                 />
     
                 <FeatureSection
+                    title="Maps"
                     flip
+                    glyph="/glyphs/maps.svg"
+                    alt="Maps Glyph"
+                    description={
+                        <>
+                            <div className="mt--3 mb--2">
+                                <span className={styles.comingSoonFeature}>Coming Soon</span>
+                            </div>
+                            <br/>Explore the Storrs Campus and view rich information about buildings and the <b>rooms that are available</b> in them, dining halls and <b>what they're serving</b>, residential buildings and the <b>quality of their dorms</b>, and other points of interest.
+                        </>
+                    }
+                    className="background-circuits"
+                    tags={[
+                        {
+                            icon: <i className="fa fa-map-marker-alt fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Points of Interest'
+                        },
+                        {
+                            icon: <i className="fa fa-building fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Building Directories & Room Schedules'
+                        },
+                        {
+                            icon: <i className="fa fa-utensils fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Dining Hall Menus'
+                        }
+                    ]}
+                />
+    
+                <FeatureSection
                     title="Buildings"
                     glyph="/glyphs/building.svg"
                     alt="Buildings Glyph"
                     className="background-circuits"
-                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats it has, and more."
+                    description="See the rooms in which your classes are located, and (if the data exists) detailed info about the rooms such as 360° Views, A/C, what kind of seats they have, and their schedules."
                     tags={[
                         {
                             icon: <i className="fa fa-grip-horizontal fa-fw"></i>,
@@ -128,13 +170,14 @@ const HomePage = () => {
                         {
                             icon: <i className="fa fa-clone fa-fw"></i>,
                             color: 'primary-light',
-                            display: 'Detailed Room Previews'
+                            display: 'Room Schedules'
                         }
                     ]}
                 />
 
                 <FeatureSection
                     title="Dorms"
+                    flip
                     glyph="/glyphs/dorms.svg"
                     alt="Dorms Glyph"
                     className="background-circuits"
@@ -154,6 +197,31 @@ const HomePage = () => {
                             icon: <i className="fa fa-check-circle fa-fw"></i>,
                             color: 'primary-light',
                             display: 'Amenities & Information'
+                        }
+                    ]}
+                />
+
+                <FeatureSection
+                    title="Rec Center"
+                    glyph="/glyphs/rec.svg"
+                    alt="Rec Center Glyph"
+                    className="background-circuits"
+                    description="Planning to work out on campus? Check out realtime traffic insights regarding the Storrs Rec Center, what facilities are open, and "
+                    tags={[
+                        {
+                            icon: <i className="fa fa-chart-line fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Realtime Occupants'
+                        },
+                        {
+                            icon: <i className="fa fa-calendar-day fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Traffic Insights'
+                        },
+                        {
+                            icon: <i className="fa fa-user-check fa-fw"></i>,
+                            color: 'primary-light',
+                            display: 'Facility Status'
                         }
                     ]}
                 />
@@ -199,17 +267,17 @@ const HomePage = () => {
                         tags={[
                             {
                                 icon: <i className="fa fa-file-download fa-fw"></i>,
-                                color: 'info',
+                                color: 'primary-light',
                                 display: 'Semester-by-Semester Complete Snapshots'
                             },
                             {
                                 icon: <i className="fa fa-user-graduate fa-fw"></i>,
-                                color: 'info',
+                                color: 'primary-light',
                                 display: 'Professor Ratings Progression'
                             },
                             {
                                 icon: <i className="fa fa-chart-line fa-fw"></i>,
-                                color: 'info',
+                                color: 'primary-light',
                                 display: 'Course Registration Metrics'
                             }
                         ]}
