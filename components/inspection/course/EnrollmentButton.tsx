@@ -12,8 +12,8 @@ import moment from 'moment';
 
 import styles from '../../styling/inspection.module.css';
 
+import { useState } from 'react';
 import { UncontrolledTooltip } from 'reactstrap';
-import { useCallback, useEffect, useState } from 'react';
 import { CompleteCoursePayload, EnrollmentPayload, SectionData } from '@ilefa/husky';
 import { convertFromHuskyEnrollment, convertToHuskyEnrollment, getEnrollmentColor } from '../../../util';
 
@@ -22,7 +22,7 @@ export interface EnrollmentButtonProps {
     data: SectionData;
 }
 
-export const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ course, data }) => {
+export const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ data }) => {
     const today = new Date();
     const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
     const sixAmToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 6, 0, 0, 0);
@@ -31,31 +31,31 @@ export const EnrollmentButton: React.FC<EnrollmentButtonProps> = ({ course, data
         ? sixAmToday
         : sixAmTomorrow;
 
-    const [enrollment, setEnrollment] = useState<EnrollmentPayload>(convertFromHuskyEnrollment(data));
-    const [lastUpdated, setLastUpdated] = useState(sixAm);
-    const [loading, setLoading] = useState(false);
+    const [enrollment, _setEnrollment] = useState<EnrollmentPayload>(convertFromHuskyEnrollment(data));
+    const [lastUpdated, _setLastUpdated] = useState(sixAm);
+    const [loading, _setLoading] = useState(false);
     
     const runUpdate = () => {
-        setLoading(true);
-        updateEnrollment();
+        // setLoading(true);
+        // updateEnrollment();
     }
 
-    const updateEnrollment = useCallback(() =>
-        fetch(`/api/enrollment/${course.name}?section=${data.section}&term=${data.term.replace(/\s/g, '')}`)
-            .then(res => res.json())
-            .then(res => {
-                if (!res.available || !res.total)
-                    throw new Error('Enrollment data unavailable');
+    // const updateEnrollment = useCallback(() =>
+    //     fetch(`/api/enrollment/${course.name}?section=${data.section}&term=${data.term.replace(/\s/g, '')}`)
+    //         .then(res => res.json())
+    //         .then(res => {
+    //             if (!res.available || !res.total)
+    //                 throw new Error('Enrollment data unavailable');
                     
-                setLastUpdated(new Date());
-                setLoading(false);
-                return setEnrollment(res);
-            })
-            .catch(_ => setEnrollment(convertFromHuskyEnrollment(data))), []);
+    //             setLastUpdated(new Date());
+    //             setLoading(false);
+    //             return setEnrollment(res);
+    //         })
+    //         .catch(_ => setEnrollment(convertFromHuskyEnrollment(data))), []);
 
-    useEffect(() => {
-        updateEnrollment();
-    }, []);
+    // useEffect(() => {
+    //     updateEnrollment();
+    // }, []);
 
     return (
         <span className={getEnrollmentColor(convertToHuskyEnrollment(enrollment, data))} onClick={runUpdate} id={`tooltip-waitlist-${data.section.replace(/[^\d\+]/g, '')}-${data.campus}-${data.term.substring(0, 1) + data.term.split(/(\d{2,4})/)[1].substring(2)}`}>

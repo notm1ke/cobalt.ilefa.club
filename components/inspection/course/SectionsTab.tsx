@@ -15,11 +15,11 @@ import Classrooms from '@ilefa/husky/classrooms.json';
 
 import styles from '../../styling/inspection.module.css';
 
+import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { CopyButton } from '../..';
 import { mdiChevronDown } from '@mdi/js';
 import { useToggle } from '../../../hooks';
-import { useEffect, useState } from 'react';
 import { EnrollmentButton, ErrorTab } from '.';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import { IDataTableColumn } from 'react-data-table-component';
@@ -62,7 +62,7 @@ interface SectionDataProps {
     course: CompleteCoursePayload;
 }
 
-export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data, course }) => {
+export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
     if (!data) return (
         <div className={styles.sectionDataExpanded}>
             <pre className={`${styles.sectionTitle} text-danger`}><i className="fa fa-times-circle fa-fw"></i> Whoops</pre>
@@ -76,22 +76,22 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data, course }
     const [classTermCopied, setTermCopied] = useState(false);
     const [classSessionCopied, setSessionCopied] = useState(false);
 
-    const [enrollment, setEnrollment] = useState<EnrollmentPayload>(convertFromHuskyEnrollment(data));
-    const [enrollmentLoading, setEnrollmentLoading] = useState(true);
+    const [enrollment, _setEnrollment] = useState<EnrollmentPayload>(convertFromHuskyEnrollment(data));
+    // const [enrollmentLoading, setEnrollmentLoading] = useState(true);
 
-    useEffect(() => {
-        fetch(`/api/enrollment/${course.name}?section=${data.section}&term=${data.term.replace(/\s/g, '')}`)
-            .then(res => res.text())
-            .then(JSON.parse)
-            .then(res => {
-                if (!res.available || !res.total)
-                    throw new Error('Enrollment data unavailable')
-                return res;
-            })
-            .then(setEnrollment)
-            .then(_ => setEnrollmentLoading(false))
-            .catch(_ => setEnrollment(convertFromHuskyEnrollment(data)));
-    }, []);
+    // useEffect(() => {
+    //     fetch(`/api/enrollment/${course.name}?section=${data.section}&term=${data.term.replace(/\s/g, '')}`)
+    //         .then(res => res.text())
+    //         .then(JSON.parse)
+    //         .then(res => {
+    //             if (!res.available || !res.total)
+    //                 throw new Error('Enrollment data unavailable')
+    //             return res;
+    //         })
+    //         .then(setEnrollment)
+    //         .then(_ => setEnrollmentLoading(false))
+    //         .catch(_ => setEnrollment(convertFromHuskyEnrollment(data)));
+    // }, []);
 
     let rooms = data.location.sort((a, b) => a.name.localeCompare(b.name));
     let multipleRooms = rooms.length > 1;
@@ -179,7 +179,7 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data, course }
                                     
                                     <p><b>Enrollment Information</b></p>
                                     <ul>
-                                        <li><b>Current:</b> {enrollmentLoading && <i className="fa fa-spinner fa-fw fa-spin"></i>} {!enrollmentLoading && <span className={getEnrollmentColor(convertToHuskyEnrollment(enrollment, data))}>{enrollment.available}/{enrollment.total}</span>}</li>
+                                        <li><b>Current:</b> <span className={getEnrollmentColor(convertToHuskyEnrollment(enrollment, data))}>{enrollment.available}/{enrollment.total}</span></li>
                                         <li><b>Available Waitlist Spaces:</b> {data.enrollment.waitlist ?? 'Unavailable'}</li>
                                     </ul>
 
