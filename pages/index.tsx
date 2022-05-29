@@ -9,7 +9,6 @@
  */
 
 import React from 'react';
-import moment from 'moment';
 import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
@@ -29,10 +28,7 @@ import {
     StatusRibbon
 } from '../components';
 
-const HomePage = () => {
-    let rawDays = moment('2022-05-7').diff(moment(), 'days');
-    let semOver = rawDays <= 0;
-    
+const HomePage = () => {    
     return (
         <main>
             <Nav />
@@ -66,13 +62,9 @@ const HomePage = () => {
                                         </h2>
                                         <CobaltSearch feelingSilly />
                                         <small className="text-secondary">
-                                            <i className={'fa ' + (semOver ? 'fas fa-umbrella-beach text-success' : 'fas fa-sun text-warning') + ' fa-fw mr-1'}></i>
+                                            <i className={'fa fas fa-umbrella-beach text-success fa-fw mr-1'}></i>
                                             <i>
-                                                {
-                                                    semOver
-                                                        ? `The ${getCurrentSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!`
-                                                        : `Enjoy the weather & good luck on finals!`
-                                                }
+                                                The {getCurrentSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!
                                             </i>
                                         </small>
 

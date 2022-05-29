@@ -77,21 +77,6 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
     const [classSessionCopied, setSessionCopied] = useState(false);
 
     const [enrollment, _setEnrollment] = useState<EnrollmentPayload>(convertFromHuskyEnrollment(data));
-    // const [enrollmentLoading, setEnrollmentLoading] = useState(true);
-
-    // useEffect(() => {
-    //     fetch(`/api/enrollment/${course.name}?section=${data.section}&term=${data.term.replace(/\s/g, '')}`)
-    //         .then(res => res.text())
-    //         .then(JSON.parse)
-    //         .then(res => {
-    //             if (!res.available || !res.total)
-    //                 throw new Error('Enrollment data unavailable')
-    //             return res;
-    //         })
-    //         .then(setEnrollment)
-    //         .then(_ => setEnrollmentLoading(false))
-    //         .catch(_ => setEnrollment(convertFromHuskyEnrollment(data)));
-    // }, []);
 
     let rooms = data.location.sort((a, b) => a.name.localeCompare(b.name));
     let multipleRooms = rooms.length > 1;
