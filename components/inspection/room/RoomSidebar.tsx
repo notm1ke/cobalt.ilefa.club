@@ -120,6 +120,8 @@ const getColorForScheduleEntry = (entry: CustomScheduleEntry, events: CurrentAnd
     return 'text-dark';
 }
 
+const sanitizeRoomEventId = (event: string) => event.replace(/\s/g, '').replace(/[^\w\s]+/gi, '');
+
 const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' | 'error', schedule?: BluesignResponsePayload): SidebarEntry[] => {
     const events = getCurrentAndNextEvents(schedule);
 
@@ -148,12 +150,12 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                             startDate: getDateFromTime(entry.start),
                             endDate: getDateFromTime(entry.end)
                         }))
-                        .map(entry => ({
+                        .map((entry, i) => ({
                             name: <>
-                                <a href={entry.section ? `/course/${entry.event.replace(/\s/g, '')}` : '#'} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>{isMobile ? entry.event : shorten(entry.event, 18)}</a>
+                                <a href={entry.section ? `/course/${entry.event.replace(/\s/g, '')}` : '#'} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${sanitizeRoomEventId(entry.event)}-${entry.section ?? i}`}>{isMobile ? entry.event : shorten(entry.event, 18)}</a>
                                 {
                                     !entry.section && (
-                                        <UncontrolledTooltip target={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>
+                                        <UncontrolledTooltip target={`room-event-${sanitizeRoomEventId(entry.event)}-${i}`}>
                                             <b>{entry.event}</b>
                                             <br />This event will occupy {data.name} for <b>{getLatestTimeValue(entry.endDate.getTime() - entry.startDate.getTime())}</b>.
                                         </UncontrolledTooltip>
@@ -162,7 +164,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
 
                                 {
                                     entry.section && (
-                                        <UncontrolledTooltip target={`room-event-${entry.event.replace(/\s/g, '')}-${entry.section}`}>
+                                        <UncontrolledTooltip target={`room-event-${sanitizeRoomEventId(entry.event)}-${entry.section}`}>
                                             <b>{entry.event} ({entry.section})</b>
                                             <br />Click to view information about this course.
                                         </UncontrolledTooltip>

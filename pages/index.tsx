@@ -13,7 +13,7 @@ import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
 import { mdiFlask } from '@mdi/js';
-import { getCurrentSemester } from '../util';
+import { getLastSemester } from '../util';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
 
@@ -64,7 +64,7 @@ const HomePage = () => {
                                         <small className="text-secondary">
                                             <i className={'fa fas fa-umbrella-beach text-success fa-fw mr-1'}></i>
                                             <i>
-                                                The {getCurrentSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!
+                                                The {getLastSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!
                                             </i>
                                         </small>
 
