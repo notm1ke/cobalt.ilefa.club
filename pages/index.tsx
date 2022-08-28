@@ -64,7 +64,7 @@ const HomePage = () => {
                                         <small className="text-secondary">
                                             <i className={'fa fas fa-umbrella-beach text-success fa-fw mr-1'}></i>
                                             <i>
-                                                The {getLastSemester().split(/\d{4}/)[0]} semester has ended, enjoy your break!
+                                                The fall semester has started, good luck with everything!
                                             </i>
                                         </small>
 
