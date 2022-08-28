@@ -13,7 +13,6 @@ import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
 import { mdiFlask } from '@mdi/js';
-import { getLastSemester } from '../util';
 import { isMobile } from 'react-device-detect';
 import { UConnServiceStatus } from '@ilefa/husky';
 
