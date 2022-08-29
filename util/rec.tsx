@@ -30,7 +30,7 @@ const AllDays = [...Weekdays, ...Weekends];
 
 const START_DATES = ["2/6/2022", "1/31/2022", "2/1/2022", "2/2/2022", "2/3/2022", "2/4/2022", "2/5/2022"];
 
-export const SUMMER_HOURS = true;
+export const SUMMER_HOURS = false;
 
 export const StandardRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
     'SRC': [
