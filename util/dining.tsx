@@ -82,9 +82,9 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:30pm', days: Weekdays },
         { name: 'Between Meals', start: '2:30pm', end: '4:00pm', days: AllDays },
-        { name: 'Dinner', start: '4:00pm', end: '7:15pm', days: [1] },
-        { name: 'Dinner', start: '4:00pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) },
-        { name: 'Brunch', start: '10:30am', end: '2:30pm', days: Weekends }
+        { name: 'Dinner', start: '4:00pm', end: '7:15pm', days: AllDays },
+        { name: 'Brunch', start: '10:30am', end: '2:30pm', days: Weekends },
+        { name: 'Late Night', start: '7:15pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) }
     ],
     'SOUTH': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
@@ -123,9 +123,9 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:15pm', days: Weekdays },
         { name: 'Between Meals', start: '2:15pm', end: '3:45pm', days: AllDays },
-        { name: 'Dinner', start: '3:45pm', end: '7:15pm', days: [1] },
-        { name: 'Dinner', start: '3:45pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) },
-        { name: 'Brunch', start: '10:30am', end: '2:15pm', days: Weekends }
+        { name: 'Dinner', start: '3:45pm', end: '7:15pm', days: AllDays },
+        { name: 'Brunch', start: '10:30am', end: '2:15pm', days: Weekends },
+        { name: 'Late Night', start: '7:15pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) }
     ]
 }
 
@@ -279,9 +279,8 @@ export const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof 
  */
 export const getCurrentMealHoursForHall = (hours: DateMealHourEntry[], meal: string) => {
     let now = new Date();
-    let target = hours.find(h => h.name.toLowerCase() === meal.toLowerCase() && h.days.includes(now.getDay()));
-    if (!target)
-        return 'Unknown';
+    let target = hours.find(h => h.name.toLowerCase().replace(/\s/g, '_') === meal.toLowerCase().replace(/\s/g, '_') && h.days.includes(now.getDay()));
+    if (!target) return 'Unknown';
 
     return `${moment(target.start).format('h:mma')} - ${moment(target.end).format('h:mma')}`;
 }
