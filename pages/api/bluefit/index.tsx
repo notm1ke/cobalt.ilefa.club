@@ -51,8 +51,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     for (let mode of modes) {
         if (mode === 'occupants') {
-            let occupants = (await getOccupancy() as any).occupants;
-            payload[mode] = (!occupants || occupants === -1)
+            let occupants = await getOccupancy();
+            payload[mode] = ((!occupants && occupants !== 0) || occupants === -1)
                 ? await getLatestOccupancy(target)
                 : occupants;
         }

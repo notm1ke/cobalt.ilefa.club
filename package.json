@@ -18,7 +18,7 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "@ilefa/bluefit": "^1.0.0",
+    "@ilefa/bluefit": "^1.0.1",
     "@ilefa/bluepages": "^1.0.0",
     "@ilefa/blueplate": "^1.0.5-2",
     "@ilefa/bluesign": "^1.0.1",
