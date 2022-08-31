@@ -144,7 +144,6 @@ export const getDiningHallStatusName = (name: string) => {
  * @param hall the dining hall to get the status of
  */
 export const getDiningHallStatusColor = (status: keyof typeof DiningHallStatus): Color => {
-    console.log(status);
     if (!status)
         return 'purple';
 

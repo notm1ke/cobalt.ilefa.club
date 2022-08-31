@@ -98,14 +98,11 @@ const BuildingInspectionPage = () => {
                                             .schedules
                                             .filter(item => (item as any).room)
                                             .sort((a, b) => (a as any).room.localeCompare((b as any).room))
-                                            .map(ent => {
-                                                console.log('a');
-                                                return (
-                                                    <div className="col-md-4 align-items-stretch" key={(ent as any).room}>
-                                                        <BuildingDirectoryCard name={(ent as any).room} room={ent.entries} />
-                                                    </div>
-                                                )
-                                            })
+                                            .map(ent => (
+                                                <div className="col-md-4 align-items-stretch" key={(ent as any).room}>
+                                                    <BuildingDirectoryCard name={(ent as any).room} room={ent.entries} />
+                                                </div>
+                                            ))
                                     }
 
                                     {
