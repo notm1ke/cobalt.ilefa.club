@@ -48,7 +48,7 @@ const getShortenedName = ({ event }: CustomScheduleEntry, limit: number) => {
     return capitalized;
 }
 
-const getRoomStatus = (name: string, schedule: ScheduleEntry[]) => {
+const getRoomStatus = (name: string, schedule: ScheduleEntry[], shorten: boolean) => {
     let events = schedule
         .map(ent => ({
             ...ent,
@@ -63,12 +63,12 @@ const getRoomStatus = (name: string, schedule: ScheduleEntry[]) => {
                 <span className="text-dark">
                     <div><span className={`${inspectionStyles.pulsatingCircle} ${styles.pulsatingCircleSpacing}`}></span></div>
                     <div className={inspectionStyles.pulsatingCircleSeparator}>
-                        <b className={`text-success ${inspectionStyles.roomScheduleStatus}`}> {getShortenedName(current, 30)}</b> for next <span className="text-purple">{getLatestTimeValue(current.endDate.getTime() - Date.now())}</span>.
+                        <b className={`text-success ${inspectionStyles.roomScheduleStatus}`}> {shorten ? getShortenedName(current, 30) : current.event}</b> for next <span className="text-purple">{getLatestTimeValue(current.endDate.getTime() - Date.now())}</span>.
                     </div>
                 </span>
             : next.length ?
                 <span className="text-dark">
-                    <b className={`text-warning ${inspectionStyles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {getShortenedName(next[0], 20)}</b> {moment(next[0].startDate).fromNow()}
+                    <b className={`text-warning ${inspectionStyles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {shorten ? getShortenedName(next[0], 20) : next[0].event}</b> {moment(next[0].startDate).fromNow()}
                 </span>
             : <span className="text-dark">
                 <b className={`text-success ${inspectionStyles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {name}</b> is free.
@@ -91,7 +91,7 @@ const RoomScheduleModal: React.FC<RoomScheduleModalProps> = ({ name, schedule, o
             <span>
                 <pre className={`${inspectionStyles.sectionTitle} text-primary mt-3`}><i className="fa fa-tags fa-fw"></i> Room Status</pre>
                 <p className={inspectionStyles.description}>
-                    {getRoomStatus(name, schedule)}
+                    {getRoomStatus(name, schedule, false)}
                 </p>
                 <pre className={`${inspectionStyles.sectionTitle} text-primary`}><i className="fa fa-stream fa-fw"></i> What's Next</pre>
                 <ul className={inspectionStyles.roomSchedule}>
@@ -149,7 +149,7 @@ export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ ro
                     </h5>
 
                     <p className="text-dark">
-                        {getRoomStatus(name, room)}
+                        {getRoomStatus(name, room, true)}
                     </p>
                     
                     <div className={styles.projectCardLink}>
