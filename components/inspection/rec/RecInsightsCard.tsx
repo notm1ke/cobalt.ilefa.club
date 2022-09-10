@@ -34,7 +34,7 @@ export interface RecInsightsCardProps {
 }
 
 const avg = (vals: number[]) => {
-    let result = (vals.reduce((a, b) => a + b, 0) / vals.length);
+    let result = (vals.filter(r => r && !isNaN(r)).reduce((a, b) => a + b, 0) / vals.length);
     if (isNaN(result)) return 'none';
     return result.toFixed(1);
 };
@@ -47,11 +47,11 @@ const avgOf = (vals: BluefitDailyRecord[] | BluefitWeeklyRecord[]) =>
 
 const recEpoch = (now = new Date()) => {
     let day = 24 * 60 * 60 * 1000;
-    let epoch = new Date('January 31st, 2022');
+    let epoch = new Date('January 31 2022');
     now.setHours(0, 0, 0, 0);
     
-    let diff = Math.round(Math.abs((now.getTime() - epoch.getTime()) / day));
-    return Math.floor(diff / 7) + 1;
+    let diff = Math.round((now.getTime() - epoch.getTime()) / day);
+    return Math.floor(diff / 7) - 16;
 }
 
 const today = (vals: BluefitDailyRecord[], col = recEpoch()) => vals.map(v => v.values[col ?? v.values.length - 1]);
