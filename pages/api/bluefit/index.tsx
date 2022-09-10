@@ -16,6 +16,7 @@ import { isValidRecQueryMode } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const IGNORE_COLS = [...Array(16)].map((_, i) => 13 + i);
 
 type TimeOccupancyKeyPair = {
     time: string;
@@ -105,7 +106,8 @@ const getDailyOccupancy = async (day: number) => {
         let [time, ...raw] = d;
         let values = raw
             .map(v => parseInt(v))
-            .filter(v => !isNaN(v));
+            .filter(v => !isNaN(v))
+            .filter((_, i) => !IGNORE_COLS.includes(i + 1));
 
         return {
             time, values,
@@ -113,7 +115,7 @@ const getDailyOccupancy = async (day: number) => {
         }
     });
 
-    return result;
+    return result.filter(r => r !== null);
 }
 
 const getWeeklyOccupancy = async () => {
@@ -133,13 +135,16 @@ const getWeeklyOccupancy = async () => {
         average: 0
     }));
 
+    let i = 0;
     for (let d of data) {
         let [time, ...raw] = d;
         let values = raw
             .map(v => parseInt(v))
             .filter(v => !isNaN(v))
+            .filter((_, i) => !IGNORE_COLS.includes(i + 1));
 
         values.forEach((v: number, i: number) => days[i].values.push({ time, occupants: v }));
+        i++;
     }
 
     days.forEach(d => {

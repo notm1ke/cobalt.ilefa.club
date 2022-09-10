@@ -14,14 +14,20 @@ import { getLatestTimeValue, getTimeUntilRecClose } from '../../../util';
 export const RecUntilCloseTagline: React.FC = () => {
     const [untilClose, setUntilClose] = useState(getTimeUntilRecClose('SRC'));
     const [reload, setReload] = useState(false);
+    const [timer, setTimer] = useState<NodeJS.Timeout>();
 
-    setInterval(() => setReload(!reload), 1000);
     useEffect(() => {
+        if (!timer) setTimer(setInterval(() => setReload(!reload), 1000));
+
         if (reload) {
             setReload(false);
             setUntilClose(getTimeUntilRecClose('SRC'));
         }
-    }, [reload]);
+
+        return () => {
+            if (timer) clearInterval(timer);
+        }
+    }, [reload, timer]);
 
     return (
         <span>

@@ -8,8 +8,9 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
- import styles from '../../styling/section.module.css';
-
+import styles from '../../styling/section.module.css';
+ 
+import { Fragment } from 'react';
 import { Badge, UncontrolledTooltip } from 'reactstrap';
 
 import {
@@ -47,10 +48,10 @@ export const RecStatusCollapsible: React.FC<RecStatusCollapsibleProps> = ({ faci
 
                 {
                     hours.length > 0 && hours.map((val: any, i: number, arr: any[]) => (
-                        <>
+                        <Fragment key={`${val.start}-${val.end}-${i}`}>
                             {val.start} - {val.end}
                             {i !== arr.length - 1 && <br/>}
-                        </>
+                        </Fragment>
                     ))
                 }
             </UncontrolledTooltip>

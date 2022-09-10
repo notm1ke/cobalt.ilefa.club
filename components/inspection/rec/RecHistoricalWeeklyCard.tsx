@@ -125,7 +125,7 @@ export const RecHistoricalWeeklyCard: React.FC = () => {
                     <div className={`col-md-7 ${isMobile ? 'ml-7 mb-3' : ''}`}>
                         {
                             days.map((day, i) => (
-                                <Badge color={!getters[i] ? 'dark' : colors[i]} className={`${i == 0 ? 'ml--5' : ''} mr-1 text-lowercase`} href="#" onClick={e => preventAnd(e, () => setters[i](!getters[i]))}>
+                                <Badge key={`${day}-${i}`} color={!getters[i] ? 'dark' : colors[i]} className={`${i == 0 ? 'ml--5' : ''} mr-1 text-lowercase`} href="#" onClick={e => preventAnd(e, () => setters[i](!getters[i]))}>
                                     {isMobile ? day.substring(0, 2) : day}
                                 </Badge>
                             ))
