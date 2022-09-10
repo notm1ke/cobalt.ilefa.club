@@ -135,7 +135,6 @@ const getWeeklyOccupancy = async () => {
         average: 0
     }));
 
-    let i = 0;
     for (let d of data) {
         let [time, ...raw] = d;
         let values = raw
@@ -144,7 +143,6 @@ const getWeeklyOccupancy = async () => {
             .filter((_, i) => !IGNORE_COLS.includes(i + 1));
 
         values.forEach((v: number, i: number) => days[i].values.push({ time, occupants: v }));
-        i++;
     }
 
     days.forEach(d => {
