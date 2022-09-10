@@ -41,7 +41,7 @@ export enum DiningHallMealHours {
     BREAKFAST_SOUTH_SUN = '8:00am - 9:30am',
     LUNCH = '11:00am - 2:15pm',
     BRUNCH = '10:30am - 2:15pm',
-    DINNER = '4:15pm - 7:45pm',
+    DINNER = '4:15pm - 7:15pm',
     LATE_NIGHT = '7:45pm - 10:00pm',
     BETWEEN_MEALS = '2:15pm - 4:15pm',
 }
@@ -69,28 +69,28 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:30pm', days: Weekdays },
         { name: 'Between Meals', start: '2:30pm', end: '4:00pm', days: Weekdays },
-        { name: 'Dinner', start: '4:00pm', end: '7:45pm', days: Weekdays }
+        { name: 'Dinner', start: '4:00pm', end: '7:15pm', days: Weekdays }
     ],
     'PUTNAM': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:30pm', days: Weekdays },
         { name: 'Between Meals', start: '2:30pm', end: '4:00pm', days: AllDays },
-        { name: 'Dinner', start: '4:00pm', end: '7:45pm', days: AllDays },
+        { name: 'Dinner', start: '4:00pm', end: '7:15pm', days: AllDays },
         { name: 'Brunch', start: '10:30am', end: '2:30pm', days: Weekends }
     ],
     'NORTHWEST': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:30pm', days: Weekdays },
         { name: 'Between Meals', start: '2:30pm', end: '4:00pm', days: AllDays },
-        { name: 'Dinner', start: '4:00pm', end: '7:45pm', days: [1] },
-        { name: 'Dinner', start: '4:00pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) },
-        { name: 'Brunch', start: '10:30am', end: '2:30pm', days: Weekends }
+        { name: 'Dinner', start: '4:00pm', end: '7:15pm', days: AllDays },
+        { name: 'Brunch', start: '10:30am', end: '2:30pm', days: Weekends },
+        { name: 'Late Night', start: '7:15pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) }
     ],
     'SOUTH': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:00pm', days: Weekdays },
         { name: 'Between Meals', start: '2:00pm', end: '3:30pm', days: AllDays },
-        { name: 'Dinner', start: '3:30pm', end: '7:45pm', days: AllDays },
+        { name: 'Dinner', start: '3:30pm', end: '7:15pm', days: AllDays },
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: [6] },
         { name: 'Breakfast', start: '8:00am', end: '10:30am', days: [0] },
         { name: 'Brunch', start: '10:30am', end: '2:00pm', days: Weekends }
@@ -99,33 +99,33 @@ export const StandardMealHours: Record<keyof typeof DiningHallType, MealHourEntr
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:00pm', days: Weekdays },
         { name: 'Between Meals', start: '2:00pm', end: '3:30pm', days: Weekdays },
-        { name: 'Dinner', start: '3:30pm', end: '7:45pm', days: Weekdays },
+        { name: 'Dinner', start: '3:30pm', end: '7:15pm', days: Weekdays },
         { name: 'Breakfast', start: '9:30am', end: '10:30am', days: Weekends },
         { name: 'Brunch', start: '10:30am', end: '2:00pm', days: Weekends },
         { name: 'Between Meals', start: '2:00pm', end: '3:30pm', days: Weekends },
-        { name: 'Dinner', start: '3:30pm', end: '7:45pm', days: Weekends }
+        { name: 'Dinner', start: '3:30pm', end: '7:15pm', days: Weekends }
     ],
     'NORTH': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '3:00pm', days: Weekdays },
         { name: 'Between Meals', start: '3:00pm', end: '4:30pm', days: AllDays },
-        { name: 'Dinner', start: '4:30pm', end: '7:45pm', days: AllDays },
+        { name: 'Dinner', start: '4:30pm', end: '7:15pm', days: AllDays },
         { name: 'Brunch', start: '10:30am', end: '3:00pm', days: Weekends }
     ],
     'WHITNEY': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '3:00pm', days: Weekdays },
         { name: 'Between Meals', start: '3:00pm', end: '4:30pm', days: AllDays },
-        { name: 'Dinner', start: '4:30pm', end: '7:45pm', days: AllDays },
+        { name: 'Dinner', start: '4:30pm', end: '7:15pm', days: AllDays },
         { name: 'Brunch', start: '10:30am', end: '3:00pm', days: Weekends }
     ],
     'MCMAHON': [
         { name: 'Breakfast', start: '7:00am', end: '10:30am', days: Weekdays },
         { name: 'Lunch', start: '10:45am', end: '2:15pm', days: Weekdays },
         { name: 'Between Meals', start: '2:15pm', end: '3:45pm', days: AllDays },
-        { name: 'Dinner', start: '3:45pm', end: '7:45pm', days: [1] },
-        { name: 'Dinner', start: '3:45pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) },
-        { name: 'Brunch', start: '10:30am', end: '2:15pm', days: Weekends }
+        { name: 'Dinner', start: '3:45pm', end: '7:15pm', days: AllDays },
+        { name: 'Brunch', start: '10:30am', end: '2:15pm', days: Weekends },
+        { name: 'Late Night', start: '7:15pm', end: '10:00pm', days: AllDays.filter(day => day !== 1) }
     ]
 }
 
@@ -144,7 +144,6 @@ export const getDiningHallStatusName = (name: string) => {
  * @param hall the dining hall to get the status of
  */
 export const getDiningHallStatusColor = (status: keyof typeof DiningHallStatus): Color => {
-    console.log(status);
     if (!status)
         return 'purple';
 
@@ -280,9 +279,8 @@ export const getCurrentMealService = (hours: DateMealHourEntry[]): keyof typeof 
  */
 export const getCurrentMealHoursForHall = (hours: DateMealHourEntry[], meal: string) => {
     let now = new Date();
-    let target = hours.find(h => h.name.toLowerCase() === meal.toLowerCase() && h.days.includes(now.getDay()));
-    if (!target)
-        return 'Unknown';
+    let target = hours.find(h => h.name.toLowerCase().replace(/\s/g, '_') === meal.toLowerCase().replace(/\s/g, '_') && h.days.includes(now.getDay()));
+    if (!target) return 'Unknown';
 
     return `${moment(target.start).format('h:mma')} - ${moment(target.end).format('h:mma')}`;
 }

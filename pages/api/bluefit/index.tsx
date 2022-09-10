@@ -16,6 +16,7 @@ import { isValidRecQueryMode } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const IGNORE_COLS = [...Array(16)].map((_, i) => 13 + i);
 
 type TimeOccupancyKeyPair = {
     time: string;
@@ -51,8 +52,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     for (let mode of modes) {
         if (mode === 'occupants') {
-            let occupants = (await getOccupancy() as any).occupants;
-            payload[mode] = (!occupants || occupants === -1)
+            let occupants = await getOccupancy();
+            payload[mode] = ((!occupants && occupants !== 0) || occupants === -1)
                 ? await getLatestOccupancy(target)
                 : occupants;
         }
@@ -105,7 +106,8 @@ const getDailyOccupancy = async (day: number) => {
         let [time, ...raw] = d;
         let values = raw
             .map(v => parseInt(v))
-            .filter(v => !isNaN(v));
+            .filter(v => !isNaN(v))
+            .filter((_, i) => !IGNORE_COLS.includes(i + 1));
 
         return {
             time, values,
@@ -113,7 +115,7 @@ const getDailyOccupancy = async (day: number) => {
         }
     });
 
-    return result;
+    return result.filter(r => r !== null);
 }
 
 const getWeeklyOccupancy = async () => {
@@ -138,6 +140,7 @@ const getWeeklyOccupancy = async () => {
         let values = raw
             .map(v => parseInt(v))
             .filter(v => !isNaN(v))
+            .filter((_, i) => !IGNORE_COLS.includes(i + 1));
 
         values.forEach((v: number, i: number) => days[i].values.push({ time, occupants: v }));
     }

@@ -8,6 +8,7 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
+import moment from 'moment';
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/section.module.css';
 
@@ -27,13 +28,16 @@ import {
     useBluefit,
     useLocalStorage
 } from '../../../hooks';
-import moment from 'moment';
 
 export interface RecInsightsCardProps {
     data?: number;
 }
 
-const avg = (vals: number[]) => (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1);
+const avg = (vals: number[]) => {
+    let result = (vals.reduce((a, b) => a + b, 0) / vals.length);
+    if (isNaN(result)) return 'none';
+    return result.toFixed(1);
+};
 
 const avgOf = (vals: BluefitDailyRecord[] | BluefitWeeklyRecord[]) =>
     (vals
@@ -41,7 +45,16 @@ const avgOf = (vals: BluefitDailyRecord[] | BluefitWeeklyRecord[]) =>
         .reduce((a, b) => a + b, 0)
     / vals.length).toFixed(1);
 
-const today = (vals: BluefitDailyRecord[]) => vals.map(v => v.values[v.values.length - 1]);
+const recEpoch = (now = new Date()) => {
+    let day = 24 * 60 * 60 * 1000;
+    let epoch = new Date('January 31st, 2022');
+    now.setHours(0, 0, 0, 0);
+    
+    let diff = Math.round(Math.abs((now.getTime() - epoch.getTime()) / day));
+    return Math.floor(diff / 7) + 1;
+}
+
+const today = (vals: BluefitDailyRecord[], col = recEpoch()) => vals.map(v => v.values[col ?? v.values.length - 1]);
 
 const getArrowIcon = (color: string) => {
     if (color === 'text-success')
@@ -62,7 +75,7 @@ const getChange = (input: number, norm: number) => {
 
     return (
         <span className={color}>
-            <i className={getArrowIcon(color)}></i> {((1 - percent) * 100).toFixed(1)}%
+            <i className={getArrowIcon(color)}></i> {isNaN(percent) ? 'no data' : `${(Math.abs(1 - percent) * 100).toFixed(1)}%`}
         </span>
     )
 }
@@ -113,8 +126,8 @@ type LocalMaximumPayload = {
 }
 
 const getLocalMaximums = (vals: BluefitDailyRecord[]) => {
+    let maxes = Array<LocalMaximumPayload>();
     let nums = vals.map(val => ({ value: val.average, time: val.time }));
-    let maxes = Array<LocalMaximumPayload>()
     for (let i = 1; i < nums.length - 1; ++i) {
         if (nums[i - 1].value < nums[i].value && nums[i].value > nums[i + 1].value)
             maxes.push(nums[i])

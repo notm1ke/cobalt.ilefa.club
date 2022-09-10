@@ -96,16 +96,13 @@ const BuildingInspectionPage = () => {
                                         enabled && site!
                                             .sites[0]
                                             .schedules
-                                            .filter(item => (item as any).title)
-                                            .sort((a, b) => (a as any).title.localeCompare((b as any).title))
-                                            .map(ent => {
-                                                console.log('a');
-                                                return (
-                                                    <div className="col-md-4 align-items-stretch" key={(ent as any).title}>
-                                                        <BuildingDirectoryCard name={(ent as any).title} room={ent.entries} />
-                                                    </div>
-                                                )
-                                            })
+                                            .filter(item => (item as any).room)
+                                            .sort((a, b) => (a as any).room.localeCompare((b as any).room))
+                                            .map(ent => (
+                                                <div className="col-md-4 align-items-stretch" key={(ent as any).room}>
+                                                    <BuildingDirectoryCard name={(ent as any).room} room={ent.entries} />
+                                                </div>
+                                            ))
                                     }
 
                                     {

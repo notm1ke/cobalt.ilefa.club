@@ -69,6 +69,18 @@ type MealCollapsible = {
 
 type MealCollapsePredicate = (menu: DiningHallPayload, meal: Meal) => boolean;
 
+const stationsPresent = (meal: Meal) => {
+    if (!(meal.stations instanceof Array))
+        return meal.stations;
+    return meal.stations.length > 0;
+}
+
+const stationsArray = (meal: Meal) => {
+    if (!(meal.stations instanceof Array))
+        return [meal.stations];
+    return meal.stations;
+}
+
 const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, hours, favorites, status, setOpen, setFavorites }) => {
     const [date, setDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -268,7 +280,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, hours
                     menu!.meals.length > 0 &&
                         menu!
                             .meals
-                            .filter(meal => meal.stations.length)
+                            .filter(stationsPresent)
                             .map((meal, i) => {
                                 let collapsed = meals.find(ent => ent.type === meal.name)?.state;
                                 let mealKey = getEnumKeyByEnumValue(DiningHallStatus, meal.name) as keyof typeof DiningHallStatus;
@@ -283,7 +295,7 @@ const DiningHallMenuModal: React.FC<DiningHallModalProps> = ({ hall, open, hours
                                         <br />
                                         <Collapse isOpen={collapsed}>
                                             {
-                                                meal.stations.length && meal.stations.map((station: any) => (
+                                                stationsPresent(meal) && stationsArray(meal).map((station: any) => (
                                                     <div key={`${hall.name}-${meal.name}-${station.name}`}>
                                                         <span className={styles.diningStation}>{station.name}</span>
                                                         <ul className={styles.diningOptions}>
