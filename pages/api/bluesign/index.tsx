@@ -10,10 +10,10 @@
 
 import TrackedRooms from '@ilefa/bluesign/tracked.json';
 
-import { replaceAll } from '../../../util';
 import { BuildingCode } from '@ilefa/husky';
 import { getRoomSchedule } from '@ilefa/bluesign';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getBluesignCode, replaceAll } from '../../../util';
 
 const isValidSite = (site: string): site is BuildingCode =>
     TrackedRooms
@@ -47,7 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 .status(400)
                 .json({ message: 'Invalid site' });
         
-        let sites = [site].filter(isValidSite);
+        let sites = [site].map(getBluesignCode).filter(isValidSite);
         if (site.includes(','))
             sites = site
                 .split(',')
