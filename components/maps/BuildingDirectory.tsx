@@ -49,7 +49,7 @@ const createRoomEntries = (schedules: RoomSchedule[][]) =>
     flattenSchedules(schedules)
         .map(schedule => {
             if (!schedule) return { entries: [] };
-            let target = Classrooms.filter(room => room.name === (schedule as any).title.replace(/\s/g, ''));
+            let target = Classrooms.filter(room => room.name.toLowerCase() === schedule.room.replace(/\s/g, '').toLowerCase());
             if (!target) return schedule;
             return { ...schedule, ...target };
         }) as RoomEntry[];
@@ -94,7 +94,7 @@ const getRoomStatus = (room: RoomEntry) => {
                     <b className={`text-warning ${styles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {next[0].event}</b> starts {moment(next[0].startDate).fromNow()}
                 </span>
             : <span className="text-dark">
-                <b className={`text-primary ${styles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {(room as any).title}</b> is free.
+                <b className={`text-primary ${styles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {room.room}</b> is free.
             </span>;
 }
 
@@ -234,7 +234,7 @@ export const BuildingDirectory: React.FC<BuildingDirectoryProps> = ({ marker }) 
             selector: 'title',
             sortable: true,
             format: (row, _i) => (
-                <b>{getIconForRoom(row as any, 'mr-1 vaSub')} {(row as any).title}</b>
+                <b>{getIconForRoom(row as any, 'mr-1 vaSub')} {row.room}</b>
             ),
             maxWidth: '25%',
             hide: 'sm'

@@ -74,11 +74,18 @@ const ELEMENTS: NavElement[] = [
             mode: 'icons',
             items: [
                 {
-                    name: 'academic',
+                    name: 'buildings',
                     href: '/buildings',
                     icon: <i className="fa fa-chalkboard-teacher fa-fw"></i>,
                     color: 'bg-primary',
                     content: 'Explore academic buildings and rooms.',
+                },
+                {
+                    name: 'available rooms',
+                    href: '/room/available',
+                    icon: <i className="fa fa-calendar-check fa-fw fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore currently available rooms.',
                 },
                 {
                     name: 'residential',

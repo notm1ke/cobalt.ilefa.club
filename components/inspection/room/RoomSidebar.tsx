@@ -20,8 +20,11 @@ import { BluesignResponsePayload, useBluesign } from '../../../hooks';
 import {
     capitalizeFirst,
     CompleteRoomPayload,
+    CurrentAndNextEvents,
+    getCurrentAndNextEvents,
     getDateFromTime,
     getLatestTimeValue,
+    getRoomStatus,
     shorten
 } from '../../../util';
 
@@ -47,62 +50,6 @@ type CustomScheduleEntry = ScheduleEntry & {
     endDate: Date;
 }
 
-type CurrentAndNextEvents = [CustomScheduleEntry | undefined, CustomScheduleEntry[] | undefined, boolean];
-
-const needsEllipses = (event: string, limit: number) => event.length > limit;
-
-const getShortenedName = ({ event }: CustomScheduleEntry, limit: number) => {
-    let capitalized = capitalizeFirst(event);
-    if (needsEllipses(event, limit))
-        return capitalized.substring(0, limit) + '..';
-    return capitalized;
-}
-
-const getRoomStatus = (room: CompleteRoomPayload, schedule: BluesignResponsePayload) => {
-    let events = schedule
-        .entries
-        .map(ent => ({
-            ...ent,
-            startDate: getDateFromTime(ent.start),
-            endDate: getDateFromTime(ent.end)
-        }));
-
-    let current = events.find(e => e.startDate.getTime() <= Date.now() && e.endDate.getTime() >= Date.now());
-    let next = events.filter(e => e.startDate.getTime() > Date.now());
-
-    return current ?
-                <span className="text-dark">
-                    <div><span className={styles.pulsatingCircle}></span></div>
-                    <div className={styles.pulsatingCircleSeparator}>
-                        <b className={`text-success ${styles.roomScheduleStatus}`}> {getShortenedName(current, 12)}</b> for next <span className="text-purple">{getLatestTimeValue(current.endDate.getTime() - Date.now())}</span>.
-                    </div>
-                </span>
-            : next.length ?
-                <span className="text-dark">
-                    <b className={`text-warning ${styles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {getShortenedName(next[0], 20)}</b> {moment(next[0].startDate).fromNow()}
-                </span>
-            : <span className="text-dark">
-                <b className={`text-success ${styles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {room.name}</b> is free.
-            </span>;
-}
-
-const getCurrentAndNextEvents = (schedule?: BluesignResponsePayload): CurrentAndNextEvents => {
-    if (!schedule) return [undefined, undefined, false];
-
-    let events = schedule
-        .entries
-        .map(ent => ({
-            ...ent,
-            startDate: getDateFromTime(ent.start),
-            endDate: getDateFromTime(ent.end)
-        }));
-
-    let current = events.find(e => e.startDate.getTime() <= Date.now() && e.endDate.getTime() >= Date.now());
-    let next = events.filter(e => e.startDate.getTime() > Date.now());
-
-    return [current, next, true];
-}
-
 const getColorForScheduleEntry = (entry: CustomScheduleEntry, events: CurrentAndNextEvents): 'text-dark' | 'text-success' | 'text-warning' => {
     const [current, next, available] = events;
     if (!available)
@@ -123,7 +70,7 @@ const getColorForScheduleEntry = (entry: CustomScheduleEntry, events: CurrentAnd
 const sanitizeRoomEventId = (event: string) => event.replace(/\s/g, '').replace(/[^\w\s]+/gi, '');
 
 const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' | 'error', schedule?: BluesignResponsePayload): SidebarEntry[] => {
-    const events = getCurrentAndNextEvents(schedule);
+    const events = getCurrentAndNextEvents(schedule?.entries);
 
     return [
         {
@@ -131,7 +78,9 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
             name: 'Room Status',
             contents: [
                 {
-                    name: state !== 'loaded' ? 'Loading..' : getRoomStatus(data, schedule!),
+                    name: state !== 'loaded'
+                        ? 'Loading..'
+                        : getRoomStatus(data.room, schedule!.entries, true, 12),
                     key: 'status',
                     value: ''
                 },
@@ -152,7 +101,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                         }))
                         .map((entry, i) => ({
                             name: <>
-                                <a href={entry.section ? `/course/${entry.event.replace(/\s/g, '')}` : '#'} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${sanitizeRoomEventId(entry.event)}-${entry.section ?? i}`}>{isMobile ? entry.event : shorten(entry.event, 18)}</a>
+                                <a href={entry.section ? `/course/${entry.event.replace(/\s/g, '')}` : '#'} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${sanitizeRoomEventId(entry.event)}-${i}`}>{isMobile ? entry.event : shorten(entry.event, 18)}</a>
                                 {
                                     !entry.section && (
                                         <UncontrolledTooltip target={`room-event-${sanitizeRoomEventId(entry.event)}-${i}`}>
