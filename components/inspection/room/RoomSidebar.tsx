@@ -8,7 +8,6 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-import moment from 'moment';
 import styles from '../../styling/inspection.module.css';
 
 import { DataView } from '../../';
@@ -18,7 +17,6 @@ import { Badge, UncontrolledTooltip } from 'reactstrap';
 import { BluesignResponsePayload, useBluesign } from '../../../hooks';
 
 import {
-    capitalizeFirst,
     CompleteRoomPayload,
     CurrentAndNextEvents,
     getCurrentAndNextEvents,
