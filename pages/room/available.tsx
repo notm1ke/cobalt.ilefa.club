@@ -84,7 +84,7 @@ const BuildingsPage = () => {
         site: sites
             .map(site => site.state ? site.site : null)
             .filter(site => site !== null) as CampusType[],
-        pollTime: 10000
+        pollTime: 60000
     });
 
     const resetResults = () => setResults(response!.rooms!);
