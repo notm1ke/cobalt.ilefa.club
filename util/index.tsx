@@ -722,6 +722,12 @@ export const getTermCode = (term: string) => {
     return term.substring(0, 1);
 }
 
+/**
+ * Returns the enrollment status color
+ * for a given section's enrollment status.
+ * 
+ * @param enrollment the enrollment object
+ */
 export const getEnrollmentColor = (enrollment: HuskyEnrollmentPayload): string => {
     let current = parseInt(enrollment.current as any);
     let max = parseInt(enrollment.max as any);
@@ -736,6 +742,23 @@ export const getEnrollmentColor = (enrollment: HuskyEnrollmentPayload): string =
         return 'text-warning';
 
     return 'text-success';
+}
+
+/**
+ * Returns the semester indicator color for
+ * a given section's term.
+ * 
+ * @param semester the term to get a color for
+ */
+export const getSemesterColor = (semester: string) => {
+    let term = getTermCode(semester);
+    switch (term) {
+        case 'S': return 'text-success';
+        case 'J': return 'text-green';
+        case 'F': return 'text-fall';
+        case 'W': return 'text-info';
+        default: return '';
+    }
 }
 
 /**
@@ -813,9 +836,6 @@ export function getEnumKeyByEnumValue<T extends Object>(target: T, value: string
 export const inferIcon = (input: string | JSX.Element, classes = 'fa-fw') => {
     if (input instanceof String) {
         let prefix = 'fa';
-        if (input.startsWith('mdi'))
-            prefix = 'mdi';
-
         return <i className={`${prefix} ${input} ${classes}`}></i>
     }
 

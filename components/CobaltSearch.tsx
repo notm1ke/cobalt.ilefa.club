@@ -12,7 +12,6 @@ import React from 'react';
 import MdiIcon from '@mdi/react';
 import Autosuggest from 'react-autosuggest';
 import styling from './styling/search.module.css';
-import IsolatedScroll from 'react-isolated-scroll';
 
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -325,19 +324,6 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
                         </div>
                     </div>
                 )}
-                renderSuggestionsContainer={({ containerProps, children }) => {
-                    const { ref, ...restContainerProps } = containerProps;
-                    const callRef = (isolatedScroll: any) => {
-                        if (!!isolatedScroll)
-                            ref(isolatedScroll.component);
-                    }
-                    
-                    return (
-                        <IsolatedScroll ref={callRef} {...restContainerProps}>
-                            {children}
-                        </IsolatedScroll>
-                    )
-                }}
                 containerProps={{
                     className: 'input-group-alternative mb-4 input-group'
                 }}

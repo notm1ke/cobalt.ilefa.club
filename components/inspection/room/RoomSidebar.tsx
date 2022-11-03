@@ -10,6 +10,7 @@
 
 import styles from '../../styling/inspection.module.css';
 
+import { Fragment } from 'react';
 import { DataView } from '../../';
 import { isMobile } from 'react-device-detect';
 import { ScheduleEntry } from '@ilefa/bluesign';
@@ -98,7 +99,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                             endDate: getDateFromTime(entry.end)
                         }))
                         .map((entry, i) => ({
-                            name: <>
+                            name: <Fragment key={i}>
                                 <a href={entry.section ? `/course/${entry.event.replace(/\s/g, '')}` : '#'} className={`${getColorForScheduleEntry(entry, events)} font-weight-bold`} id={`room-event-${sanitizeRoomEventId(entry.event)}-${i}`}>{isMobile ? entry.event : shorten(entry.event, 18)}</a>
                                 {
                                     !entry.section && (
@@ -117,7 +118,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                                         </UncontrolledTooltip>
                                     )
                                 }
-                            </>,
+                            </Fragment>,
                             key: entry.event,
                             value: `${entry.start} - ${entry.end}`     
                         }))

@@ -160,7 +160,7 @@ const BuildingsPage = () => {
                                     .sort((a, b) => BuildingCode[a.code].localeCompare(BuildingCode[b.code]))
                                     .sort((a, b) => CampusSorting[getCampusFromAddress(a.code as BuildingCodeKey).toUpperCase()] - CampusSorting[getCampusFromAddress(b.code as BuildingCodeKey).toUpperCase()])
                                     .map(building => (
-                                        <div className="col-md-6 d-flex align-items-stretch">
+                                        <div className="col-md-6 d-flex align-items-stretch" key={building.code}>
                                             <BuildingCard
                                                 buildingType={building.code as BuildingCodeKey}
                                                 campus={getCampusFromAddress(building.code as BuildingCodeKey)}

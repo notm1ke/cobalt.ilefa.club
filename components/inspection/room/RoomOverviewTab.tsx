@@ -9,14 +9,16 @@
  */
 
 import Link from 'next/link';
-import ThreeSixtyRenderer from 'react-photosphere';
+import dynamic from 'next/dynamic';
 
 import styles from '../../styling/inspection.module.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RoomInspectionPayload } from '../../../hooks';
 import { capitalizeFirst, RoomImageMode } from '../../../util';
 import { BoardType, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
+
+const ReactPhotoSphereViewer = dynamic(() => import('react-photo-sphere-viewer').then(module => module.ReactPhotoSphereViewer), { ssr: false });
 
 export interface RoomOverviewTabProps {
     room: RoomInspectionPayload;
@@ -25,6 +27,7 @@ export interface RoomOverviewTabProps {
 }
 
 export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMode, styledName }) => {
+    const ref = useRef();
     const [rendered, setRendered] = useState(false);
 
     useEffect(() => {
@@ -56,7 +59,16 @@ export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMod
             <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-camera-retro fa-fw"></i> {imageMode === RoomImageMode.THREE_SIXTY ? <>360&#176; View</> : <>Room Image</>}</pre>
             { !room.threeSixtyView && <p className={`${styles.description} mb--3`}>No images are available for <b>{styledName}</b>.</p> }
             { room.threeSixtyView && imageMode === RoomImageMode.STATIC && <img src={room.threeSixtyView} height={500} /> }
-            { room.threeSixtyView && imageMode === RoomImageMode.THREE_SIXTY && rendered && <ThreeSixtyRenderer src={room.threeSixtyView} height={500} timeAnim={false} /> }
+            { room.threeSixtyView && imageMode === RoomImageMode.THREE_SIXTY && rendered && (
+                <ReactPhotoSphereViewer
+                    ref={ref}
+                    src={room.threeSixtyView}
+                    height={500}
+                    width={722}
+                    littlePlanet={false}
+                    container="div"
+                />
+            ) }
             { room.liveStreamUrl &&
                 (
                     <>

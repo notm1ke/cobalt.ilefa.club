@@ -11,7 +11,7 @@
 import React from 'react';
 import moment from 'moment';
 import MdiIcon from '@mdi/react';
-import Timeline from 'react-gantt-simple-timeline';
+// import Timeline from 'react-gantt-simple-timeline';
 import DataTable from 'react-data-table-component';
 import Classrooms from '@ilefa/husky/classrooms.json';
 
@@ -201,7 +201,7 @@ export const BuildingDirectoryEntry: React.FC<RoomDataProps> = ({ data }) => {
 
     return (
         <div style={{ padding: 10 }}>
-            <Timeline
+            {/* <Timeline
                 current={new Date()}
                 rows={ROWS}
                 cols={COLUMNS}
@@ -216,7 +216,7 @@ export const BuildingDirectoryEntry: React.FC<RoomDataProps> = ({ data }) => {
                 elementClass='element'
                 alignElementHeight={false}
                 gridColor='#CCCCCC'
-            />
+            /> */}
         </div>
     )
 }
