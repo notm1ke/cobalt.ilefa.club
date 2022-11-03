@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic';
 
 import styles from '../../styling/inspection.module.css';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RoomInspectionPayload } from '../../../hooks';
 import { capitalizeFirst, RoomImageMode } from '../../../util';
 import { BoardType, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
@@ -27,7 +27,6 @@ export interface RoomOverviewTabProps {
 }
 
 export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMode, styledName }) => {
-    const ref = useRef();
     const [rendered, setRendered] = useState(false);
 
     useEffect(() => {
@@ -61,7 +60,6 @@ export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMod
             { room.threeSixtyView && imageMode === RoomImageMode.STATIC && <img src={room.threeSixtyView} height={500} /> }
             { room.threeSixtyView && imageMode === RoomImageMode.THREE_SIXTY && rendered && (
                 <ReactPhotoSphereViewer
-                    ref={ref}
                     src={room.threeSixtyView}
                     height={500}
                     width={722}

@@ -137,67 +137,67 @@ export const BuildingDirectoryEntry: React.FC<RoomDataProps> = ({ data }) => {
         </div>
     )
 
-    const renderElement = (element) => {
-        return (
-            <div className={['element-wrapper', element.color].join(' ')}>
-                <div className='time'>
-                    {moment(element.start).format('h:mm a')} - {moment(element.end).format('h:mm a')}
-                </div>
-                <h3 className={styles.roomAgendaTitle}>{element.title}</h3>
-            </div>
-        )
-    }
+    // const renderElement = (element) => {
+    //     return (
+    //         <div className={['element-wrapper', element.color].join(' ')}>
+    //             <div className='time'>
+    //                 {moment(element.start).format('h:mm a')} - {moment(element.end).format('h:mm a')}
+    //             </div>
+    //             <h3 className={styles.roomAgendaTitle}>{element.title}</h3>
+    //         </div>
+    //     )
+    // }
 
-    const renderCurrentTimeLabel = (date) => moment(date).format('h:mm a');
+    // const renderCurrentTimeLabel = (date) => moment(date).format('h:mm a');
 
-    const renderColHeaderItem = (col) => (
-        <div className='col-head'>{col.title}</div>
-    )
+    // const renderColHeaderItem = (col) => (
+    //     <div className='col-head'>{col.title}</div>
+    // )
 
-    const renderRowHeaderItem = _ => (<></>)
+    // const renderRowHeaderItem = _ => (<></>)
 
-    // noinspection JSUnusedLocalSymbols
-    const handleElementClick = (element, rowIndex, _e) => {
-        // eslint-disable-next-line no-undef
-        alert(`clicked to element with key "${element.key}" at row with index "${rowIndex}"`)
-    }
+    // // noinspection JSUnusedLocalSymbols
+    // const handleElementClick = (element, rowIndex, _e) => {
+    //     // eslint-disable-next-line no-undef
+    //     alert(`clicked to element with key "${element.key}" at row with index "${rowIndex}"`)
+    // }
 
-    const START_DATE = new Date();
-    const END_DATE = new Date();
+    // const START_DATE = new Date();
+    // const END_DATE = new Date();
 
-    START_DATE.setTime(getDateFromTime(data?.entries[0]?.start ?? '12:00 AM').getTime())
-    END_DATE.setTime(getDateFromTime(data?.entries[data.entries.length - 1]?.end ?? '11:59 PM').getTime());
+    // START_DATE.setTime(getDateFromTime(data?.entries[0]?.start ?? '12:00 AM').getTime())
+    // END_DATE.setTime(getDateFromTime(data?.entries[data.entries.length - 1]?.end ?? '11:59 PM').getTime());
 
-    const DURATION = END_DATE.getTime() - START_DATE.getTime()
-    const COL_DURATION = 1000 * 60 * 30;
-    const COLS_COUNT = Math.ceil(DURATION / COL_DURATION)
+    // const DURATION = END_DATE.getTime() - START_DATE.getTime()
+    // const COL_DURATION = 1000 * 60 * 30;
+    // const COLS_COUNT = Math.ceil(DURATION / COL_DURATION)
 
-    const COLUMNS = [...Array(COLS_COUNT).keys()].map(i => {
-        const start = new Date(START_DATE.getTime() + i * COL_DURATION)
-        const end = new Date(START_DATE.getTime() + (i + 1) * COL_DURATION)
+    // const COLUMNS = [...Array(COLS_COUNT).keys()].map(i => {
+    //     const start = new Date(START_DATE.getTime() + i * COL_DURATION)
+    //     const end = new Date(START_DATE.getTime() + (i + 1) * COL_DURATION)
         
-        return {
-            key: `col-${i}`,
-            title: moment(start).format('h:mm A'),
-            start,
-            end
-        }
-    });
+    //     return {
+    //         key: `col-${i}`,
+    //         title: moment(start).format('h:mm A'),
+    //         start,
+    //         end
+    //     }
+    // });
 
-    const ROWS = [
-        {
-            title: (data as any).title,
-            key: (data as any).title,
-            elements: data.entries.map(entry => ({
-                key: `${entry.event}-${entry.section ?? entry.independent}`,
-                title: entry.event,
-                content: 'No content',
-                start: getDateFromTime(entry.start),
-                end: getDateFromTime(entry.end),
-                color: 'red'
-            }))    
-        }
-    ];
+    // const ROWS = [
+    //     {
+    //         title: (data as any).title,
+    //         key: (data as any).title,
+    //         elements: data.entries.map(entry => ({
+    //             key: `${entry.event}-${entry.section ?? entry.independent}`,
+    //             title: entry.event,
+    //             content: 'No content',
+    //             start: getDateFromTime(entry.start),
+    //             end: getDateFromTime(entry.end),
+    //             color: 'red'
+    //         }))    
+    //     }
+    // ];
 
     return (
         <div style={{ padding: 10 }}>
