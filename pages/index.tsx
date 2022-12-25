@@ -9,7 +9,6 @@
  */
 
 import React from 'react';
-import Link from 'next/link';
 import styles from '../components/styling/home.module.css';
 
 import { mdiFlask } from '@mdi/js';
@@ -79,14 +78,13 @@ const HomePage = () => {
                     glyph="/glyphs/course.svg"
                     alt="Courses Glyph"
                     description={
-                        <>
+                        <p>
                             Easily search for your courses and find detailed information about what <b>content areas</b> and <b>competencies</b> they fulfill, which <b>sections</b> are running, and how good the <b>professors</b> are all in one place.
-                            <br /><br /><Link href="/info#search-modifiers">
-                                <a className="btn btn-sm btn-primary-light text-lowercase font-weight-500 shine">
-                                    <i className="fa fa-chevron-right fa-fw"></i> Check out how to use search modifiers
-                                </a>
-                            </Link>
-                        </>
+                            <br /><br />
+                            <a href="/info#search-modifiers" className="btn btn-sm btn-primary-light text-lowercase font-weight-500 shine">
+                                <i className="fa fa-chevron-right fa-fw"></i> Check out how to use search modifiers
+                            </a>
+                        </p>
                     }
                     className="background-circuits"
                     tags={[
@@ -114,12 +112,12 @@ const HomePage = () => {
                     glyph="/glyphs/maps.svg"
                     alt="Maps Glyph"
                     description={
-                        <>
-                            <div className="mt--3 mb--2">
+                        <p>
+                            <span className="mt--3 mb--2">
                                 <span className={styles.comingSoonFeature}>Coming Soon</span>
-                            </div>
+                            </span>
                             <br/>Explore the Storrs Campus and view rich information about buildings and the <b>rooms that are available</b> in them, dining halls and <b>what they're serving</b>, residential buildings and the <b>quality of their dorms</b>, and other points of interest.
-                        </>
+                        </p>
                     }
                     className="background-circuits"
                     tags={[
@@ -250,10 +248,10 @@ const HomePage = () => {
                         alt="Snapshot Glyph"
                         className="background-circuits"
                         description={
-                            <>
+                            <p>
                                 <b>Coming Soon</b><br/>
                                 Visually explore course information from previous years using ILEFA's <a href="https://github.com/ilefa/snapshots" className={`text-light ${styles.sectionLink} shine`}>snapshot dataset</a> (starting 2022).
-                            </>
+                            </p>
                         }
                         tags={[
                             {

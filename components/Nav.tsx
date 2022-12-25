@@ -227,19 +227,17 @@ export const Nav = () => {
 
     return (
         <header className="header-global">
-            <Navbar className="navbar-main navbar-transparent navbar-light" expand="lg">
+            <Navbar className="navbar-main navbar-transparent navbar-light mt-2" expand="lg">
                 <div className="container">
-                    <Link href="/">
-                        <a className={`mr-lg-1 navbar-brand ${styles.navBrandText}`}>
-                            <Image
-                                src="/logo.png"
-                                alt="Cobalt"
-                                width={400}
-                                height={300}
-                                className={`img img-fluid ${styles.navBrandImg}`}
-                            />
-                        </a>
-                    </Link>
+                    <a href="/" className={`mr-lg-1 navbar-brand ${styles.navBrandText}`}>
+                        <img
+                            src="/logo.png"
+                            alt="Cobalt"
+                            width={400}
+                            height={300}
+                            className={`img img-fluid ${styles.navBrandImg}`}
+                        />
+                    </a>
                     <button className="navbar-toggler" id="navbar_global">
                         <span className="navbar-toggler-icon" />
                     </button>
@@ -253,11 +251,9 @@ export const Nav = () => {
                         <div className="navbar-collapse-header">
                             <div className="row">
                                 <div className="col-6 collapse-brand">
-                                    <Link href="/">
-                                        <a className={`navbar-collapse-title text-primary ${styles.navBrandMobileText}`}>
-                                            Cobalt
-                                        </a>
-                                    </Link>
+                                    <a href="/" className={`navbar-collapse-title text-primary ${styles.navBrandMobileText}`}>
+                                        Cobalt
+                                    </a>
                                 </div>
                                 <div className="col-6 collapse-close">
                                     <button className={`navbar-toggler ${styles.navBrandMobileCloser}`} id="navbar_global">
@@ -358,11 +354,9 @@ export const Nav = () => {
                                         </UncontrolledDropdown>
 
                                     return <li className="nav-item" key={element.key}>
-                                        <Link href={element.href} key={element.href}>
-                                            <a className={`nav-link ${styles.navLink}`}>
-                                                <i className={`${element.icon} fa-fw`}></i> {iconMode ? '' : element.name ?? ''}
-                                            </a>
-                                        </Link>
+                                        <a href={element.href} key={element.href} className={`nav-link ${styles.navLink}`}>
+                                            <i className={`${element.icon} fa-fw`}></i> {iconMode ? '' : element.name ?? ''}
+                                        </a>
                                     </li>;
                                 })
                             }

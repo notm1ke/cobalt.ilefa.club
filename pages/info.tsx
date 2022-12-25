@@ -164,7 +164,7 @@ const InfoPage = () => {
                             <div className="col px-0">
                                 <div className="row align-items-center justify-content-center">
                                     <div className="col-lg-6 text-center">
-                                        <h1 className={`${globalStyles.nameTitle} text-white display-1`}>Cobalt</h1>
+                                        <h1 className={`${globalStyles.nameTitle} text-white display-1`}>Cobalt v5</h1>
                                         <h2 className={`${globalStyles.tagline} display-4 font-weight-normal text-white mb-5`}>
                                             An ILEFA project, for all UConn students.
                                         </h2>

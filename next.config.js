@@ -1,4 +1,5 @@
 module.exports = {
     productionBrowserSourceMaps: false,
-    poweredByHeader: false   
+    poweredByHeader: false,
+    swcMinify: true
 }

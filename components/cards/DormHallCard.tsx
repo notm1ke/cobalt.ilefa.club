@@ -8,7 +8,6 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-import Link from 'next/link';
 import styles from '../styling/building.module.css';
 import cardStyles from '../styling/card.module.css';
 
@@ -43,11 +42,9 @@ export const DormHallCard: React.FC<DormHallCardProps> = ({ dorm }) => {
                 <div className="d-flex">
                     <div>
                         <h5>
-                            <Link href={`/dorms/${token}`}>
-                                <a className={`${cardStyles.cardSectionTitle} text-primary-light`}>
-                                    {icon ?? ''} {name}
-                                </a>
-                            </Link>
+                            <a href={`/dorms/${token}`} className={`${cardStyles.cardSectionTitle} text-primary-light`}>
+                                {icon ?? ''} {name}
+                            </a>
                         </h5>
 
                         <p className={`text-dark ${cardStyles.cardSectionText}`}>
@@ -55,11 +52,9 @@ export const DormHallCard: React.FC<DormHallCardProps> = ({ dorm }) => {
                         </p>
                         
                         <div className={styles.projectCardLink}>
-                            <Link href={`/dorms/${token}`}>
-                                <a className="btn btn-dark btn-sm text-lowercase shine">
-                                    <i className="fa fa-search fa-fw"></i> info
-                                </a>
-                            </Link>
+                            <a href={`/dorms/${token}`} className="btn btn-dark btn-sm text-lowercase shine">
+                                <i className="fa fa-search fa-fw"></i> info
+                            </a>
                             <a className="btn btn-dark btn-sm text-lowercase shine">
                                 <i className="fas fa-map-marked fa-fw mr-1"></i> maps
                             </a>

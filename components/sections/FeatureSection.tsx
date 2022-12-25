@@ -41,7 +41,7 @@ export const FeatureSection: React.FC<FeatureSectionProps> = props => (
                         <div className={`col-md-10 ${styles.featureIconPosition} mb-2`}>
                             <h4 className={`${styles.featureTitle} text-white`}>{props.title}</h4>
                         </div>
-                        <p className="text-white mb--3">{props.description}</p>
+                        {!(props.description instanceof String) ? <div className="text-white mb--3">{props.description}</div> : <p className="text-white mb--3">{props.description}</p>}
                         <ul className="list-unstyled mt-5">
                             {
                                 props.tags.map(tag => 
