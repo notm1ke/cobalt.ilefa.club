@@ -75,6 +75,7 @@ $secondary:     #f4f5f7 !default;
 $success:       $green !default;
 $info:          #50a9e0 !default;
 $warning:       $orange !default;
+$fall:         #ff6000 !default;
 $gold:         #e5b73b !default;
 $danger:        $red !default;
 $purple:        $purple !default;
@@ -98,6 +99,7 @@ $theme-colors: map-merge((
   "primary":       $primary,
   "primary-light": $primaryLight,
   "warp":          $warp,
+  "fall":          $fall,
   "gold":          $gold,
   "red":           $google-plus,
   "dark-red":      $youtube,

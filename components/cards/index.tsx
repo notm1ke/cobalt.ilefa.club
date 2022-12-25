@@ -17,7 +17,6 @@ export * from './StatusCard';
 
 export * from './building/BuildingCard';
 export * from './building/BuildingDirectoryCard';
-export * from './building/BuildingRoomCard';
 
 export * from './dining/DiningHallCard';
 export * from './dining/DiningHallMetricsCard';

@@ -42,15 +42,15 @@ const BuildingsPage = () => {
 
     const predicates: ((input: string, building: BuildingPayload) => boolean)[] = [
         (input, { name }) => name.toLowerCase().includes(input)
-                                || name.toLowerCase().slice(0, input.length) === input.toLowerCase(),
+            || name.toLowerCase().slice(0, input.length) === input.toLowerCase(),
         (input, { code }) => code.toLowerCase().includes(input)
-                                || code.toLowerCase().slice(0, input.length) === input.toLowerCase()
-                                || BuildingDescriptions[code]?.toLowerCase()?.includes(input)
-                                || BuildingAddresses[code]?.toLowerCase()?.includes(input),
+            || code.toLowerCase().slice(0, input.length) === input.toLowerCase()
+            || BuildingDescriptions[code]?.toLowerCase()?.includes(input)
+            || BuildingAddresses[code]?.toLowerCase()?.includes(input),
         (input, { rooms }) => rooms.some(room => room.name.toLowerCase().slice(0, input.length) === input.toLowerCase())
-                                || rooms.some(room => room.name.toLowerCase().includes(input))
-                                || rooms[0]?.building.campus.toLowerCase().includes(input)
-                                || rooms[0]?.building.campus.toLowerCase().startsWith(input)
+            || rooms.some(room => room.name.toLowerCase().includes(input))
+            || rooms[0]?.building.campus.toLowerCase().includes(input)
+            || rooms[0]?.building.campus.toLowerCase().startsWith(input)
     ];
 
     const onSearch = (query: string) => {
@@ -64,8 +64,8 @@ const BuildingsPage = () => {
 
     const filter = (query: string) => setResults(
         buildings!
-        .filter(building => predicates
-            .some(predicate => predicate(query, building))));
+            .filter(building => predicates
+                .some(predicate => predicate(query, building))));
 
     const enabled = !loading && !error && buildings;
 
@@ -82,7 +82,7 @@ const BuildingsPage = () => {
                 <title>Cobalt » Buildings</title>
                 <meta name="description" content={`Explore buildings around all UConn campuses.`} />
             </Head>
-            <Nav/>
+            <Nav />
             <div className="position-relative background-gradient">
                 <div className="section section-hero section-shaped background-circuits">
                     <div className="shape shape-style-3 shape-default"></div>
@@ -125,6 +125,28 @@ const BuildingsPage = () => {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="row align-items-center justify-content-center">
+                                    <div className="col-md-3 mr--6">
+                                        <a className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
+                                            <i className="fas fa-filter fa-fw mr-1"></i> Custom Search
+                                        </a>
+                                    </div>
+                                    <div className="col-md-3 mr--6">
+                                        <a href="/room/available" className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
+                                            <i className="fa fa-check-to-slot fa-fw mr-1"></i> Available Rooms
+                                        </a>
+                                    </div>
+                                    <div className="col-md-3 mr--6">
+                                        <a className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
+                                            <i className="fas fa-map-location fa-fw mr-1"></i> Wayfinding
+                                        </a>
+                                    </div>
+                                    <div className="col-md-3 mr--6">
+                                        <a className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
+                                            <i className="fas fa-sitemap fa-fw mr-1"></i> Waterfall View
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -138,7 +160,7 @@ const BuildingsPage = () => {
                                     .sort((a, b) => BuildingCode[a.code].localeCompare(BuildingCode[b.code]))
                                     .sort((a, b) => CampusSorting[getCampusFromAddress(a.code as BuildingCodeKey).toUpperCase()] - CampusSorting[getCampusFromAddress(b.code as BuildingCodeKey).toUpperCase()])
                                     .map(building => (
-                                        <div className="col-md-6 d-flex align-items-stretch">
+                                        <div className="col-md-6 d-flex align-items-stretch" key={building.code}>
                                             <BuildingCard
                                                 buildingType={building.code as BuildingCodeKey}
                                                 campus={getCampusFromAddress(building.code as BuildingCodeKey)}

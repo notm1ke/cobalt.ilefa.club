@@ -8,8 +8,12 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-import { CampusType } from '@ilefa/husky';
+import moment from 'moment';
+
 import { BuildingCodeKey } from '../hooks'
+import { ScheduleEntry } from '@ilefa/bluesign';
+import { BuildingCode, CampusType } from '@ilefa/husky';
+import { capitalizeFirst, getDateFromTime, getLatestTimeValue } from '.';
 
 export const EXCLUDED_BUILDINGS = [
     'GN',
@@ -324,4 +328,124 @@ export const getCampusFromAddress = (buildingType: BuildingCodeKey): CampusType 
     if (addr.includes('Groton')) return 'avery_point';
 
     return 'any';
+}
+
+export type ResolvableBuildingCode = keyof typeof BuildingCode;
+
+export type ResolvableSite = keyof Exclude<CampusType, 'any'> | 'unknown';
+
+type SiteMap = {
+    [key in Exclude<CampusType, 'any'>]: ResolvableBuildingCode[];
+}
+
+export const Sites: SiteMap = {
+    'avery_point': ['ACD', 'MARN'],
+    'hartford': ['HPL', 'HTB', 'SSW'],
+    'stamford': ['DWTN', 'USRH'],
+    'waterbury': ['WTBY', 'WSRH'],
+    'storrs': Object
+        .keys(BuildingCode)
+        .map(key => key as ResolvableBuildingCode)
+        .filter(key => key !== 'ACD' && key !== 'MARN'
+                    && key !== 'HPL' && key !== 'HTB' && key !== 'SSW'
+                    && key !== 'DWTN' && key !== 'USRH'
+                    && key !== 'WTBY') as ResolvableBuildingCode[]
+};
+
+/**
+ * Attempts to resolve a site given a
+ * room location string.
+ * 
+ * @param location the given room location
+ */
+export const detectSiteFromRoom = (location?: string): ResolvableSite => {
+    if (!location || !location.trim()) return 'unknown';
+
+    let building = location.split(/([a-zA-Z]{1,})[\s_.]{0,1}\d{2,}[a-zA-Z]*/).slice(1)[0];
+    if (!building) return 'unknown';
+    
+    let site = Object
+        .keys(Sites)
+        .find(site => Sites[site as ResolvableSite].includes(building.toUpperCase() as ResolvableBuildingCode)) as ResolvableSite;
+
+    return site ?? 'unknown';
+}
+
+export type CustomScheduleEntry = ScheduleEntry & {
+    startDate: Date;
+    endDate: Date;
+}
+
+export const needsEllipses = (event: string, limit: number) => event.length > limit;
+
+/**
+ * Returns the shortened name of an event.
+ * 
+ * @param entry the event schedule entry 
+ * @param limit the limit of characters to display
+ */
+export const getShortenedName = ({ event }: CustomScheduleEntry, limit: number) => {
+    let capitalized = capitalizeFirst(event);
+    if (needsEllipses(event, limit))
+        return capitalized.substring(0, limit) + '..';
+    return capitalized;
+}
+
+/**
+ * Returns the display element for a room;s
+ * current schedule item(s).
+ * 
+ * @param name the name of the room
+ * @param schedule the room's schedule
+ * @param shorten whether to shorten event name(s)
+ */
+export const getRoomStatus = (name: string, schedule: ScheduleEntry[], shorten: boolean, shortenLength = 20) => {
+    let events = schedule
+        .map(ent => ({
+            ...ent,
+            startDate: getDateFromTime(ent.start),
+            endDate: getDateFromTime(ent.end)
+        }));
+
+    let current = events.find(e => e.startDate.getTime() <= Date.now() && e.endDate.getTime() >= Date.now());
+    let next = events.filter(e => e.startDate.getTime() > Date.now());
+
+    return current ?
+                <span className="text-dark">
+                    <div><span className="pulsatingCircle pulsatingCircleSpacing"></span></div>
+                    <div className="pulsatingCircleSeparator">
+                        <b className="text-success roomScheduleStatus"> {shorten ? getShortenedName(current, shortenLength) : current.event}</b> for next <span className="text-purple">{getLatestTimeValue(current.endDate.getTime() - Date.now())}</span>.
+                    </div>
+                </span>
+            : next.length ?
+                <span className="text-dark">
+                    <b className="text-warning roomScheduleStatus"><i className="fa fa-clock fa-fw"></i> {shorten ? getShortenedName(next[0], shortenLength) : next[0].event}</b> {moment(next[0].startDate).fromNow()}
+                </span>
+            : <span className="text-dark">
+                <b className="text-success roomScheduleStatus"><i className="fas fa-calendar-check fa-fw"></i> {name}</b> is free.
+            </span>;
+}
+
+export type CurrentAndNextEvents = [CustomScheduleEntry | undefined, CustomScheduleEntry[] | undefined, boolean];
+
+/**
+ * Returns the currenr and next events given
+ * a set of schedule entries.
+ * 
+ * @param schedule the schedule entries for the room
+ */
+export const getCurrentAndNextEvents = (schedule?: ScheduleEntry[]): CurrentAndNextEvents => {
+    if (!schedule) return [undefined, undefined, false];
+
+    let events = schedule
+        .map(ent => ({
+            ...ent,
+            startDate: getDateFromTime(ent.start),
+            endDate: getDateFromTime(ent.end)
+        }));
+
+    let current = events.find(e => e.startDate.getTime() <= Date.now() && e.endDate.getTime() >= Date.now());
+    let next = events.filter(e => e.startDate.getTime() > Date.now());
+
+    return [current, next, true];
 }

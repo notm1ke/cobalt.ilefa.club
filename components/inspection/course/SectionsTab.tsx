@@ -44,6 +44,7 @@ import {
     getModalityIndicator,
     getRealRoomCode,
     getRoomDisplayName,
+    getSemesterColor,
     getTermCode,
     Modalities,
     prunePrimitiveDuplicates,
@@ -218,7 +219,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             selector: 'section',
             sortable: true,
             format: (row, _i) => <>
-                                    <b className={styles.campusIndicator} id={`tooltip-campusIndicator-${row.section.replace(/\W/g, '')}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
+                                    <b className={`${styles.campusIndicator} ${getSemesterColor(row.term)}`} id={`tooltip-campusIndicator-${row.section.replace(/\W/g, '')}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
                                         [{getCampusIndicator(row.campus)}/{getModalityIndicator(row.mode) + (useTerm ? `/${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}` : '')}]
                                     </b> {row.section}
                                     <UncontrolledTooltip delay={0} placement="top" target={`tooltip-campusIndicator-${row.section.replace(/\W/g, '')}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>

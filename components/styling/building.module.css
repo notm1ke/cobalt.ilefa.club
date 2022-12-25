@@ -87,3 +87,8 @@
 .pulsatingCircleSpacing {
     margin-top: 8px !important;
 }
+
+.siteBtn {
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: 400 !important;
+}

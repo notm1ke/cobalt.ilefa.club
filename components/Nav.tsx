@@ -74,11 +74,18 @@ const ELEMENTS: NavElement[] = [
             mode: 'icons',
             items: [
                 {
-                    name: 'academic',
+                    name: 'buildings',
                     href: '/buildings',
                     icon: <i className="fa fa-chalkboard-teacher fa-fw"></i>,
                     color: 'bg-primary',
                     content: 'Explore academic buildings and rooms.',
+                },
+                {
+                    name: 'available rooms',
+                    href: '/room/available',
+                    icon: <i className="fa fa-calendar-check fa-fw fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore currently available rooms.',
                 },
                 {
                     name: 'residential',
@@ -281,7 +288,7 @@ export const Nav = () => {
 
                                     if (element.dropdown && element.dropdown.mode === 'icons') {
                                         return isDesktop
-                                            ? <BrowserView>
+                                            ? <BrowserView key={element.href}>
                                                 <UncontrolledDropdown nav>
                                                     <DropdownToggle nav className={styles.navLink}>
                                                         <i className={`${element.icon} fa-fw`}></i>
@@ -294,7 +301,7 @@ export const Nav = () => {
                                                                     if (item.devOnly && !isDevelopment())
                                                                         return;
 
-                                                                    return <Media className="d-flex align-items-center" href={item.href}>
+                                                                    return <Media className="d-flex align-items-center" href={item.href} key={item.name}>
                                                                         <div className={`icon icon-shape ${item.color ?? 'bg-primary'} rounded-circle text-white`}>
                                                                             {item.icon}
                                                                         </div>
@@ -309,7 +316,7 @@ export const Nav = () => {
                                                     </DropdownMenu>
                                                 </UncontrolledDropdown>
                                             </BrowserView>
-                                            : <MobileView>
+                                            : <MobileView key={element.href}>
                                                 <UncontrolledDropdown nav>
                                                     <DropdownToggle nav caret className={styles.navLink}>
                                                         <i className={`${element.icon} fa-fw`}></i>
@@ -321,7 +328,7 @@ export const Nav = () => {
                                                                 if (item.devOnly && !isDevelopment())
                                                                     return;
 
-                                                                return <DropdownItem href={item.href || '#'}>
+                                                                return <DropdownItem href={item.href || '#'} key={item.name}>
                                                                     {item.name}
                                                                 </DropdownItem>
                                                             })
@@ -332,7 +339,7 @@ export const Nav = () => {
                                     }
 
                                     if (element.dropdown && element.dropdown.mode === 'normal')
-                                        return <UncontrolledDropdown nav>
+                                        return <UncontrolledDropdown nav key={element.href}>
                                             <DropdownToggle nav caret className={styles.navLink}>
                                                 <span className="nav-link-inner--text">{iconMode ? '' : element.name}</span>
                                             </DropdownToggle>
@@ -342,7 +349,7 @@ export const Nav = () => {
                                                         if (item.devOnly && !isDevelopment())
                                                             return;
 
-                                                        return <DropdownItem href={item.href || '#'}>
+                                                        return <DropdownItem href={item.href || '#'} key={item.name}>
                                                             {item.name}
                                                         </DropdownItem>
                                                     })
@@ -351,7 +358,7 @@ export const Nav = () => {
                                         </UncontrolledDropdown>
 
                                     return <li className="nav-item" key={element.key}>
-                                        <Link href={element.href}>
+                                        <Link href={element.href} key={element.href}>
                                             <a className={`nav-link ${styles.navLink}`}>
                                                 <i className={`${element.icon} fa-fw`}></i> {iconMode ? '' : element.name ?? ''}
                                             </a>

@@ -11,7 +11,7 @@
 import React from 'react';
 import moment from 'moment';
 import MdiIcon from '@mdi/react';
-import Timeline from 'react-gantt-simple-timeline';
+// import Timeline from 'react-gantt-simple-timeline';
 import DataTable from 'react-data-table-component';
 import Classrooms from '@ilefa/husky/classrooms.json';
 
@@ -49,7 +49,7 @@ const createRoomEntries = (schedules: RoomSchedule[][]) =>
     flattenSchedules(schedules)
         .map(schedule => {
             if (!schedule) return { entries: [] };
-            let target = Classrooms.filter(room => room.name === (schedule as any).title.replace(/\s/g, ''));
+            let target = Classrooms.filter(room => room.name.toLowerCase() === schedule.room.replace(/\s/g, '').toLowerCase());
             if (!target) return schedule;
             return { ...schedule, ...target };
         }) as RoomEntry[];
@@ -94,7 +94,7 @@ const getRoomStatus = (room: RoomEntry) => {
                     <b className={`text-warning ${styles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {next[0].event}</b> starts {moment(next[0].startDate).fromNow()}
                 </span>
             : <span className="text-dark">
-                <b className={`text-primary ${styles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {(room as any).title}</b> is free.
+                <b className={`text-primary ${styles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {room.room}</b> is free.
             </span>;
 }
 
@@ -137,71 +137,71 @@ export const BuildingDirectoryEntry: React.FC<RoomDataProps> = ({ data }) => {
         </div>
     )
 
-    const renderElement = (element) => {
-        return (
-            <div className={['element-wrapper', element.color].join(' ')}>
-                <div className='time'>
-                    {moment(element.start).format('h:mm a')} - {moment(element.end).format('h:mm a')}
-                </div>
-                <h3 className={styles.roomAgendaTitle}>{element.title}</h3>
-            </div>
-        )
-    }
+    // const renderElement = (element) => {
+    //     return (
+    //         <div className={['element-wrapper', element.color].join(' ')}>
+    //             <div className='time'>
+    //                 {moment(element.start).format('h:mm a')} - {moment(element.end).format('h:mm a')}
+    //             </div>
+    //             <h3 className={styles.roomAgendaTitle}>{element.title}</h3>
+    //         </div>
+    //     )
+    // }
 
-    const renderCurrentTimeLabel = (date) => moment(date).format('h:mm a');
+    // const renderCurrentTimeLabel = (date) => moment(date).format('h:mm a');
 
-    const renderColHeaderItem = (col) => (
-        <div className='col-head'>{col.title}</div>
-    )
+    // const renderColHeaderItem = (col) => (
+    //     <div className='col-head'>{col.title}</div>
+    // )
 
-    const renderRowHeaderItem = _ => (<></>)
+    // const renderRowHeaderItem = _ => (<></>)
 
-    // noinspection JSUnusedLocalSymbols
-    const handleElementClick = (element, rowIndex, _e) => {
-        // eslint-disable-next-line no-undef
-        alert(`clicked to element with key "${element.key}" at row with index "${rowIndex}"`)
-    }
+    // // noinspection JSUnusedLocalSymbols
+    // const handleElementClick = (element, rowIndex, _e) => {
+    //     // eslint-disable-next-line no-undef
+    //     alert(`clicked to element with key "${element.key}" at row with index "${rowIndex}"`)
+    // }
 
-    const START_DATE = new Date();
-    const END_DATE = new Date();
+    // const START_DATE = new Date();
+    // const END_DATE = new Date();
 
-    START_DATE.setTime(getDateFromTime(data?.entries[0]?.start ?? '12:00 AM').getTime())
-    END_DATE.setTime(getDateFromTime(data?.entries[data.entries.length - 1]?.end ?? '11:59 PM').getTime());
+    // START_DATE.setTime(getDateFromTime(data?.entries[0]?.start ?? '12:00 AM').getTime())
+    // END_DATE.setTime(getDateFromTime(data?.entries[data.entries.length - 1]?.end ?? '11:59 PM').getTime());
 
-    const DURATION = END_DATE.getTime() - START_DATE.getTime()
-    const COL_DURATION = 1000 * 60 * 30;
-    const COLS_COUNT = Math.ceil(DURATION / COL_DURATION)
+    // const DURATION = END_DATE.getTime() - START_DATE.getTime()
+    // const COL_DURATION = 1000 * 60 * 30;
+    // const COLS_COUNT = Math.ceil(DURATION / COL_DURATION)
 
-    const COLUMNS = [...Array(COLS_COUNT).keys()].map(i => {
-        const start = new Date(START_DATE.getTime() + i * COL_DURATION)
-        const end = new Date(START_DATE.getTime() + (i + 1) * COL_DURATION)
+    // const COLUMNS = [...Array(COLS_COUNT).keys()].map(i => {
+    //     const start = new Date(START_DATE.getTime() + i * COL_DURATION)
+    //     const end = new Date(START_DATE.getTime() + (i + 1) * COL_DURATION)
         
-        return {
-            key: `col-${i}`,
-            title: moment(start).format('h:mm A'),
-            start,
-            end
-        }
-    });
+    //     return {
+    //         key: `col-${i}`,
+    //         title: moment(start).format('h:mm A'),
+    //         start,
+    //         end
+    //     }
+    // });
 
-    const ROWS = [
-        {
-            title: (data as any).title,
-            key: (data as any).title,
-            elements: data.entries.map(entry => ({
-                key: `${entry.event}-${entry.section ?? entry.independent}`,
-                title: entry.event,
-                content: 'No content',
-                start: getDateFromTime(entry.start),
-                end: getDateFromTime(entry.end),
-                color: 'red'
-            }))    
-        }
-    ];
+    // const ROWS = [
+    //     {
+    //         title: (data as any).title,
+    //         key: (data as any).title,
+    //         elements: data.entries.map(entry => ({
+    //             key: `${entry.event}-${entry.section ?? entry.independent}`,
+    //             title: entry.event,
+    //             content: 'No content',
+    //             start: getDateFromTime(entry.start),
+    //             end: getDateFromTime(entry.end),
+    //             color: 'red'
+    //         }))    
+    //     }
+    // ];
 
     return (
         <div style={{ padding: 10 }}>
-            <Timeline
+            {/* <Timeline
                 current={new Date()}
                 rows={ROWS}
                 cols={COLUMNS}
@@ -216,7 +216,7 @@ export const BuildingDirectoryEntry: React.FC<RoomDataProps> = ({ data }) => {
                 elementClass='element'
                 alignElementHeight={false}
                 gridColor='#CCCCCC'
-            />
+            /> */}
         </div>
     )
 }
@@ -234,7 +234,7 @@ export const BuildingDirectory: React.FC<BuildingDirectoryProps> = ({ marker }) 
             selector: 'title',
             sortable: true,
             format: (row, _i) => (
-                <b>{getIconForRoom(row as any, 'mr-1 vaSub')} {(row as any).title}</b>
+                <b>{getIconForRoom(row as any, 'mr-1 vaSub')} {row.room}</b>
             ),
             maxWidth: '25%',
             hide: 'sm'

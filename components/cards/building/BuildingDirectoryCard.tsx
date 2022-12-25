@@ -8,7 +8,6 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-import moment from 'moment';
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/building.module.css';
 import cardStyles from '../../styling/card.module.css';
@@ -20,59 +19,11 @@ import { useRoom } from '../../../hooks';
 import { BuildingCode } from '@ilefa/husky';
 import { ScheduleEntry } from '@ilefa/bluesign';
 import { mdiGoogleClassroom, mdiPresentationPlay } from '@mdi/js';
-
-import {
-    capitalizeFirst,
-    getDateFromTime,
-    getIconForCourse,
-    getIconForRoom,
-    getLatestTimeValue,
-} from '../../../util';
+import { getIconForCourse, getIconForRoom, getRoomStatus } from '../../../util';
 
 export interface BuildingDirectoryCardProps {
     name: string;
     room: ScheduleEntry[];
-}
-
-type CustomScheduleEntry = ScheduleEntry & {
-    startDate: Date;
-    endDate: Date;
-}
-
-const needsEllipses = (event: string, limit: number) => event.length > limit;
-
-const getShortenedName = ({ event }: CustomScheduleEntry, limit: number) => {
-    let capitalized = capitalizeFirst(event);
-    if (needsEllipses(event, limit))
-        return capitalized.substring(0, limit) + '..';
-    return capitalized;
-}
-
-const getRoomStatus = (name: string, schedule: ScheduleEntry[], shorten: boolean) => {
-    let events = schedule
-        .map(ent => ({
-            ...ent,
-            startDate: getDateFromTime(ent.start),
-            endDate: getDateFromTime(ent.end)
-        }));
-
-    let current = events.find(e => e.startDate.getTime() <= Date.now() && e.endDate.getTime() >= Date.now());
-    let next = events.filter(e => e.startDate.getTime() > Date.now());
-
-    return current ?
-                <span className="text-dark">
-                    <div><span className={`${inspectionStyles.pulsatingCircle} ${styles.pulsatingCircleSpacing}`}></span></div>
-                    <div className={inspectionStyles.pulsatingCircleSeparator}>
-                        <b className={`text-success ${inspectionStyles.roomScheduleStatus}`}> {shorten ? getShortenedName(current, 30) : current.event}</b> for next <span className="text-purple">{getLatestTimeValue(current.endDate.getTime() - Date.now())}</span>.
-                    </div>
-                </span>
-            : next.length ?
-                <span className="text-dark">
-                    <b className={`text-warning ${inspectionStyles.roomScheduleStatus}`}><i className="fa fa-clock fa-fw"></i> {shorten ? getShortenedName(next[0], 20) : next[0].event}</b> {moment(next[0].startDate).fromNow()}
-                </span>
-            : <span className="text-dark">
-                <b className={`text-success ${inspectionStyles.roomScheduleStatus}`}><i className="fas fa-calendar-check fa-fw"></i> {name}</b> is free.
-            </span>;
 }
 
 interface RoomScheduleModalProps {
