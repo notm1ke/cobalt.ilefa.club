@@ -48,9 +48,11 @@ export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMod
                 { room.techDescription && <><b>Installed Tech:</b> {room.techDescription}<br/></> }
                 
                 <b>Lecture Capture:</b> {LectureCaptureType[room.lectureCapture]}<br/><br/>
-                <a href={`/buildings/${room.building.code}`} className="text-primary-light shine">
-                    <i className="fa fa-link fa-fw"></i> View more information about <b>{room.building.name}</b>.
-                </a>
+                <Link href={`/buildings/${room.building.code}`}>
+                    <a className="text-primary-light shine">
+                        <i className="fa fa-link fa-fw"></i> View more information about <b>{room.building.name}</b>.
+                    </a>
+                </Link>
             </p>
 
             <pre className={`${styles.sectionTitle} text-primary mt-3`}><i className="fa fa-camera-retro fa-fw"></i> {imageMode === RoomImageMode.THREE_SIXTY ? <>360&#176; View</> : <>Room Image</>}</pre>

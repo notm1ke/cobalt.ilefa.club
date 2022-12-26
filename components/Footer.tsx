@@ -8,6 +8,7 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
+import Link from 'next/link';
 import styles from './styling/footer.module.css';
 
 import { capitalizeFirst } from '../util';
@@ -40,17 +41,23 @@ export const Footer: React.FC<FooterProps> = ({ white, noBackground, className }
                         {" "} © 2020-{new Date().getFullYear()}{" "}
                         <DevElement>
                             <br />
-                            <a href="/internal" className={`text-primary-light ${styles.envWarning} shine`}>Cobalt {capitalizeFirst(process.env.NEXT_PUBLIC_VERCEL_ENV || '')} {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} - internal use only.</a>
+                            <Link href="/internal">
+                                <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt {capitalizeFirst(process.env.NEXT_PUBLIC_VERCEL_ENV || '')} {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} - internal use only.</a>
+                            </Link>
                         </DevElement>
                         
                         <PreviewElement>
                             <br />
-                            <a href="/preview" className={`text-primary-light ${styles.envWarning} shine`}>Cobalt Preview {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} <i className="fa fa-hands-helping fa-fw"></i></a>
+                            <Link href="/preview">
+                                <a className={`text-primary-light ${styles.envWarning} shine`}>Cobalt Preview {COMMIT_HASH?.substring(0, 7) || 'no_git_id'} <i className="fa fa-hands-helping fa-fw"></i></a>
+                            </Link>
                         </PreviewElement>
 
                         <ProdElement>
                             <br />
-                            <a href="/" className={`text-primary-light ${styles.envWarning} shine`}><b>The Cobalt Project</b> (5.0, {COMMIT_HASH?.substring(0, 7) ?? 'no_git_id'}, stable)</a>
+                            <Link href="/">
+                                <a className={`text-primary-light ${styles.envWarning} shine`}><b>The Cobalt Project</b> (4.0, {COMMIT_HASH?.substring(0, 7) ?? 'no_git_id'}, stable)</a>
+                            </Link>
                         </ProdElement>
                     </div>
                 </div>

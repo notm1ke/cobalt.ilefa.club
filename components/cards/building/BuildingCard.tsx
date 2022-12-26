@@ -71,25 +71,33 @@ export const BuildingCard: React.FC<BuildingCardProps> = ({ buildingType, campus
                 <div className="d-flex">
                     <div>
                         <h5>
-                            <a href={`/buildings/${buildingType}`} className={`${cardStyles.cardSectionTitle} text-primary-light`}>
-                                {icon ?? ''} {name} {getCampusBadge(buildingType, campus?.toLowerCase() as CampusType)}
-                            </a>
+                            <Link href={`/buildings/${buildingType}`}>
+                                <a className={`${cardStyles.cardSectionTitle} text-primary-light`}>
+                                    {icon ?? ''} {name} {getCampusBadge(buildingType, campus?.toLowerCase() as CampusType)}
+                                </a>
+                            </Link>
                         </h5>
 
                         <p>
                             <b>{addr === 'NONE' ? <>The <b>{name.endsWith('Building') ? name : name + ' Building'}</b> does not have an address.</> : <>Located {atOn} <a href={BuildingMaps[buildingType]} className="text-primary shine" target="_blank" rel="noopener noreferrer">{BuildingAddresses[buildingType]}</a></>}.</b>
                             <div className={`${styles.projectCardLink} mt-3 mb-4`}>
-                                <a href={`/buildings/${buildingType}`} className="btn btn-dark btn-sm text-lowercase shine">
-                                    <MdiIcon path={mdiFeatureSearch} size="17px" className="fa-fw vaSub" /> directory
-                                </a>
+                                <Link href={`/buildings/${buildingType}`}>
+                                    <a className="btn btn-dark btn-sm text-lowercase shine">
+                                        <MdiIcon path={mdiFeatureSearch} size="17px" className="fa-fw vaSub" /> directory
+                                    </a>
+                                </Link>
 
-                                <a href={BuildingMaps[buildingType] ?? '#'} className="btn btn-dark btn-sm text-lowercase shine">
-                                    <MdiIcon path={mdiMap} size="17px" className="fa-fw vaMiddle" /> maps
-                                </a>
+                                <Link href={BuildingMaps[buildingType] ?? '#'}>
+                                    <a className="btn btn-dark btn-sm text-lowercase shine">
+                                        <MdiIcon path={mdiMap} size="17px" className="fa-fw vaMiddle" /> maps
+                                    </a>
+                                </Link>
                                 
-                                <a href={`https://maps.uconn.edu/m/info/${buildingType}`} className="btn btn-dark btn-sm text-lowercase shine">
-                                    <MdiIcon path={mdiInformation} size="17px" className="fa-fw vaSub" /> info
-                                </a>
+                                <Link href={`https://maps.uconn.edu/m/info/${buildingType}`}>
+                                    <a className="btn btn-dark btn-sm text-lowercase shine">
+                                        <MdiIcon path={mdiInformation} size="17px" className="fa-fw vaSub" /> info
+                                    </a>
+                                </Link>
                             </div>
 
                             {description}
