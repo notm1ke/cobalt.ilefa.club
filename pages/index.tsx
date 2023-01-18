@@ -61,7 +61,7 @@ const HomePage = () => {
                                         </h2>
                                         <CobaltSearch feelingSilly />
                                         <small className="text-secondary">
-                                            <i className="fas fa-bed text-success fa-fw mr-1"></i>
+                                            <i className="fas fa-person-running text-success fa-fw mr-1"></i>
                                             <i>The spring semester has started, good luck!</i>
                                         </small>
 
