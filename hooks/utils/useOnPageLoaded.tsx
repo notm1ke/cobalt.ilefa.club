@@ -8,10 +8,13 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-export * from './DataView';
-export * from './ImageryGrid';
+import { useState, useEffect } from 'react';
 
-export * from './course';
-export * from './rec';
-export * from './room';
-export * from './search';
+export const useOnPageLoaded = (): boolean => {
+    const [enabled, setEnabled] = useState(false);
+    useEffect(() => {
+        setEnabled(true);
+    }, [enabled]);
+
+    return enabled;
+}

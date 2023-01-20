@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { mdiChartBellCurve, mdiRadioTower } from '@mdi/js';
 import { BluefitResponseShape, useBluefit } from '../../../hooks';
-import { getDateFromTime, getRecDayOffset, preventAnd, SUMMER_HOURS } from '../../../util';
+import { getDateFromTime, getRecDayOffset, preventAnd, OFF_PEAK_HOURS } from '../../../util';
 
 import {
     Chart as ChartJS,
@@ -109,8 +109,8 @@ export const RecHistoricalDailyCard: React.FC = () => {
         labels: result!
             .daily!
             .map(({ time }) => time)
-            .filter(time => !SUMMER_HOURS
-                    || (SUMMER_HOURS
+            .filter(time => !OFF_PEAK_HOURS
+                    || (OFF_PEAK_HOURS
                         && (getDateFromTime(time).getHours() < 18
                             || getDateFromTime(time).getHours() === 18
                             && getDateFromTime(time).getMinutes() === 0))),

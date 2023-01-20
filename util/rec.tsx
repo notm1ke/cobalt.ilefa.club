@@ -28,9 +28,9 @@ const Weekdays = [1, 2, 3, 4, 5];
 const Weekends = [0, 6];
 const AllDays = [...Weekdays, ...Weekends];
 
-const START_DATES = ["2/6/2022", "1/31/2022", "2/1/2022", "2/2/2022", "2/3/2022", "2/4/2022", "2/5/2022"];
+const START_DATES = ['2/6/2022', '1/31/2022', '2/1/2022', '2/2/2022', '2/3/2022', '2/4/2022', '2/5/2022'];
 
-export const SUMMER_HOURS = false;
+export const OFF_PEAK_HOURS = true;
 
 export const StandardRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
     'SRC': [
@@ -58,7 +58,7 @@ export const StandardRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> 
     ]
 }
 
-export const SummerRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
+export const OffPeakRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
     'SRC': [
         { start: '8:00am', end: '6:00pm', days: Weekdays },
         { start: '8:00am', end: '2:00pm', days: Weekends }
@@ -91,7 +91,7 @@ export const getRecStatus = (facility: keyof typeof RecFacility, now = new Date(
         DAYLIGHT_SAVINGS && validatedDate.setHours(validatedDate.getHours() - 1);
     }
 
-    const hours = SUMMER_HOURS ? SummerRecHours[facility] : StandardRecHours[facility];
+    const hours = OFF_PEAK_HOURS ? OffPeakRecHours[facility] : StandardRecHours[facility];
     const day = validatedDate.getDay();
     const time = validatedDate.getHours();
     const isOpen = hours
@@ -113,7 +113,7 @@ export const getRecStatus = (facility: keyof typeof RecFacility, now = new Date(
  * @param now the time to query status for; defaults to now
  */
 export const getTimeUntilRecClose = (facility: keyof typeof RecFacility, now = new Date()) => {
-    const hours = SUMMER_HOURS ? SummerRecHours[facility] : StandardRecHours[facility];
+    const hours = OFF_PEAK_HOURS ? OffPeakRecHours[facility] : StandardRecHours[facility];
     const day = now.getDay();
     const time = now.getHours();
     const statuses = hours
@@ -136,7 +136,7 @@ export const getTimeUntilRecClose = (facility: keyof typeof RecFacility, now = n
  */
 export const getAllStatuses = (now = new Date()) => {
     const statuses: Record<keyof typeof RecFacility, boolean> = {} as any;
-    Object.keys(SUMMER_HOURS ? SummerRecHours : StandardRecHours).forEach(facility => {
+    Object.keys(OFF_PEAK_HOURS ? OffPeakRecHours : StandardRecHours).forEach(facility => {
         statuses[facility] = getRecStatus(facility as keyof typeof RecFacility, now);
     });
 

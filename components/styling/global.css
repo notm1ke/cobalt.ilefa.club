@@ -39,6 +39,10 @@
     vertical-align: text-bottom !important;
 }
 
+.vaBottom {
+    vertical-align: bottom !important;
+}
+
 .noBorder {
     border: none !important;
 }

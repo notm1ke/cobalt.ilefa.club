@@ -16,8 +16,8 @@ import { Badge, UncontrolledTooltip } from 'reactstrap';
 import {
     RecFacility,
     StandardRecHours,
-    SummerRecHours,
-    SUMMER_HOURS
+    OffPeakRecHours,
+    OFF_PEAK_HOURS
 } from '../../../util'
 
 export interface RecStatusCollapsibleProps {
@@ -26,8 +26,8 @@ export interface RecStatusCollapsibleProps {
 }
 
 export const RecStatusCollapsible: React.FC<RecStatusCollapsibleProps> = ({ facility, status }) => {
-    let target = SUMMER_HOURS
-        ? SummerRecHours
+    let target = OFF_PEAK_HOURS
+        ? OffPeakRecHours
         : StandardRecHours;
 
     let hours = target[facility].filter(val => val.days.includes(new Date().getDay()));

@@ -8,7 +8,7 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-import { MutatorCallback } from 'swr/dist/types';
+import { MutatorCallback } from 'swr';
 
 import {
     ApiResponseType,
@@ -20,7 +20,6 @@ export type CourseSearchShapedResponse = [
     CoursePayload[] | null,
     boolean,
     boolean,
-    () => void,
     (data?: CourseSearchPayloadResponse | Promise<CourseSearchPayloadResponse> | MutatorCallback<CourseSearchPayloadResponse>, shouldRevalidate?: boolean) => Promise<CourseSearchPayloadResponse | undefined>
 ]
 
@@ -50,14 +49,14 @@ export interface CourseSearchProps {
 
 export const useCourseSearch = ({ input, limit, advancedOpts }: CourseSearchProps): CourseSearchShapedResponse => 
     createRemoteHook<CourseSearchPayloadResponse, CourseSearchShapedResponse>('CourseSearch', '/api/search',
-        (type, data, _err, _url, revalidate, mutate) => {
+        (type, data, _err, _url, mutate) => {
             switch (type) {
                 case ApiResponseType.ERROR:
-                    return [null, false, true, revalidate!, mutate!];
+                    return [null, false, true, mutate!];
                 case ApiResponseType.LOADING:
-                    return [null, true, false, revalidate!, mutate!];
+                    return [null, true, false, mutate!];
                 case ApiResponseType.SUCCESS: {
-                    return [data!.courses, false, false, revalidate!, mutate!];
+                    return [data!.courses, false, false, mutate!];
                 }
             }
         }, undefined, 'POST', { input, limit: limit ?? -1, advancedOpts });

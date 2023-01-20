@@ -56,7 +56,7 @@ const HomePage = () => {
                                     <div className="col-lg-6 text-center">
                                         <h1 className={`${styles.nameTitle} text-white display-1`}>Cobalt</h1>
                                         <h2 className={`${styles.tagline} display-4 font-weight-normal text-white mb-5`}>
-                                            An intelligent suite of tools built by UConn students, for UConn students.
+                                            Your one-stop for all things UConn.
                                         </h2>
                                         <CobaltSearch feelingSilly />
                                         <small className="text-secondary">

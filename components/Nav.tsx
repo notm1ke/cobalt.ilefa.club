@@ -9,8 +9,6 @@
  */
 
 import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import styles from './styling/nav.module.css';
 
 import { useState } from 'react';
@@ -49,6 +47,8 @@ type NavElement = {
     icon: string;
     href: string;
     key: string;
+    className?: string;
+    iconOnly?: boolean;
     devOnly?: boolean;
     stagingOnly?: boolean;
     prodOnly?: boolean;
@@ -88,6 +88,13 @@ const ELEMENTS: NavElement[] = [
                     content: 'Explore currently available rooms.',
                 },
                 {
+                    name: 'study spaces',
+                    href: '/study',
+                    icon: <i className="fa fa-book-open-reader fa-fw fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Explore available study spaces.',
+                },
+                {
                     name: 'residential',
                     href: '/dorms',
                     icon: <i className="fa fa-bed fa-fw"></i>,
@@ -99,7 +106,7 @@ const ELEMENTS: NavElement[] = [
                     href: '/rec',
                     icon: <i className="fa fa-dumbbell fa-fw"></i>,
                     color: 'bg-primary',
-                    content: 'Explore traffic insights for the SRC.',
+                    content: 'Explore traffic insights for the gym.',
                 },
                 {
                     name: 'dining',
@@ -112,6 +119,12 @@ const ELEMENTS: NavElement[] = [
         },
         stagingOnly: true,
         devOnly: true,
+    },
+    {
+        name: 'courses',
+        icon: 'fa fa-book-atlas',
+        href: '/courses',
+        key: 'courses',
     },
     {
         name: 'maps',
@@ -149,13 +162,6 @@ const ELEMENTS: NavElement[] = [
         prodOnly: true,
     },
     {
-        name: 'snapshots',
-        icon: 'fa fa-history',
-        href: '/snapshots',
-        key: 'snapshots',
-        devOnly: true,
-    },
-    {
         name: 'preview',
         icon: 'fa fa-hands-helping',
         href: '/preview',
@@ -163,51 +169,45 @@ const ELEMENTS: NavElement[] = [
         stagingOnly: true
     },
     {
+        name: 'faq',
+        icon: 'fa fa-circle-question',
+        href: '/faq',
+        key: 'faq',
+    },
+    {
         name: 'changelog',
         icon: 'fa fa-stream',
         href: '/changelog',
         key: 'changelog',
-        devOnly: true,
         stagingOnly: true
     },
     {
-        name: 'internal',
-        icon: 'fa fa-bug',
+        name: 'devtools',
+        icon: 'fa fa-bolt',
         href: '/internal',
-        key: 'internal',
+        key: 'devtools',
+        className: styles.devtools,
+        iconOnly: true,
         devOnly: true,
-        // dropdown: {
-        //     mode: 'icons',
-        //     items: [
-        //         {
-        //             name: 'service information',
-        //             href: '/internal',
-        //             icon: <i className="fa fa-terminal fa-fw"></i>,
-        //             color: 'bg-primary',
-        //             content: 'Inspect information about this instance.',
-        //         },
-        //         {
-        //             name: 'upstream status',
-        //             href: '/internal',
-        //             icon: <i className="fa fa-cloud fa-fw"></i>,
-        //             color: 'bg-primary',
-        //             content: 'Inspect upstream provider statuses.',
-        //         },
-        //         {
-        //             name: 'platform tests',
-        //             href: '/transfer',
-        //             icon: <i className="fa fa-vial fa-fw"></i>,
-        //             color: 'bg-primary',
-        //             content: 'Inspect various functionality of Cobalt.',
-        //         }
-        //     ]
-        // }
-    },
-    {
-        name: 'information',
-        icon: 'fa fa-info-circle',
-        href: '/info',
-        key: 'information',
+        dropdown: {
+            mode: 'icons',
+            items: [
+                {
+                    name: 'service information',
+                    href: '/internal',
+                    icon: <i className="fa fa-bug fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Inspect information about this instance.',
+                },
+                {
+                    name: 'changelog',
+                    href: '/changelog',
+                    icon: <i className="fa fa-stream fa-fw"></i>,
+                    color: 'bg-primary',
+                    content: 'Inspect versioning changelog.',
+                },
+            ]
+        }
     }
 ];
 
@@ -286,9 +286,9 @@ export const Nav = () => {
                                         return isDesktop
                                             ? <BrowserView key={element.href}>
                                                 <UncontrolledDropdown nav>
-                                                    <DropdownToggle nav className={styles.navLink}>
+                                                    <DropdownToggle nav className={`${styles.navLink} ${element.className ?? ''}`}>
                                                         <i className={`${element.icon} fa-fw`}></i>
-                                                        <span className="nav-link-inner--text">{iconMode ? '' : element.name}</span>
+                                                        <span className="nav-link-inner--text">{iconMode ? '' : element.iconOnly ? '' : element.name}</span>
                                                     </DropdownToggle>
                                                     <DropdownMenu className={`dropdown-menu ${styles.dropdownPosition}`}>
                                                         <div className="dropdown-menu-inner">
@@ -302,7 +302,7 @@ export const Nav = () => {
                                                                             {item.icon}
                                                                         </div>
                                                                         <Media body className="ml-3">
-                                                                            <h6 className="heading text-primary mb-md-1 text-lowercase font-weight-600">{item.name}</h6>
+                                                                            <h6 className="heading text-primary mb-md-1 text-capitalize font-weight-600">{item.name}</h6>
                                                                             { item.content && <p className="description d-none d-md-inline-block mb-0">{item.content}</p> }
                                                                         </Media>
                                                                     </Media>;
@@ -314,7 +314,7 @@ export const Nav = () => {
                                             </BrowserView>
                                             : <MobileView key={element.href}>
                                                 <UncontrolledDropdown nav>
-                                                    <DropdownToggle nav caret className={styles.navLink}>
+                                                    <DropdownToggle nav caret className={`${styles.navLink} ${element.className ?? ''}`}>
                                                         <i className={`${element.icon} fa-fw`}></i>
                                                         <span className="nav-link-inner--text">{element.name}</span>
                                                     </DropdownToggle>
@@ -336,7 +336,7 @@ export const Nav = () => {
 
                                     if (element.dropdown && element.dropdown.mode === 'normal')
                                         return <UncontrolledDropdown nav key={element.href}>
-                                            <DropdownToggle nav caret className={styles.navLink}>
+                                            <DropdownToggle nav caret className={`${styles.navLink} ${element.className ?? ''}`}>
                                                 <span className="nav-link-inner--text">{iconMode ? '' : element.name}</span>
                                             </DropdownToggle>
                                             <DropdownMenu className={`dropdown-menu ${isMobile ? styles.mobileDropdownPosition : styles.normalDropdownPosition}`}>
@@ -354,8 +354,8 @@ export const Nav = () => {
                                         </UncontrolledDropdown>
 
                                     return <li className="nav-item" key={element.key}>
-                                        <a href={element.href} key={element.href} className={`nav-link ${styles.navLink}`}>
-                                            <i className={`${element.icon} fa-fw`}></i> {iconMode ? '' : element.name ?? ''}
+                                        <a href={element.href} key={element.href} className={`nav-link ${styles.navLink} ${element.className ?? ''}`}>
+                                            <i className={`${element.icon} fa-fw`}></i> {iconMode ? '' : element.iconOnly ? '' : element.name ?? ''}
                                         </a>
                                     </li>;
                                 })

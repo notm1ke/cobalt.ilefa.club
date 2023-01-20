@@ -26,7 +26,8 @@ export type CoursePayloadResponse = UnshapedApiResponse & {
 
 export type CoursePayload = {
     name: string;
-    gradingType: string;
+    credits: number;
+    grading: string;
     catalogName: string;
     catalogNumber: string;
     attributes: {

@@ -21,11 +21,10 @@ export interface RecCapacityCardProps {
 }
 
 export const RecCapacityCard: React.FC<RecCapacityCardProps> = ({ data }) => {
-    const [value, setValue] = useLocalStorage('rec-capacity', data ? (data / MAXIMUM_CAPACITY) : 0);
+    const [value, setValue] = useLocalStorage('rec-occupancy', data ? (data / MAXIMUM_CAPACITY) : 0);
     
     useEffect(() => {
-        if (data)
-            setValue(data);
+        if (data) setValue(data);
     }, [data]);
 
     return (

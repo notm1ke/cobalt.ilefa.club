@@ -198,7 +198,7 @@ export const CobaltSearch: React.FC<CobaltSearchProps> = ({ feelingSilly }) => {
         if (course.attributes.writing)
             symbols.push({ icon: mdiFileDocumentEditOutline });
 
-        if (course.gradingType === 'Honors Credit')
+        if (course.grading === 'Honors Credit')
             symbols.push({ icon: mdiAlphaHBox, color: 'text-danger' });
 
         if (hasContentArea(course, ContentArea.CA1))

@@ -1,6 +1,6 @@
 # Cobalt
 
-![version badge](https://img.shields.io/badge/version-4.0-2573bc)
+![version badge](https://img.shields.io/badge/version-5.0-2573bc)
 
 Cobalt is a versatile platform offering many services to UConn students, including course information, professor ratings, dining hall menus, dorm reviews & imagery, classroom information, rec center traffic, and much more.
 
@@ -27,7 +27,7 @@ An example ``.env.example`` is provided in the root of the project, rename it to
 
 ## Deployment Information
 
-Any commits to ``master`` or ``v4`` will be automatically deployed to their respective website - please be careful when committing to prod/staging environments, and do so only after extensively testing your changes.
+Any commits to ``master`` or ``v5`` will be automatically deployed to their respective website - please be careful when committing to prod/staging environments, and do so only after extensively testing your changes.
 
 After you commit to this repository, you can track your deployment and it's analytics through the [Vercel](https://vercel.com/m1ke/cobalt) website.
 

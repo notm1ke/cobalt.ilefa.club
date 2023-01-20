@@ -11,7 +11,7 @@
 import useSWR from 'swr';
 import * as Logger from './logger';
 
-import { MutatorCallback } from 'swr/dist/types';
+import { MutatorCallback } from 'swr';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import {
@@ -493,7 +493,7 @@ export const semesterComparator = (a: string, b: string) => {
 export const numberProvided = (int: number | undefined | null) =>
     int !== null
         && int !== undefined
-        && int !== NaN;
+        && !Number.isNaN(int);
 
 /**
  * Adds a trailing decimal to the end of a number
@@ -1063,7 +1063,6 @@ export const createRemoteHook = <Response extends UnshapedApiResponse, Return ex
                 data: Response | null | undefined,
                 error: boolean,
                 url: string,
-                revalidate?: () => void,
                 mutate?: (data?: Response | Promise<Response> | MutatorCallback<Response> | undefined, shouldRevalidate?: boolean) => Promise<Response | undefined>
                ) => Return,
     pollTime?: number,
@@ -1081,30 +1080,30 @@ export const createRemoteHook = <Response extends UnshapedApiResponse, Return ex
         .then(res => res.json())
         .then(res => res as Response);
 
-    const { data, error, revalidate, mutate } = useSWR(req, fetcher, {
+    const { data, error, mutate } = useSWR(req, fetcher, {
         refreshInterval: pollTime || 0,
         errorRetryCount: retryCount,
         errorRetryInterval: retryInterval
     });
 
     if (!data && !error)
-        return transform(ApiResponseType.LOADING, null, false, req, revalidate, mutate);
+        return transform(ApiResponseType.LOADING, null, false, req, mutate);
     
     if (error) {
         Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
         Logger.debug(`use${name}`, `The server responded with an unknown error.`, Logger.LogLevelColor.ERROR);
-        return transform(ApiResponseType.ERROR, null, true, req, revalidate, mutate);
+        return transform(ApiResponseType.ERROR, null, true, req, mutate);
     }
 
     if (data && data.message) {
         Logger.timings(`use${name}`, 'Fetch', start, Logger.LogLevelColor.ERROR, 'failed in');
         Logger.debug(`use${name}`, `The server responded with: ${data.message}`, Logger.LogLevelColor.ERROR);
-        return transform(ApiResponseType.ERROR, null, true, req, revalidate, mutate);
+        return transform(ApiResponseType.ERROR, null, true, req, mutate);
     }
 
     Logger.timings(`use${name}`, 'Fetch', start);
     Logger.debug(`use${name}`, 'Server response:', undefined, undefined, data);
-    return transform(ApiResponseType.SUCCESS, data!, false, req, revalidate, mutate);
+    return transform(ApiResponseType.SUCCESS, data!, false, req, mutate);
 }
 
 /**

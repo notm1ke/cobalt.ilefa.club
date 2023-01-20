@@ -9,6 +9,7 @@
  */
 
 export * from './BoundedClickDetector';
+export * from './inspection/search/CourseSearchBar';
 export * from './CobaltSearch';
 export * from './CopyButton';
 export * from './ContributorButton';

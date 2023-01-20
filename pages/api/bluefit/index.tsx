@@ -52,11 +52,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     for (let mode of modes) {
         if (mode === 'occupants') {
-            let occupants = await getOccupancy();
-            payload[mode] = ((!occupants && occupants !== 0) || occupants === -1)
-                ? await getLatestOccupancy(target)
-                : occupants;
+            let latest = await getLatestOccupancy(target);
+            if (!latest || latest === -1) latest = 0;
+            payload[mode] = latest;
+
+            // TODO: Realtime does not work very well + causes hydration issues.
+            // let occupants = await getOccupancy();
+            // payload[mode] = ((!occupants && occupants !== 0) || occupants === -1)
+            //     ? await getLatestOccupancy(target)
+            //     : occupants;
         }
+
         if (mode === 'daily')
             payload[mode] = await getDailyOccupancy(target);
         if (mode === 'weekly')
@@ -73,7 +79,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 const getLatestOccupancy = async (day: number) => {
     let dayName = DAYS[day];
-    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:AV1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:CF1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)
         .then(res => res.data)
@@ -92,7 +98,7 @@ const getLatestOccupancy = async (day: number) => {
 
 const getDailyOccupancy = async (day: number) => {
     let dayName = DAYS[day];
-    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:AV1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:CF1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)
         .then(res => res.data)
@@ -119,7 +125,7 @@ const getDailyOccupancy = async (day: number) => {
 }
 
 const getWeeklyOccupancy = async () => {
-    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/Average!A2:Z1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/Average!A2:H66?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)
         .then(res => res.data)

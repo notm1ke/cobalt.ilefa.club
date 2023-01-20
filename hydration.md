@@ -9,10 +9,10 @@
 - /changelog
 - /info
 - /course/[id]
+- /rec
+- /dorms/[dorm]
+- /room/[id]
 
 ## Pages with Hydration Errors
 
-- /room/[id]
-- /dorms/[dorm]
-- /rec
 - /internal

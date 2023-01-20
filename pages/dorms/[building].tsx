@@ -11,12 +11,12 @@
 import React from 'react';
 import Head from 'next/head';
 import MdiIcon from '@mdi/react';
-import Gallery from 'react-grid-gallery';
 
 import styles from '../../components/styling/info.module.css';
 import globalStyles from '../../components/styling/home.module.css';
 import attributionStyles from '../../components/styling/attribution.module.css';
 
+import { Fragment } from 'react';
 import { useDorm } from '../../hooks';
 import { useRouter } from 'next/router';
 import { isMobile } from 'react-device-detect';
@@ -26,6 +26,7 @@ import {
     ContributorButton,
     ErrorView,
     Footer,
+    ImageryGrid,
     InlineLink,
     Loader,
     Nav
@@ -108,8 +109,8 @@ const DormInspectionPage = () => {
     let assets = data!.assets.map(asset => ({
         src: asset.url,
         thumbnail: asset.thumbnail,
-        thumbnailWidth: asset.width,
-        thumbnailHeight: asset.height,
+        width: asset.width,
+        height: asset.height,
         alt: `Unresolvable ${asset.url.includes('mp4') ? 'Video' : 'Picture'}`,
         caption: DormHallType[data!.hall]
     }));
@@ -142,7 +143,7 @@ const DormInspectionPage = () => {
                     <div className="container" id="body">
                         <h4 className={`text-white ${styles.infoSectionTitle} mt--5 mb-7 pb-4`}>
                             <i className="fa fa-images fa-fw mb-4"></i> Imagery
-                            <Gallery images={assets} enableImageSelection={false} />
+                            <ImageryGrid images={assets} />
                         </h4>
 
                         <br />
@@ -174,7 +175,17 @@ const DormInspectionPage = () => {
                                                 .map(key => ({ key, value: data!.ratings.amenities_boolean[key] }))
                                                 .sort((a, b) => a.key.localeCompare(b.key))
                                                 .sort((a, b) => b.value - a.value)
-                                                .map(({ key, value }) => <><span>{generateAmenityBadge(value)} <span className={styles.amenityKey}>{DormAmenityType[key.replace('-', '_').toUpperCase()]}</span></span><br/></>)
+                                                .map(({ key, value }) => (
+                                                    <Fragment key={key}>
+                                                        <span>
+                                                            {generateAmenityBadge(value)}
+                                                            <span className={styles.amenityKey}>
+                                                                {DormAmenityType[key.replace('-', '_').toUpperCase()]}
+                                                            </span>
+                                                        </span>
+                                                        <br/>
+                                                    </Fragment>
+                                                ))
                                         }
                                     </span>
                                 )}
@@ -201,6 +212,7 @@ const DormInspectionPage = () => {
                                             .indexOf(val.author.id) === i)
                                         .map(source =>
                                             <ContributorButton
+                                                key={source.author.id}
                                                 name={`u/${source.author.name}`}
                                                 link={`https://reddit.com/u/${source.author.name}`}
                                                 platform={<i className={`fab fa-reddit text-orange ${attributionStyles.platformBadge}`}></i>}

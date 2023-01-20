@@ -58,3 +58,15 @@
 .dropdownFix {
     left: auto !important;
 }
+
+.devtools {
+    border-left: 1px #666 solid !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    border-radius: unset !important;
+    margin-left: 5px !important;
+}
+
+.devtools i {
+    margin-left: 5px !important;
+}

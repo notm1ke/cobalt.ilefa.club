@@ -70,6 +70,7 @@ const sanitizeRoomEventId = (event: string) => event.replace(/\s/g, '').replace(
 
 const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' | 'error', schedule?: BluesignResponsePayload): SidebarEntry[] => {
     const events = getCurrentAndNextEvents(schedule?.entries);
+    const roomName = data.name.split(data.room)[0] + ' ' + data.room;
 
     return [
         {
@@ -79,7 +80,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                 {
                     name: state !== 'loaded'
                         ? 'Loading..'
-                        : getRoomStatus(data.room, schedule!.entries, true, 12),
+                        : getRoomStatus(roomName, schedule!.entries, true, 12),
                     key: 'status',
                     value: ''
                 },
@@ -105,7 +106,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                                     !entry.section && (
                                         <UncontrolledTooltip target={`room-event-${sanitizeRoomEventId(entry.event)}-${i}`}>
                                             <b>{entry.event}</b>
-                                            <br />This event will occupy {data.name} for <b>{getLatestTimeValue(entry.endDate.getTime() - entry.startDate.getTime())}</b>.
+                                            <br />This event will occupy {roomName} for <b>{getLatestTimeValue(entry.endDate.getTime() - entry.startDate.getTime())}</b>.
                                         </UncontrolledTooltip>
                                     )
                                 }
@@ -122,7 +123,7 @@ const getSidebarInfo = (data: CompleteRoomPayload, state: 'loaded' | 'loading' |
                             key: entry.event,
                             value: `${entry.start} - ${entry.end}`     
                         }))
-                    : [{ name: <><b>{data.name}</b> has nothing scheduled.</>, key: 'noEvents', value: '' }]
+                    : [{ name: <><b>{roomName}</b> has nothing scheduled.</>, key: 'noEvents', value: '' }]
                 : state === 'loading'
                     ? [{ name: <><i className="fa fa-spinner fa-spin fa-fw font-weight-bold"></i> Loading..</>, key: 'pending', value: '' }]
                     : [{ name: <><i className="fa fa-times-circle fa-fw text-danger font-weight-bold"></i> Error loading room schedule</>, key: 'errored', value: '' }]
@@ -236,15 +237,13 @@ const renderSidebar = (sidebar: SidebarEntry[]) => (
             <div className="card-body py-10">
                 {
                     sidebar.map(entry => 
-                        <>
-                            <div key={entry.name}>
-                                <pre className={`font-weight-500 mt-${entry.marginTop ? entry.marginTop : 3} mb-2 ${styles.statisticSection} text-primary`}><i className={entry.icon + " fa-fw text-primary"}></i> {entry.name}</pre>
-                                {
-                                    entry.contents.map(ent => <DataView key={ent.key} name={ent.name} value={ent.value} divider={!!ent.value} />)
-                                }
-                                <div className={styles.horizontalDivider}></div>
-                            </div>
-                        </>
+                        <div key={entry.name}>
+                            <pre className={`font-weight-500 mt-${entry.marginTop ? entry.marginTop : 3} mb-2 ${styles.statisticSection} text-primary`}><i className={entry.icon + " fa-fw text-primary"}></i> {entry.name}</pre>
+                            {
+                                entry.contents.map(ent => <DataView key={ent.key} name={ent.name} value={ent.value} divider={!!ent.value} />)
+                            }
+                            <div className={styles.horizontalDivider}></div>
+                        </div>
                     )
                 }
             </div>

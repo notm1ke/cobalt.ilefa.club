@@ -93,9 +93,9 @@ const ChangelogPage = () => (
                         </h4>
 
                         <h4 className={`text-white ${styles.infoSectionTitle} mb-2`}>
-                            <i className="fa fa-laptop-code fa-fw"></i> Preview Information
+                            <i className="fa fa-laptop-code fa-fw"></i> Instance Information
                             <br/><span className={`text-white ${styles.infoSectionBody}`}>
-                                This preview of Cobalt is running version <b>{COMMIT_HASH?.substring(0, 7) || 'no_git_id'}</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : INSTANCE_HOST ?? 'unknown'}</b>.
+                                This instance of Cobalt is running version <b>{COMMIT_HASH?.substring(0, 7) || 'no_git_id'}</b> on <b>{process.env.NEXT_PUBLIC_VERCEL_URL ? 'Vercel' : INSTANCE_HOST ?? 'unknown'}</b>.
                                 <ul className={`mt-3 no-li-decoration ${styles.internalInfo}`}>
                                     <li><i className="fab fa-github fa-fw"></i> <b>Source:</b> <InlineLink display="@ilefa/websites ➔ cobalt" href="https://github.com/notm1ke/cobalt.ilefa.club" newTab /></li>
                                     <li><i className="fa fa-code-branch fa-fw"></i> <b>Release Channel:</b> {RELEASE_CHANNEL || 'unknown'}</li>

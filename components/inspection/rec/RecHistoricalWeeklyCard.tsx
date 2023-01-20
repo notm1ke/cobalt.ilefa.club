@@ -14,7 +14,7 @@ import styles from '../../styling/section.module.css';
 import { useState } from 'react';
 import { Badge } from 'reactstrap';
 import { Line } from 'react-chartjs-2';
-import { getDateFromTime, preventAnd, SUMMER_HOURS } from '../../../util';
+import { getDateFromTime, preventAnd, OFF_PEAK_HOURS } from '../../../util';
 import { useBluefit } from '../../../hooks';
 import { isMobile } from 'react-device-detect';
 
@@ -101,8 +101,8 @@ export const RecHistoricalWeeklyCard: React.FC = () => {
 
     let labels = [...new Set(Array<string>().concat.apply([], data!.weekly.map(day => day.values.map(val => val.time))))];
     let dataset: ChartData<'line', (number | undefined)[]> = {
-        labels: labels.filter(time => !SUMMER_HOURS
-            || (SUMMER_HOURS
+        labels: labels.filter(time => !OFF_PEAK_HOURS
+            || (OFF_PEAK_HOURS
                 && (getDateFromTime(time).getHours() < 18
                     || getDateFromTime(time).getHours() === 18
                     && getDateFromTime(time).getMinutes() === 0))),

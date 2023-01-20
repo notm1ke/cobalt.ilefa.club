@@ -37,4 +37,5 @@ export * from './useStatus';
 export * from './utils/useDebounce';
 export * from './utils/useDynamicRefs';
 export * from './utils/useLocalStorage';
+export * from './utils/useOnPageLoaded';
 export * from './utils/useToggle';

@@ -19,6 +19,10 @@ type Modifiers = 'ca1'
                | 'ca3'
                | 'ca4'
                | 'ca4int'
+               | 'cr1'
+               | 'cr2'
+               | 'cr3'
+               | 'cr4'
                | 'lab'
                | 'w'
                | 'q'
@@ -76,6 +80,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         if (hasModifier(modifiers, 'ca4int'))
             copy = copy.filter(ent => hasContentArea(ent, ContentArea.CA4INT))
             
+        if (hasModifier(modifiers, 'cr1'))
+            copy = copy.filter(ent => ent.credits === 1)
+            
+        if (hasModifier(modifiers, 'cr2'))
+            copy = copy.filter(ent => ent.credits === 2)
+            
+        if (hasModifier(modifiers, 'cr3'))
+            copy = copy.filter(ent => ent.credits === 3)
+            
+        if (hasModifier(modifiers, 'cr4'))
+            copy = copy.filter(ent => ent.credits === 4)
+
         if (hasModifier(modifiers, 'lab'))
             copy = copy.filter(ent => ent.attributes.lab)
             
@@ -106,6 +122,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             || lower === 'ca3'
             || lower === 'ca4'
             || lower === 'ca4int'
+            || lower === 'cr1'
+            || lower === 'cr2'
+            || lower === 'cr3'
+            || lower === 'cr4'
             || lower === 'lab'
             || lower === 'w'
             || lower === 'q'

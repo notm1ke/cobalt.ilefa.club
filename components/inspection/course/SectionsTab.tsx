@@ -19,10 +19,9 @@ import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { CopyButton } from '../..';
 import { mdiChevronDown } from '@mdi/js';
-import { useToggle } from '../../../hooks';
 import { EnrollmentButton, ErrorTab } from '.';
-import { Collapse, UncontrolledTooltip } from 'reactstrap';
-import { IDataTableColumn } from 'react-data-table-component';
+import { UncontrolledTooltip } from 'reactstrap';
+import { ExpandableRowsComponent, TableColumn } from 'react-data-table-component/dist/src/DataTable/types';
 
 import {
     BuildingCode,
@@ -58,21 +57,14 @@ export interface SectionsTabProps {
     data: CompleteCoursePayload;
 }
 
-interface SectionDataProps {
-    data?: SectionData;
-    course: CompleteCoursePayload;
-}
-
-export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
-    if (!data) return (
+export const ExpandedSectionData: ExpandableRowsComponent<SectionData> = ({ data }) => {
+    if (!data || data === undefined) return (
         <div className={styles.sectionDataExpanded}>
             <pre className={`${styles.sectionTitle} text-danger`}><i className="fa fa-times-circle fa-fw"></i> Whoops</pre>
             <p>Sorry about that, something went wrong while loading information about this section.</p>
         </div>
     )
 
-    const [info, toggleInfo] = useToggle(true);
-    const [raw, toggleRaw] = useToggle(false);
     const [classNumCopied, setClassNumCopied] = useState(false);
     const [classTermCopied, setTermCopied] = useState(false);
     const [classSessionCopied, setSessionCopied] = useState(false);
@@ -96,15 +88,14 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
         <div className={styles.sectionDataExpanded}>
             <div className={styles.statisticList}>
                 <li className={styles.statisticItem} key={uuid()}>
-                    <div className={styles.statisticImage} onClick={toggleInfo}>
+                    <div className={styles.statisticImage}>
                         <i className="fa fa-atlas fa-fw text-primary"></i>
                     </div>
                     <div className={styles.details}>
                         <span className="text-dark">
-                            <p onClick={toggleInfo}><b>Section Information</b></p>
+                            <p className="display-5 font-weight-bold"><b>Section Information</b></p>
                             <p>
-                                <span onClick={toggleInfo}>Click to {info ? 'hide' : 'reveal'} section information.</span>
-                                <Collapse isOpen={info} className={styles.statisticCollapse}>
+                                <div className={styles.statisticCollapse}>
                                     <p><b>Section:</b> {data.section}</p>
                                     <p><b>Term:</b> {data.term}</p>
                                     <p><b>Campus:</b> {data.campus}</p>
@@ -136,7 +127,7 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
                                                     : managedRoom.length
                                                         ? managedRoom.map((ent, i) =>
                                                             <a href={`/room/${ent.name.replace(' ', '')}`}>
-                                                                <>{getIconForRoom(ent as Classroom, 'text-primary')} <a className="text-primary shine">{data.location[i].name}</a></>
+                                                                <>{getIconForRoom(ent as Classroom, 'text-primary')} <a className="text-primary shine">{data!.location[i].name}</a></>
                                                             </a>
                                                           )
                                                         : data.location
@@ -178,23 +169,7 @@ export const ExpandedSectionData: React.FC<SectionDataProps> = ({ data }) => {
 
                                     {/* <br />
                                     <span className="btn btn-link btn-success btn-sm text-white">I'm taking this section</span> */}
-                                </Collapse>
-                            </p>
-                        </span>
-                    </div>
-                </li>
-                <li className={styles.statisticItem} key={data.section}>
-                    <div className={styles.statisticImage} onClick={toggleRaw}>
-                        <i className="fa fa-file-code fa-fw text-primary"></i>
-                    </div>
-                    <div className={styles.details}>
-                        <span className="text-dark">
-                            <p onClick={toggleRaw}><b>Raw Data</b></p>
-                            <p>
-                                <span onClick={toggleRaw}>Click to {raw ? 'hide' : 'reveal'} raw data.</span>
-                                <Collapse isOpen={raw} className={styles.statisticCollapse}>
-                                    <pre className="text-primary">{JSON.stringify(data, null, 3)}</pre>
-                                </Collapse>
+                                </div>
                             </p>
                         </span>
                     </div>
@@ -213,10 +188,10 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             color="text-gray" />
 
     let useTerm = true; // sections.some(section => section.term !== sections[0].term);
-    const columns: IDataTableColumn[] = [
+    const columns: TableColumn<SectionData>[] = [
         {
             name: 'Section',
-            selector: 'section',
+            selector: row => row.section,
             sortable: true,
             format: (row, _i) => <>
                                     <b className={`${styles.campusIndicator} ${getSemesterColor(row.term)}`} id={`tooltip-campusIndicator-${row.section.replace(/\W/g, '')}-${row.campus}-${getTermCode(row.term) + row.term.split(/(\d{2,4})/)[1].substring(2)}`}>
@@ -228,12 +203,13 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                                         <br/><span className={styles.modalityTooltipDescription}>{Modalities[getModalityIndicator(row.mode)] || ''}</span>
                                     </UncontrolledTooltip>
                                  </>,
-            grow: useTerm ? 0.65 : 0.45,
+            // grow: useTerm ? 0.65 : 0.45,
+            width: '17.5%',
             allowOverflow: true
         },
         {
             name: 'Room',
-            selector: 'location',
+            selector: row => row.location[0]?.name,
             format: (row, _i) => {
                 let room = getRoomDisplayName(row);
                 if (row.location.length > 1) {
@@ -264,12 +240,13 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                         </>
             },
             sortable: true,
-            grow: useTerm ? 0 : 0.5,
+            // grow: useTerm ? 0 : 0.5,
+            width: '17.5%',
             allowOverflow: true
         },
         {
             name: 'Professor',
-            selector: 'instructor',
+            selector: row => row.instructor,
             format: (row, _i) => {
                 let cleanName = row.instructor.trim();
                 if (cleanName.length) {
@@ -306,12 +283,13 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                 )
             },
             sortable: true,
-            grow: 0.65,
+            // grow: 0.65,
+            width: '19%',
             allowOverflow: true
         },
         {
             name: 'Schedule',
-            selector: 'schedule',
+            selector: row => row.schedule,
             format: (row, i) => {
                 let tokens = getMeetingTime(row.schedule.trim(), sections[i].location, false, undefined, true) as string[];
                 if (tokens.join('') === 'No Meeting Time' || tokens.join('') === 'Unknown')
@@ -332,14 +310,14 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
                 </>;
             },
             sortable: true,
+            width: '25%',
             allowOverflow: true
         },
         {
             name: 'Enrollment',
-            selector: 'enrollment.current',
+            selector: row => row.enrollment.current,
             sortable: true,
-            allowOverflow: true,
-            grow: 0,
+            center: true,
             format: (row, _i) => <EnrollmentButton course={data} data={row} />
         }
     ];
@@ -351,7 +329,7 @@ export const SectionsTab: React.FC<SectionsTabProps> = ({ data }) => {
             pointerOnHover
             expandableRows
             expandOnRowClicked
-            expandableRowsComponent={<ExpandedSectionData course={data} />}
+            expandableRowsComponent={ExpandedSectionData}
             sortIcon={<MdiIcon path={mdiChevronDown}/>}
             columns={columns}
             data={sections}

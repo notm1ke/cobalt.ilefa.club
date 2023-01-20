@@ -96,6 +96,7 @@
 .tabBodyDataTable {
     padding: 0px !important;
     margin: -3px !important;
+    margin-right: -12px !important;
 }
 
 .sectionDataExpanded {
@@ -302,7 +303,7 @@
 }
 
 .statisticCollapse {
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 @media screen and (min-width: 575px) {

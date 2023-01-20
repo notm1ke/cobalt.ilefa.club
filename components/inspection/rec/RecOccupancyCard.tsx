@@ -13,18 +13,19 @@ import styles from '../../styling/section.module.css';
 
 import { useEffect } from 'react';
 import { mdiAccountSupervisor } from '@mdi/js';
-import { useLocalStorage } from '../../../hooks';
+import { useLocalStorage, useOnPageLoaded } from '../../../hooks';
 
 export interface RecOccupancyCardProps {
     data?: number;
 }
 
 export const RecOccupancyCard: React.FC<RecOccupancyCardProps> = ({ data }) => {
-    const [value, setValue] = useLocalStorage('rec-occupancy', data);
+    const [value, setValue] = useLocalStorage('rec-occupancy', data ?? 0);
+    const enabled = useOnPageLoaded();
+
     useEffect(() => () => {
-        if (data !== -1)
-            setValue(data);
-    }, []);
+        if (data) setValue(data);
+    }, [data]);
 
     return (
         <div className="card shadow shadow-lg--hover mt-5 mb-4 mb-xl-0">
@@ -33,7 +34,8 @@ export const RecOccupancyCard: React.FC<RecOccupancyCardProps> = ({ data }) => {
                     <div className="col">
                         <div className={`card-title text-lowercase font-weight-600 text-muted mb-0 ${styles.cardTitle}`}>occupants <small className="vaRevert">(1m)</small></div>
                         <span className={`h2 font-weight-bold mb-0 ${styles.cardText}`}>
-                            {(data && data === -1) ? value : data!.toLocaleString()}
+                            {!enabled && <i className="fa fa-loader fa-spin"></i>}
+                            {enabled && (!data || data === -1) ? value : data!.toLocaleString()}
                         </span>
                     </div>
                     <div className="col-auto col">
