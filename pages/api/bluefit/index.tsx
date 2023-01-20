@@ -10,7 +10,7 @@
 
 import axios from 'axios';
 
-import { getOccupancy } from '@ilefa/bluefit';
+// import { getOccupancy } from '@ilefa/bluefit';
 import { BluefitDailyRecord } from '../../../hooks';
 import { isValidRecQueryMode } from '../../../util';
 import { NextApiRequest, NextApiResponse } from 'next';

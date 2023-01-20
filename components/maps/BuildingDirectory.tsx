@@ -12,7 +12,7 @@ import React from 'react';
 import moment from 'moment';
 import MdiIcon from '@mdi/react';
 // import Timeline from 'react-gantt-simple-timeline';
-import DataTable from 'react-data-table-component';
+import DataTable, { TableColumn } from 'react-data-table-component';
 import Classrooms from '@ilefa/husky/classrooms.json';
 
 import styles from '../styling/inspection.module.css';
@@ -22,7 +22,6 @@ import { Progress } from 'reactstrap';
 import { Classroom } from '@ilefa/husky';
 import { mdiChevronDown } from '@mdi/js';
 import { LoaderTab } from '../inspection';
-import { IDataTableColumn } from 'react-data-table-component';
 import { RoomSchedule, ScheduleEntry } from '@ilefa/bluesign';
 import { BuildingCodeKey, MarkerPayload, useManagedSite } from '../../hooks';
 
@@ -40,7 +39,7 @@ export interface BuildingDirectoryProps {
 }
 
 export interface RoomDataProps {
-    data?: RoomEntry;
+    data: RoomEntry;
 }
 
 const flattenSchedules = (schedules: RoomSchedule[][]): RoomSchedule[] => Array.prototype.concat.apply([], schedules);
@@ -228,20 +227,20 @@ export const BuildingDirectory: React.FC<BuildingDirectoryProps> = ({ marker }) 
     if (error) return <ErrorTab message="Something went wrong while loading the building directory." />;
 
     // if different terms in section data, show semester marker
-    const columns: IDataTableColumn<RoomEntry>[] = [
+    const columns: TableColumn<RoomEntry>[] = [
         {
             name: 'Room',
-            selector: 'title',
+            selector: row => row.room,
             sortable: true,
             format: (row, _i) => (
                 <b>{getIconForRoom(row as any, 'mr-1 vaSub')} {row.room}</b>
             ),
             maxWidth: '25%',
-            hide: 'sm'
+            // hide: 'sm'
         },
         {
             name: 'Status',
-            selector: 'room',
+            selector: row => row.room,
             format: (row, _i) => {
                 let [cur, _next, _load] = getCurrentAndNextEvents(row);
                 let status = getRoomStatus(row);
@@ -288,7 +287,7 @@ export const BuildingDirectory: React.FC<BuildingDirectoryProps> = ({ marker }) 
             pointerOnHover
             expandableRows
             expandOnRowClicked
-            expandableRowsComponent={<BuildingDirectoryEntry />}
+            expandableRowsComponent={BuildingDirectoryEntry}
             sortIcon={<MdiIcon path={mdiChevronDown}/>}
             columns={columns}
             data={createRoomEntries(sites!.sites.map(site => site.schedules))} 

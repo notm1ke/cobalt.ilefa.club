@@ -53,7 +53,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(404)
             .json({ message: 'Course not found' });
 
-    let target = data.sections.find(s => s.section === section && s.term.replace(/\s/g, '').toLowerCase() === term.toString().toLowerCase());
+    let target = data.sections.find(s => s.section === section && s.term.replace(/\s/g, '').toLowerCase() === term!.toString().toLowerCase());
     if (!target)
         return res
             .status(404)

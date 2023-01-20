@@ -25,7 +25,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             .status(400)
             .json({ message: 'Invalid name' });
 
-    let result = await lookup(replaceAll(name, '_', ' '));
+    let result = await lookup(replaceAll(name!, '_', ' '));
     if (!result)
         return res
             .status(404)

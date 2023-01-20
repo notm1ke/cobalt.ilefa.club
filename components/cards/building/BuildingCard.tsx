@@ -8,7 +8,6 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-import Link from 'next/link';
 import MdiIcon from '@mdi/react';
 import styles from '../../styling/building.module.css';
 import cardStyles from '../../styling/card.module.css';

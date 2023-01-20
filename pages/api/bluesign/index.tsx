@@ -21,7 +21,7 @@ const isValidSite = (site: string): site is BuildingCode =>
             .toLowerCase()
             .startsWith(site.toLowerCase()));
 
-const isFlagPresent = (flag: string | string[]) => flag !== null && flag !== undefined;
+const isFlagPresent = (flag?: string | string[]): flag is string | string[] => flag !== null && flag !== undefined;
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method && req.method !== 'GET')
@@ -85,7 +85,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             return res
                 .status(400)
                 .json({ message: 'Invalid mode for `free` payload' });
-     
 
         let campuses = [free].filter(isCampusType).map(c => c as CampusType);
         if (free.includes(','))
@@ -132,7 +131,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // GET /api/bluesign?room=<room>
-    let result = await getRoomSchedule(replaceAll(room, /\s/, '_'));
+    let result = await getRoomSchedule(replaceAll(room!, /\s/, '_'));
     if (!result)
         return res
             .status(404)

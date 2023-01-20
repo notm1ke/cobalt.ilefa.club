@@ -8,9 +8,7 @@
  * persons or organizations without the full and explicit permission of ILEFA Labs.
  */
 
-import Link from 'next/link';
 import dynamic from 'next/dynamic';
-
 import styles from '../../styling/inspection.module.css';
 
 import { useEffect, useState } from 'react';
@@ -18,7 +16,8 @@ import { RoomInspectionPayload } from '../../../hooks';
 import { capitalizeFirst, RoomImageMode } from '../../../util';
 import { BoardType, LectureCaptureType, SeatingType, TechType } from '@ilefa/husky';
 
-const ReactPhotoSphereViewer = dynamic(() => import('react-photo-sphere-viewer').then(module => module.ReactPhotoSphereViewer), { ssr: false });
+// @ts-ignore
+const RSphereViewer: any = dynamic(() => import('react-photo-sphere-viewer').then(module => module.ReactPhotoSphereViewer), { ssr: false });
 
 export interface RoomOverviewTabProps {
     room: RoomInspectionPayload;
@@ -57,7 +56,7 @@ export const RoomOverviewTab: React.FC<RoomOverviewTabProps> = ({ room, imageMod
             { !room.threeSixtyView && <p className={`${styles.description} mb--3`}>No images are available for <b>{styledName}</b>.</p> }
             { room.threeSixtyView && imageMode === RoomImageMode.STATIC && <img src={room.threeSixtyView} height={500} /> }
             { room.threeSixtyView && imageMode === RoomImageMode.THREE_SIXTY && rendered && (
-                <ReactPhotoSphereViewer
+                <RSphereViewer
                     src={room.threeSixtyView}
                     height={500}
                     width={722}
