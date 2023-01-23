@@ -14,6 +14,8 @@ import * as Logger from '../util/logger';
 
 import { isDevelopment } from '../util';
 import { LogLevel } from '../util/logger';
+import { Analytics } from '@vercel/analytics/react';
+
 import type { AppProps } from 'next/app';
 
 import {
@@ -57,6 +59,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
                 <link rel="apple-touch-icon" href="/icons/logo192.png" />
             </Head>
             <Component {...pageProps} />
+            <Analytics />
         </>
     )
 }

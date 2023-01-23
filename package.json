@@ -27,6 +27,7 @@
     "@mdi/js": "^5.9.55",
     "@mdi/react": "^1.5.0",
     "@popperjs/core": "^2.9.2",
+    "@vercel/analytics": "^0.1.8",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "chart.js": "^3.7.1",
