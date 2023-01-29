@@ -28,15 +28,15 @@ const Weekdays = [1, 2, 3, 4, 5];
 const Weekends = [0, 6];
 const AllDays = [...Weekdays, ...Weekends];
 
-const START_DATES = ["2/6/2022", "1/31/2022", "2/1/2022", "2/2/2022", "2/3/2022", "2/4/2022", "2/5/2022"];
+const START_DATES = ['2/6/2022', '1/31/2022', '2/1/2022', '2/2/2022', '2/3/2022', '2/4/2022', '2/5/2022'];
 
 export const SUMMER_HOURS = false;
 
 export const StandardRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
     'SRC': [
         { start: '6:00am', end: '10:00pm', days: Weekdays },
-        { start: '8:00am', end: '7:00pm', days: [6] },
-        { start: '10:00am', end: '10:00pm', days: [0] }
+        { start: '9:00am', end: '6:00pm', days: [6] },
+        { start: '10:00am', end: '7:00pm', days: [0] }
     ],
     'AQUATIC': [
         { start: '6:00am', end: '8:30am', days: Weekdays },
