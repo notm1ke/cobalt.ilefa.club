@@ -512,3 +512,8 @@
 .transferListItem {
     font-size: 0.95rem !important;
 }
+
+.attribTags {
+    margin-left: -40px !important;
+    list-style: none;
+}

@@ -42,7 +42,7 @@ const getFreeDuration = (name: string, next: CustomScheduleEntry[]) => {
         <span className="text-dark">
             <b className="text-warning roomScheduleStatus">
                 <i className="fas fa-clock fa-fw"></i> {name}
-            </b> is free for another <span className="text-purple">{getLatestTimeValue((getDateFromTime(next[0].start).getTime() - Date.now()))}</span>.
+            </b> is free for another <span className="text-purple">{getLatestTimeValue(Math.abs(getDateFromTime(next[0].start).getTime() - Date.now()))}</span>.
         </span>
     )
 }
@@ -115,7 +115,7 @@ const BuildingsPage = () => {
         setSites(sites.map(s => s.site === site ? { site, state: !siteState } : s));
     }
 
-    const enabled = !loading && !error && response;
+    const enabled = !loading && !error && !!response;
 
     useEffect(() => {
         if (!enabled)

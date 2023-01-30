@@ -35,8 +35,8 @@ export const OFF_PEAK_HOURS = true;
 export const StandardRecHours: Record<keyof typeof RecFacility, RecHourEntry[]> = {
     'SRC': [
         { start: '6:00am', end: '10:00pm', days: Weekdays },
-        { start: '8:00am', end: '7:00pm', days: [6] },
-        { start: '10:00am', end: '10:00pm', days: [0] }
+        { start: '9:00am', end: '6:00pm', days: [6] },
+        { start: '10:00am', end: '7:00pm', days: [0] }
     ],
     'AQUATIC': [
         { start: '6:00am', end: '8:30am', days: Weekdays },
