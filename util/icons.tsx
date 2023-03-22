@@ -28,6 +28,7 @@ import {
     mdiArrowTopLeftThick,
     mdiArrowUpThick,
     mdiAtom,
+    mdiAtomVariant,
     mdiBaguette,
     mdiBarley,
     mdiBasketball,
@@ -222,6 +223,7 @@ import {
         case "PU1": return <MdiIcon path={mdiEgg} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "RHBA": return <MdiIcon path={mdiSprout} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "ROWE": return <MdiIcon path={mdiAccountQuestion} className={`fa-fw ${classes}`} size={`${size}px`} />;
+        case 'SCI1': return <MdiIcon path={mdiAtomVariant} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "SCHN": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "SHA": return <MdiIcon path={mdiTeach} className={`fa-fw ${classes}`} size={`${size}px`} />;
         case "SPRH": return <MdiIcon path={mdiHome} className={`fa-fw ${classes}`} size={`${size}px`} />;

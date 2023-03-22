@@ -126,17 +126,17 @@ const BuildingsPage = () => {
                                     </div>
                                 </div>
                                 <div className="row align-items-center justify-content-center">
-                                    <div className="col-md-3 mr--6">
+                                    {/* <div className="col-md-3 mr--6">
                                         <a className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
                                             <i className="fas fa-filter fa-fw mr-1"></i> Custom Search
                                         </a>
-                                    </div>
-                                    <div className="col-md-3 mr--6">
+                                    </div> */}
+                                    {/* <div className="col-md-3 mr--6">
                                         <a href="/room/available" className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
                                             <i className="fa fa-check-to-slot fa-fw mr-1"></i> Available Rooms
                                         </a>
-                                    </div>
-                                    <div className="col-md-3 mr--6">
+                                    </div> */}
+                                    {/* <div className="col-md-3 mr--6">
                                         <a className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
                                             <i className="fas fa-map-location fa-fw mr-1"></i> Wayfinding
                                         </a>
@@ -145,7 +145,7 @@ const BuildingsPage = () => {
                                         <a className="btn btn-dark bg-ilefa-dark shine btn-icon mt-3 mb-sm-0 text-lowercase w-75">
                                             <i className="fas fa-sitemap fa-fw mr-1"></i> Waterfall View
                                         </a>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -153,14 +153,14 @@ const BuildingsPage = () => {
                 </div>
                 <section className={`section ${styles.buildingSection} background-circuits`}>
                     <div className="container" id="body">
-                        <div className="row">
+                        <div className={`row ${styles.buildingRow}`}>
                             {
                                 enabled && results
                                     .filter(building => !EXCLUDED_BUILDINGS.includes(building.code))
                                     .sort((a, b) => BuildingCode[a.code].localeCompare(BuildingCode[b.code]))
                                     .sort((a, b) => CampusSorting[getCampusFromAddress(a.code as BuildingCodeKey).toUpperCase()] - CampusSorting[getCampusFromAddress(b.code as BuildingCodeKey).toUpperCase()])
                                     .map(building => (
-                                        <div className="col-md-6 d-flex align-items-stretch" key={building.code}>
+                                        <div className="col-md-4 d-flex align-items-stretch" key={building.code}>
                                             <BuildingCard
                                                 buildingType={building.code as BuildingCodeKey}
                                                 campus={getCampusFromAddress(building.code as BuildingCodeKey)}

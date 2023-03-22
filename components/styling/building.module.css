@@ -92,3 +92,16 @@
     font-family: 'Roboto Mono', monospace !important;
     font-weight: 400 !important;
 }
+
+.buildingRow {
+    width: 150% !important;
+    margin-left: -25% !important;
+}
+
+/* for mobile devices do not do the above rule */
+@media only screen and (max-width: 600px) {
+    .buildingRow {
+        width: unset !important;
+        margin-left: -4% !important;
+    }
+}
