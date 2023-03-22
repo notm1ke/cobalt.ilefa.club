@@ -105,3 +105,11 @@
         margin-left: -4% !important;
     }
 }
+
+/* for screen sizes less than 1652 show two rows */
+@media only screen and (max-width: 1652px) {
+    .buildingRow {
+        width: 100% !important;
+        margin-left: unset !important;
+    }
+}
