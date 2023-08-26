@@ -80,7 +80,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 const getLatestOccupancy = async (day: number) => {
     let dayName = DAYS[day];
-    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!B2:CF66?majorDimension=COLUMNS&key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!B2:DK66?majorDimension=COLUMNS&key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)
         .then(res => res.data)
@@ -99,7 +99,7 @@ const getLatestOccupancy = async (day: number) => {
 
 const getDailyOccupancy = async (day: number) => {
     let dayName = DAYS[day];
-    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:CF1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
+    let url = `https://sheets.googleapis.com/v4/spreadsheets/1BDgBidhnUfM2-4SNW4WoWOpsdW7gn-eVkVx1_PqZnrI/values/${dayName}!A2:DK1000?key=${process.env.GOOGLE_SHEETS_TOKEN}`;
     let data = await axios
         .get(url)
         .then(res => res.data)
