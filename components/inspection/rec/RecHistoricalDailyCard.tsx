@@ -72,11 +72,11 @@ export const RecHistoricalDailyCard: React.FC = () => {
 
     useEffect(() => {
         if (data && data!.daily) {
-            let offset = getRecDayOffset(new Date());
+            let total = data!.daily![0].values.length;
             let res = { ...data! };
             let daily = res.daily!.map(ent => {
-                if (offset === ent.values.length)
-                    ent.values[offset] = 0;
+                if (total === ent.values.length)
+                    ent.values[total] = 0;
                 return ent;
             });
 
