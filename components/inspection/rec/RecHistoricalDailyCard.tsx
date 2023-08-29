@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { mdiChartBellCurve, mdiRadioTower } from '@mdi/js';
 import { BluefitResponseShape, useBluefit } from '../../../hooks';
-import { getDateFromTime, getRecDayOffset, preventAnd, SUMMER_HOURS } from '../../../util';
+import { getDateFromTime, preventAnd, SUMMER_HOURS } from '../../../util';
 
 import {
     Chart as ChartJS,
