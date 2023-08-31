@@ -75,7 +75,7 @@ export const RecHistoricalDailyCard: React.FC = () => {
             let total = data!.daily![0].values.length;
             let res = { ...data! };
             let daily = res.daily!.map(ent => {
-                if (total === ent.values.length)
+                if (total > ent.values.length)
                     ent.values[total] = 0;
                 return ent;
             });

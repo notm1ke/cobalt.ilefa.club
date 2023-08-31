@@ -20,8 +20,8 @@ import styles from '../styling/inspection.module.css';
 import { ErrorTab } from '..';
 import { Progress } from 'reactstrap';
 import { Classroom } from '@ilefa/husky';
-import { mdiChevronDown } from '@mdi/js';
 import { LoaderTab } from '../inspection';
+import { mdiChevronDown } from '@mdi/js';
 import { IDataTableColumn } from 'react-data-table-component';
 import { RoomSchedule, ScheduleEntry } from '@ilefa/bluesign';
 import { BuildingCodeKey, MarkerPayload, useManagedSite } from '../../hooks';
@@ -30,7 +30,7 @@ import {
     capitalizeFirst,
     getDateFromTime,
     getIconForRoom,
-    getLatestTimeValue,
+    getLatestTimeValue
 } from '../../util';
 
 type RoomEntry = RoomSchedule & Partial<Omit<Classroom, 'room'>>;
@@ -99,8 +99,7 @@ const getRoomStatus = (room: RoomEntry) => {
 }
 
 const getCurrentAndNextEvents = (schedule?: RoomEntry): CurrentAndNextEvents => {
-    if (!schedule)
-        return [undefined, undefined, false];
+    if (!schedule) return [undefined, undefined, false];
 
     let events = schedule
         .entries
@@ -286,9 +285,7 @@ export const BuildingDirectory: React.FC<BuildingDirectoryProps> = ({ marker }) 
             highlightOnHover
             noTableHead
             pointerOnHover
-            expandableRows
-            expandOnRowClicked
-            expandableRowsComponent={<BuildingDirectoryEntry />}
+            // expandableRowsComponent={<BuildingDirectoryEntry />}
             sortIcon={<MdiIcon path={mdiChevronDown}/>}
             columns={columns}
             data={createRoomEntries(sites!.sites.map(site => site.schedules))} 
