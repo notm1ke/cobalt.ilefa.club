@@ -62,7 +62,7 @@ const HomePage = () => {
                                         <CobaltSearch feelingSilly />
                                         <small className="text-secondary">
                                             <i className="fas fa-person-running text-success fa-fw mr-1"></i>
-                                            <i>The fall semester has started, good luck everyone!</i>
+                                            <i>The spring semester has started, good luck everyone!</i>
                                         </small>
 
                                     </div>

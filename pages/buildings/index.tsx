@@ -157,7 +157,10 @@ const BuildingsPage = () => {
                             {
                                 enabled && results
                                     .filter(building => !EXCLUDED_BUILDINGS.includes(building.code))
-                                    .sort((a, b) => BuildingCode[a.code].localeCompare(BuildingCode[b.code]))
+                                    .sort((a, b) => {
+                                        console.log(a.code, BuildingCode[a.code], b.code, BuildingCode[b.code]);
+                                        return BuildingCode[a.code].localeCompare(BuildingCode[b.code]);
+                                    })
                                     .sort((a, b) => CampusSorting[getCampusFromAddress(a.code as BuildingCodeKey).toUpperCase()] - CampusSorting[getCampusFromAddress(b.code as BuildingCodeKey).toUpperCase()])
                                     .map(building => (
                                         <div className="col-md-4 d-flex align-items-stretch" key={building.code}>

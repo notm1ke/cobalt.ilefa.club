@@ -71,7 +71,9 @@ const RoomScheduleModal: React.FC<RoomScheduleModalProps> = ({ name, schedule, o
 );
 
 export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ room, name }) => {
-    const [data, _url, loading, error] = useRoom({ name: name.replace(/\s/g, '') });
+    let cleanName = name.replace(/_/g, ' ');
+
+    const [data, _url, loading, error] = useRoom({ name: cleanName.replace(/\s/g, '') });
     const [open, setOpen] = useState(false);
 
     if (loading) return (
@@ -95,12 +97,12 @@ export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ ro
                 <div>
                     <h5>
                         <a className={`${cardStyles.cardSectionTitle} text-primary-light pointer`} onClick={() => setOpen(true)}>
-                            {icon ?? ''} {name}
+                            {icon ?? ''} {cleanName}
                         </a>
                     </h5>
 
                     <p className="text-dark">
-                        {getRoomStatus(name, room, true)}
+                        {getRoomStatus(cleanName, room, true)}
                     </p>
                     
                     <div className={styles.projectCardLink}>
@@ -119,7 +121,7 @@ export const BuildingDirectoryCard: React.FC<BuildingDirectoryCardProps> = ({ ro
                 </div>
             </div>
             <RoomScheduleModal
-                name={name}
+                name={cleanName}
                 schedule={room}
                 open={open}
                 setOpen={setOpen}
