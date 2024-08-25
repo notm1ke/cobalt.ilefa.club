@@ -4,6 +4,12 @@
 
 Cobalt is a versatile platform offering many services to UConn students, including course information, professor ratings, dining hall menus, dorm reviews & imagery, classroom information, rec center traffic, and much more.
 
+## Important Information
+
+This project has been abandoned, and thus both this repository, and the v6 rewrite of Cobalt were open sourced. You can find the more up-to-date, less archiac and jank version of this project over at [@notm1ke/cobalt](https://github.com/notm1ke/cobalt).
+
+If you are interested in maintaining this project please contact me at [me@m1ke.co](mailto:me@m1ke.co) or on Discord at ``@notm1ke``. Would love to see this project live on, I've let UConn though and do not have the time anymore.
+
 ## Quick Setup
 
 Use npm to install Cobalt's required dependencies.
@@ -75,14 +81,3 @@ After you commit to this repository, you can track your deployment and it's anal
 |   GET  | /api/sections/{course}    | ?campus={...}                                                | Returns a list of sections for the given course; can be limited using the campus GET param.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 |   GET  | /api/statistics           | ?mode={...}                                                  | Returns service statistics regarding served data; output controlled by the mode param which can be a comma-separated list: <ul><li>full: return all statistic types</li> <li>courses: add course count to result</li> <li>professors: add professor count to result</li> <li>rooms: add room count to result</li> <li>buildings: add building count to result</li> <li>assets: add asset count to result</li></ul>                                                                                                                                                                                                                                         |
 |   GET  | /api/status               | ?include={...}                                               | Returns upstream service statuses; output controlled by the include GET param which can be a comma-separated list: <ul><li>all: returns all services in response</li> <li>aurora: add aurora status to output</li> <li>catalog: add catalog status to output</li> <li>email: add email status to output</li> <li>huskyct: add huskyct status to output</li> <li>kfs: add kfs status to output</li> <li>netid: add netid status to output</li> <li>network: add network status to output</li> <li>phonebook: add phonebook status to output</li> <li>student_admin: add student admin status to output</li> <li>webex: add webex status to output</li></ul> |
-
-## Legal
-**ILEFA Labs (c) 2020-2022, all rights reserved.**
-
-Cobalt in it's entirity is propreitary work made by ILEFA Labs, and under no circumstances should code, or any other resources herein, be transmitted, replicated, or otherwise released to anyone without the permission of the authors.
-
-Data supplied by UConn websites, such as course data, enrollment data, dining hall menus, phonebook entries, room sign schedules, transfer equivalencies, building metadata, and classroom technical facts are owned and distributed by the University of Connecticut, which is a legal entity part of the State of Connecticut.
-
-The University of Connecticut does not disclose or distribute student information in accordance with federal regulations, namely FERPA, and as such, ILEFA Labs does not now, or plan to in the future collect any student information without the express permission of participating parties.
-
-Additionally, certain features included within Cobalt, particularly Bluesign-powered room schedule information use unintended internal endpoints provided by the university, and as a extension of gratitude that these unrestricted datasources exist, we do our best to limit traffic and ensure they are used responsibly with strong edge-based caching, while still providing meaningful insights for our users.
